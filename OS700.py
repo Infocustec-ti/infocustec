@@ -9,7 +9,7 @@ from datetime import datetime
 # Importar as funções do database.py
 from database import create_tables, initialize_ubs_setores, check_or_create_admin_user
 
-from autenticacao import authenticate, add_user, is_admin, list_users
+from autenticacao import authenticate, add_user, is_admin, list_users, change_password
 from chamados import (
     add_chamado,
     list_chamados,
