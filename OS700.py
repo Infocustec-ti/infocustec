@@ -638,7 +638,6 @@ def buscar_protocolo():
             st.error(f"Erro ao buscar chamado: {e}")
             logging.error(f"Erro ao buscar chamado pelo protocolo {protocolo}: {e}")
 
-# Função para configurações adicionais (opcional)
 def configuracoes():
     if not st.session_state.get('logged_in') or not is_admin(st.session_state.get('username')):
         st.warning('Você precisa estar logado como administrador para acessar esta área.')
@@ -646,8 +645,26 @@ def configuracoes():
         return
 
     st.subheader('Configurações')
-    st.write("Funcionalidades de configurações adicionais serão implementadas aqui.")
-    logging.info("Área de configurações acessada.")
+
+    # Seção para alterar a senha
+    st.write("**Alterar Senha**")
+    nova_senha = st.text_input('Nova senha', type='password')
+    confirmar_senha = st.text_input('Confirme a nova senha', type='password')
+
+    if st.button('Alterar Senha'):
+        if nova_senha != confirmar_senha:
+            st.error('As senhas não coincidem.')
+            return
+        if len(nova_senha) < 6:
+            st.error('A senha deve ter pelo menos 6 caracteres.')
+            return
+        if change_password(st.session_state.get('username'), nova_senha):
+            st.success('Senha alterada com sucesso!')
+            logging.info(f"Senha do usuário '{st.session_state.get('username')}' alterada com sucesso.")
+        else:
+            st.error('Erro ao alterar a senha.')
+            logging.error(f"Erro ao alterar a senha do usuário '{st.session_state.get('username')}'.")
+
 
 # Páginas disponíveis no menu
 if page == 'Login':
