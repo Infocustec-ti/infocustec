@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from datetime import datetime
 
+# Importar as funções do database.py
+from database import create_tables, initialize_ubs_setores, check_or_create_admin_user
+
 from autenticacao import authenticate, add_user, is_admin, list_users
 from chamados import (
     add_chamado,
@@ -44,10 +47,11 @@ logging.basicConfig(
     ]
 )
 
-# Inicializar o banco de dados de UBSs e Setores
-initialize_ubs()
-initialize_setores()
-logging.info("UBSs e Setores inicializados com sucesso.")
+# Inicializar o banco de dados e tabelas
+create_tables()
+initialize_ubs_setores()
+check_or_create_admin_user()
+logging.info("Banco de dados inicializado com sucesso.")
 
 # Inicializar session_state
 if 'logged_in' not in st.session_state:
@@ -251,6 +255,7 @@ def administracao():
                             patrimonio=patrimonio,
                             setor=setor
                         )
+                        st.success('Máquina adicionada ao inventário com sucesso!')
                         logging.info(f"Máquina {patrimonio} adicionada ao inventário por {st.session_state.username}.")
                     except Exception as e:
                         st.error(f"Erro ao adicionar máquina: {e}")
@@ -597,7 +602,6 @@ def painel_relatorios():
         except Exception as e:
             st.error(f"Erro ao gerar relatório de inventário: {e}")
             logging.error(f"Erro ao gerar relatório de inventário: {e}")
-
 
 # Função para buscar chamado por protocolo
 def buscar_protocolo():
