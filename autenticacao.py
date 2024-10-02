@@ -84,22 +84,23 @@ def list_users():
         return []
 
 # Função para alterar a senha de um usuário
-def change_password(username, old_password, new_password):
-    if authenticate(username, old_password):
-        try:
-            with sqlite3.connect('chamados.db') as conn:
-                cursor = conn.cursor()
-                hashed_new_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
-                cursor.execute("UPDATE usuarios SET password=? WHERE username=?", (hashed_new_password, username))
-                conn.commit()
-                print("Senha alterada com sucesso.")
-                return True
-        except Exception as e:
-            print(f"Erro ao alterar a senha: {e}")
-            return False
-    else:
-        print("Autenticação falhou. Senha antiga incorreta.")
+def change_password(username, new_password):
+    try:
+        if not username or not new_password:
+            raise ValueError("Usuário ou nova senha inválidos.")
+
+        hashed_new_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+
+        with sqlite3.connect('chamados.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute("UPDATE usuarios SET password=? WHERE username=?", (hashed_new_password, username))
+            conn.commit()
+            logging.info(f"Senha do usuário '{username}' alterada com sucesso.")
+            return True
+    except Exception as e:
+        logging.error(f"Erro ao alterar a senha do usuário '{username}': {e}")
         return False
+
 
 # Função para remover um usuário (apenas para administradores)
 def remove_user(admin_username, target_username):
