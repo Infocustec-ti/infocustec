@@ -644,26 +644,40 @@ def configuracoes():
         logging.warning("Usuário sem privilégios tentou acessar as configurações.")
         return
 
-    st.subheader('Configurações')
+    st.subheader('Configurações de Usuários')
 
-    # Seção para alterar a senha
-    st.write("**Alterar Senha**")
+    # Obter a lista de usuários
+    usuarios = list_users()
+    if not usuarios:
+        st.info("Nenhum usuário encontrado.")
+        return
+
+    usernames = [user[0] for user in usuarios]
+
+    # Selecionar o usuário para alterar a senha
+    selected_user = st.selectbox('Selecione um usuário para alterar a senha:', usernames)
+
+    # Campos para inserir a nova senha
     nova_senha = st.text_input('Nova senha', type='password')
     confirmar_senha = st.text_input('Confirme a nova senha', type='password')
 
     if st.button('Alterar Senha'):
+        if not nova_senha or not confirmar_senha:
+            st.error('Por favor, preencha ambos os campos de senha.')
+            return
         if nova_senha != confirmar_senha:
             st.error('As senhas não coincidem.')
             return
         if len(nova_senha) < 6:
             st.error('A senha deve ter pelo menos 6 caracteres.')
             return
-        if change_password(st.session_state.get('username'), nova_senha):
-            st.success('Senha alterada com sucesso!')
-            logging.info(f"Senha do usuário '{st.session_state.get('username')}' alterada com sucesso.")
+        if change_password(selected_user, nova_senha):
+            st.success(f'Senha do usuário "{selected_user}" alterada com sucesso!')
+            logging.info(f"Senha do usuário '{selected_user}' alterada com sucesso pelo administrador.")
         else:
             st.error('Erro ao alterar a senha.')
-            logging.error(f"Erro ao alterar a senha do usuário '{st.session_state.get('username')}'.")
+            logging.error(f"Erro ao alterar a senha do usuário '{selected_user}'.")
+
 
 
 # Páginas disponíveis no menu
