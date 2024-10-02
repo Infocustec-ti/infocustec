@@ -1,0 +1,1468 @@
+2024-09-28 22:40:02,421 - INFO - Tabelas criadas ou já existentes.
+2024-09-28 22:40:27,469 - INFO - Tabelas criadas ou já existentes.
+2024-09-29 12:14:07,484 - INFO - Tabelas criadas ou já existentes.
+2024-09-29 17:01:08,266 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-09-29 17:01:08,270 - WARNING - A UBS 'UBS Arapari/Cabeceiras' já existe.
+2024-09-29 17:01:08,276 - WARNING - A UBS 'UBS Assunção' já existe.
+2024-09-29 17:01:08,287 - WARNING - A UBS 'UBS Flores' já existe.
+2024-09-29 17:01:08,289 - WARNING - A UBS 'UBS Baleia' já existe.
+2024-09-29 17:01:08,290 - WARNING - A UBS 'UBS Barrento' já existe.
+2024-09-29 17:01:08,292 - WARNING - A UBS 'UBS Bastioes' já existe.
+2024-09-29 17:01:08,298 - WARNING - A UBS 'UBS Bela Vista' já existe.
+2024-09-29 17:01:08,315 - INFO - UBS 'UBS Betânia' adicionada com sucesso.
+2024-09-29 17:01:08,321 - WARNING - A UBS 'UBS Boa Vista' já existe.
+2024-09-29 17:01:08,326 - WARNING - A UBS 'UBS Cacimbas' já existe.
+2024-09-29 17:01:08,364 - WARNING - A UBS 'UBS Calugi' já existe.
+2024-09-29 17:01:08,366 - WARNING - A UBS 'UBS Centro' já existe.
+2024-09-29 17:01:08,367 - WARNING - A UBS 'UBS Coqueiro' já existe.
+2024-09-29 17:01:08,368 - WARNING - A UBS 'UBS Cruzeiro/Maranhão' já existe.
+2024-09-29 17:01:08,370 - WARNING - A UBS 'UBS Deserto/Mangueira' já existe.
+2024-09-29 17:01:08,371 - WARNING - A UBS 'UBS Encruzilhadas' já existe.
+2024-09-29 17:01:08,373 - WARNING - A UBS 'UBS Estação' já existe.
+2024-09-29 17:01:08,375 - WARNING - A UBS 'UBS Fazendinha' já existe.
+2024-09-29 17:01:08,383 - WARNING - A UBS 'UBS Ipu/Mazagão' já existe.
+2024-09-29 17:01:08,388 - WARNING - A UBS 'UBS Jacaré' já existe.
+2024-09-29 17:01:08,390 - WARNING - A UBS 'UBS Ladeira' já existe.
+2024-09-29 17:01:08,398 - WARNING - A UBS 'UBS Lagoa da Cruz' já existe.
+2024-09-29 17:01:08,401 - WARNING - A UBS 'UBS Lagoa das Mercês' já existe.
+2024-09-29 17:01:08,404 - WARNING - A UBS 'UBS Livramento' já existe.
+2024-09-29 17:01:08,407 - WARNING - A UBS 'UBS Maceió' já existe.
+2024-09-29 17:01:08,410 - WARNING - A UBS 'UBS Madalenas' já existe.
+2024-09-29 17:01:08,415 - WARNING - A UBS 'UBS Marinheiros' já existe.
+2024-09-29 17:01:08,418 - WARNING - A UBS 'UBS Mourão' já existe.
+2024-09-29 17:01:08,420 - WARNING - A UBS 'UBS Mulatão' já existe.
+2024-09-29 17:01:08,422 - WARNING - A UBS 'UBS Picos' já existe.
+2024-09-29 17:01:08,427 - WARNING - A UBS 'UBS Salgado dos Pires' já existe.
+2024-09-29 17:01:08,431 - WARNING - A UBS 'UBS Sítio do Meio' já existe.
+2024-09-29 17:01:08,434 - WARNING - A UBS 'UBS Tabocal' já existe.
+2024-09-29 17:01:08,437 - WARNING - A UBS 'UBS Taboca' já existe.
+2024-09-29 17:01:08,440 - WARNING - A UBS 'UBS Vida Nova Vida Bela' já existe.
+2024-09-29 17:01:08,446 - WARNING - A UBS 'UBS Nova Aldeota' já existe.
+2024-09-29 17:01:08,449 - WARNING - A UBS 'UBS Violete' já existe.
+2024-09-29 17:01:08,452 - WARNING - A UBS 'UBS Violete II' já existe.
+2024-09-29 17:01:08,454 - WARNING - O setor 'Recepção' já existe.
+2024-09-29 17:01:08,476 - INFO - Setor 'Consultório Médico' adicionado com sucesso.
+2024-09-29 17:01:08,485 - WARNING - O setor 'Farmácia' já existe.
+2024-09-29 17:01:08,490 - WARNING - O setor 'Sala da Enfermeira' já existe.
+2024-09-29 17:01:08,503 - INFO - Setor 'Sala da Vacina' adicionado com sucesso.
+2024-09-29 17:01:08,518 - INFO - Setor 'Consultório Odontológico' adicionado com sucesso.
+2024-09-29 17:01:08,532 - INFO - Setor 'Sala de Administração' adicionado com sucesso.
+2024-09-29 17:01:08,542 - INFO - Banco de dados inicializado com sucesso.
+2024-09-30 20:25:47,482 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-09-30 20:25:47,507 - WARNING - A UBS 'UBS Arapari/Cabeceiras' já existe.
+2024-09-30 20:25:47,516 - WARNING - A UBS 'UBS Assunção' já existe.
+2024-09-30 20:25:47,525 - WARNING - A UBS 'UBS Flores' já existe.
+2024-09-30 20:25:47,535 - WARNING - A UBS 'UBS Baleia' já existe.
+2024-09-30 20:25:47,540 - WARNING - A UBS 'UBS Barrento' já existe.
+2024-09-30 20:25:47,549 - WARNING - A UBS 'UBS Bastioes' já existe.
+2024-09-30 20:25:47,566 - WARNING - A UBS 'UBS Bela Vista' já existe.
+2024-09-30 20:25:47,571 - WARNING - A UBS 'UBS Betânia' já existe.
+2024-09-30 20:25:47,574 - WARNING - A UBS 'UBS Boa Vista' já existe.
+2024-09-30 20:25:47,582 - WARNING - A UBS 'UBS Cacimbas' já existe.
+2024-09-30 20:25:47,587 - WARNING - A UBS 'UBS Calugi' já existe.
+2024-09-30 20:25:47,598 - WARNING - A UBS 'UBS Centro' já existe.
+2024-09-30 20:25:47,606 - WARNING - A UBS 'UBS Coqueiro' já existe.
+2024-09-30 20:25:47,616 - WARNING - A UBS 'UBS Cruzeiro/Maranhão' já existe.
+2024-09-30 20:25:47,620 - WARNING - A UBS 'UBS Deserto/Mangueira' já existe.
+2024-09-30 20:25:47,624 - WARNING - A UBS 'UBS Encruzilhadas' já existe.
+2024-09-30 20:25:47,633 - WARNING - A UBS 'UBS Estação' já existe.
+2024-09-30 20:25:47,638 - WARNING - A UBS 'UBS Fazendinha' já existe.
+2024-09-30 20:25:47,643 - WARNING - A UBS 'UBS Ipu/Mazagão' já existe.
+2024-09-30 20:25:47,654 - WARNING - A UBS 'UBS Jacaré' já existe.
+2024-09-30 20:25:47,660 - WARNING - A UBS 'UBS Ladeira' já existe.
+2024-09-30 20:25:47,666 - WARNING - A UBS 'UBS Lagoa da Cruz' já existe.
+2024-09-30 20:25:47,671 - WARNING - A UBS 'UBS Lagoa das Mercês' já existe.
+2024-09-30 20:25:47,675 - WARNING - A UBS 'UBS Livramento' já existe.
+2024-09-30 20:25:47,685 - WARNING - A UBS 'UBS Maceió' já existe.
+2024-09-30 20:25:47,691 - WARNING - A UBS 'UBS Madalenas' já existe.
+2024-09-30 20:25:47,697 - WARNING - A UBS 'UBS Marinheiros' já existe.
+2024-09-30 20:25:47,702 - WARNING - A UBS 'UBS Mourão' já existe.
+2024-09-30 20:25:47,706 - WARNING - A UBS 'UBS Mulatão' já existe.
+2024-09-30 20:25:47,709 - WARNING - A UBS 'UBS Picos' já existe.
+2024-09-30 20:25:47,715 - WARNING - A UBS 'UBS Salgado dos Pires' já existe.
+2024-09-30 20:25:47,721 - WARNING - A UBS 'UBS Sítio do Meio' já existe.
+2024-09-30 20:25:47,725 - WARNING - A UBS 'UBS Tabocal' já existe.
+2024-09-30 20:25:47,733 - WARNING - A UBS 'UBS Taboca' já existe.
+2024-09-30 20:25:47,738 - WARNING - A UBS 'UBS Vida Nova Vida Bela' já existe.
+2024-09-30 20:25:47,742 - WARNING - A UBS 'UBS Nova Aldeota' já existe.
+2024-09-30 20:25:47,747 - WARNING - A UBS 'UBS Violete' já existe.
+2024-09-30 20:25:47,755 - WARNING - A UBS 'UBS Violete II' já existe.
+2024-09-30 20:25:47,758 - WARNING - O setor 'Recepção' já existe.
+2024-09-30 20:25:47,767 - WARNING - O setor 'Consultório Médico' já existe.
+2024-09-30 20:25:47,775 - WARNING - O setor 'Farmácia' já existe.
+2024-09-30 20:25:47,784 - WARNING - O setor 'Sala da Enfermeira' já existe.
+2024-09-30 20:25:47,789 - WARNING - O setor 'Sala da Vacina' já existe.
+2024-09-30 20:25:47,793 - WARNING - O setor 'Consultório Odontológico' já existe.
+2024-09-30 20:25:47,800 - WARNING - O setor 'Sala de Administração' já existe.
+2024-09-30 20:25:47,800 - INFO - Banco de dados inicializado com sucesso.
+2024-09-30 20:25:57,725 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-09-30 20:25:57,737 - WARNING - A UBS 'UBS Arapari/Cabeceiras' já existe.
+2024-09-30 20:25:57,741 - WARNING - A UBS 'UBS Assunção' já existe.
+2024-09-30 20:25:57,749 - WARNING - A UBS 'UBS Flores' já existe.
+2024-09-30 20:25:57,753 - WARNING - A UBS 'UBS Baleia' já existe.
+2024-09-30 20:25:57,757 - WARNING - A UBS 'UBS Barrento' já existe.
+2024-09-30 20:25:57,764 - WARNING - A UBS 'UBS Bastioes' já existe.
+2024-09-30 20:25:57,782 - WARNING - A UBS 'UBS Bela Vista' já existe.
+2024-09-30 20:25:57,820 - WARNING - A UBS 'UBS Betânia' já existe.
+2024-09-30 20:25:57,838 - WARNING - A UBS 'UBS Boa Vista' já existe.
+2024-09-30 20:25:57,862 - WARNING - A UBS 'UBS Cacimbas' já existe.
+2024-09-30 20:25:57,870 - WARNING - A UBS 'UBS Calugi' já existe.
+2024-09-30 20:25:57,889 - WARNING - A UBS 'UBS Centro' já existe.
+2024-09-30 20:25:57,900 - WARNING - A UBS 'UBS Coqueiro' já existe.
+2024-09-30 20:25:57,907 - WARNING - A UBS 'UBS Cruzeiro/Maranhão' já existe.
+2024-09-30 20:25:57,916 - WARNING - A UBS 'UBS Deserto/Mangueira' já existe.
+2024-09-30 20:25:57,931 - WARNING - A UBS 'UBS Encruzilhadas' já existe.
+2024-09-30 20:25:57,945 - WARNING - A UBS 'UBS Estação' já existe.
+2024-09-30 20:25:57,966 - WARNING - A UBS 'UBS Fazendinha' já existe.
+2024-09-30 20:25:57,995 - WARNING - A UBS 'UBS Ipu/Mazagão' já existe.
+2024-09-30 20:25:58,020 - WARNING - A UBS 'UBS Jacaré' já existe.
+2024-09-30 20:25:58,034 - WARNING - A UBS 'UBS Ladeira' já existe.
+2024-09-30 20:25:58,065 - WARNING - A UBS 'UBS Lagoa da Cruz' já existe.
+2024-09-30 20:25:58,082 - WARNING - A UBS 'UBS Lagoa das Mercês' já existe.
+2024-09-30 20:25:58,089 - WARNING - A UBS 'UBS Livramento' já existe.
+2024-09-30 20:25:58,097 - WARNING - A UBS 'UBS Maceió' já existe.
+2024-09-30 20:25:58,105 - WARNING - A UBS 'UBS Madalenas' já existe.
+2024-09-30 20:25:58,119 - WARNING - A UBS 'UBS Marinheiros' já existe.
+2024-09-30 20:25:58,130 - WARNING - A UBS 'UBS Mourão' já existe.
+2024-09-30 20:25:58,154 - WARNING - A UBS 'UBS Mulatão' já existe.
+2024-09-30 20:25:58,189 - WARNING - A UBS 'UBS Picos' já existe.
+2024-09-30 20:25:58,217 - WARNING - A UBS 'UBS Salgado dos Pires' já existe.
+2024-09-30 20:25:58,234 - WARNING - A UBS 'UBS Sítio do Meio' já existe.
+2024-09-30 20:25:58,270 - WARNING - A UBS 'UBS Tabocal' já existe.
+2024-09-30 20:25:58,288 - WARNING - A UBS 'UBS Taboca' já existe.
+2024-09-30 20:25:58,318 - WARNING - A UBS 'UBS Vida Nova Vida Bela' já existe.
+2024-09-30 20:25:58,353 - WARNING - A UBS 'UBS Nova Aldeota' já existe.
+2024-09-30 20:25:58,368 - WARNING - A UBS 'UBS Violete' já existe.
+2024-09-30 20:25:58,372 - WARNING - A UBS 'UBS Violete II' já existe.
+2024-09-30 20:25:58,379 - WARNING - O setor 'Recepção' já existe.
+2024-09-30 20:25:58,385 - WARNING - O setor 'Consultório Médico' já existe.
+2024-09-30 20:25:58,390 - WARNING - O setor 'Farmácia' já existe.
+2024-09-30 20:25:58,398 - WARNING - O setor 'Sala da Enfermeira' já existe.
+2024-09-30 20:25:58,402 - WARNING - O setor 'Sala da Vacina' já existe.
+2024-09-30 20:25:58,405 - WARNING - O setor 'Consultório Odontológico' já existe.
+2024-09-30 20:25:58,415 - WARNING - O setor 'Sala de Administração' já existe.
+2024-09-30 20:25:58,417 - INFO - Banco de dados inicializado com sucesso.
+2024-09-30 20:40:21,176 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-09-30 20:40:21,197 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada com sucesso.
+2024-09-30 20:40:21,216 - INFO - UBS 'UBS Assunção' adicionada com sucesso.
+2024-09-30 20:40:21,237 - INFO - UBS 'UBS Flores' adicionada com sucesso.
+2024-09-30 20:40:21,256 - INFO - UBS 'UBS Baleia' adicionada com sucesso.
+2024-09-30 20:40:21,275 - INFO - UBS 'UBS Barrento' adicionada com sucesso.
+2024-09-30 20:40:21,295 - INFO - UBS 'UBS Bastioes' adicionada com sucesso.
+2024-09-30 20:40:21,320 - INFO - UBS 'UBS Bela Vista' adicionada com sucesso.
+2024-09-30 20:40:21,340 - INFO - UBS 'UBS Betânia' adicionada com sucesso.
+2024-09-30 20:40:21,357 - INFO - UBS 'UBS Boa Vista' adicionada com sucesso.
+2024-09-30 20:40:21,375 - INFO - UBS 'UBS Cacimbas' adicionada com sucesso.
+2024-09-30 20:40:21,395 - INFO - UBS 'UBS Calugi' adicionada com sucesso.
+2024-09-30 20:40:21,416 - INFO - UBS 'UBS Centro' adicionada com sucesso.
+2024-09-30 20:40:21,448 - INFO - UBS 'UBS Coqueiro' adicionada com sucesso.
+2024-09-30 20:40:21,469 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada com sucesso.
+2024-09-30 20:40:21,489 - INFO - UBS 'UBS Deserto/Mangueira' adicionada com sucesso.
+2024-09-30 20:40:21,509 - INFO - UBS 'UBS Encruzilhadas' adicionada com sucesso.
+2024-09-30 20:40:21,528 - INFO - UBS 'UBS Estação' adicionada com sucesso.
+2024-09-30 20:40:21,544 - INFO - UBS 'UBS Fazendinha' adicionada com sucesso.
+2024-09-30 20:40:21,561 - INFO - UBS 'UBS Ipu/Mazagão' adicionada com sucesso.
+2024-09-30 20:40:21,582 - INFO - UBS 'UBS Jacaré' adicionada com sucesso.
+2024-09-30 20:40:21,602 - INFO - UBS 'UBS Ladeira' adicionada com sucesso.
+2024-09-30 20:40:21,620 - INFO - UBS 'UBS Lagoa da Cruz' adicionada com sucesso.
+2024-09-30 20:40:21,642 - INFO - UBS 'UBS Lagoa das Mercês' adicionada com sucesso.
+2024-09-30 20:40:21,661 - INFO - UBS 'UBS Livramento' adicionada com sucesso.
+2024-09-30 20:40:21,678 - INFO - UBS 'UBS Maceió' adicionada com sucesso.
+2024-09-30 20:40:21,694 - INFO - UBS 'UBS Madalenas' adicionada com sucesso.
+2024-09-30 20:40:21,711 - INFO - UBS 'UBS Marinheiros' adicionada com sucesso.
+2024-09-30 20:40:21,729 - INFO - UBS 'UBS Mourão' adicionada com sucesso.
+2024-09-30 20:40:21,748 - INFO - UBS 'UBS Mulatão' adicionada com sucesso.
+2024-09-30 20:40:21,769 - INFO - UBS 'UBS Picos' adicionada com sucesso.
+2024-09-30 20:40:21,787 - INFO - UBS 'UBS Salgado dos Pires' adicionada com sucesso.
+2024-09-30 20:40:21,808 - INFO - UBS 'UBS Sítio do Meio' adicionada com sucesso.
+2024-09-30 20:40:21,827 - INFO - UBS 'UBS Tabocal' adicionada com sucesso.
+2024-09-30 20:40:21,846 - INFO - UBS 'UBS Taboca' adicionada com sucesso.
+2024-09-30 20:40:21,863 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada com sucesso.
+2024-09-30 20:40:21,881 - INFO - UBS 'UBS Nova Aldeota' adicionada com sucesso.
+2024-09-30 20:40:21,897 - INFO - UBS 'UBS Violete' adicionada com sucesso.
+2024-09-30 20:40:21,917 - INFO - UBS 'UBS Violete II' adicionada com sucesso.
+2024-09-30 20:40:21,938 - INFO - Setor 'Recepção' adicionado com sucesso.
+2024-09-30 20:40:21,955 - INFO - Setor 'Consultório Médico' adicionado com sucesso.
+2024-09-30 20:40:22,374 - INFO - Setor 'Farmácia' adicionado com sucesso.
+2024-09-30 20:40:22,421 - INFO - Setor 'Sala da Enfermeira' adicionado com sucesso.
+2024-09-30 20:40:22,447 - INFO - Setor 'Sala da Vacina' adicionado com sucesso.
+2024-09-30 20:40:22,465 - INFO - Setor 'Consultório Odontológico' adicionado com sucesso.
+2024-09-30 20:40:22,482 - INFO - Setor 'Sala de Administração' adicionado com sucesso.
+2024-09-30 20:40:22,484 - INFO - Banco de dados inicializado com sucesso.
+2024-09-30 20:40:30,661 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-09-30 20:40:30,664 - WARNING - A UBS 'UBS Arapari/Cabeceiras' já existe.
+2024-09-30 20:40:30,668 - WARNING - A UBS 'UBS Assunção' já existe.
+2024-09-30 20:40:30,671 - WARNING - A UBS 'UBS Flores' já existe.
+2024-09-30 20:40:30,674 - WARNING - A UBS 'UBS Baleia' já existe.
+2024-09-30 20:40:30,676 - WARNING - A UBS 'UBS Barrento' já existe.
+2024-09-30 20:40:30,680 - WARNING - A UBS 'UBS Bastioes' já existe.
+2024-09-30 20:40:30,683 - WARNING - A UBS 'UBS Bela Vista' já existe.
+2024-09-30 20:40:30,686 - WARNING - A UBS 'UBS Betânia' já existe.
+2024-09-30 20:40:30,691 - WARNING - A UBS 'UBS Boa Vista' já existe.
+2024-09-30 20:40:30,694 - WARNING - A UBS 'UBS Cacimbas' já existe.
+2024-09-30 20:40:30,696 - WARNING - A UBS 'UBS Calugi' já existe.
+2024-09-30 20:40:30,700 - WARNING - A UBS 'UBS Centro' já existe.
+2024-09-30 20:40:30,704 - WARNING - A UBS 'UBS Coqueiro' já existe.
+2024-09-30 20:40:30,708 - WARNING - A UBS 'UBS Cruzeiro/Maranhão' já existe.
+2024-09-30 20:40:30,711 - WARNING - A UBS 'UBS Deserto/Mangueira' já existe.
+2024-09-30 20:40:30,714 - WARNING - A UBS 'UBS Encruzilhadas' já existe.
+2024-09-30 20:40:30,719 - WARNING - A UBS 'UBS Estação' já existe.
+2024-09-30 20:40:30,722 - WARNING - A UBS 'UBS Fazendinha' já existe.
+2024-09-30 20:40:30,725 - WARNING - A UBS 'UBS Ipu/Mazagão' já existe.
+2024-09-30 20:40:30,728 - WARNING - A UBS 'UBS Jacaré' já existe.
+2024-09-30 20:40:30,731 - WARNING - A UBS 'UBS Ladeira' já existe.
+2024-09-30 20:40:30,737 - WARNING - A UBS 'UBS Lagoa da Cruz' já existe.
+2024-09-30 20:40:30,742 - WARNING - A UBS 'UBS Lagoa das Mercês' já existe.
+2024-09-30 20:40:30,745 - WARNING - A UBS 'UBS Livramento' já existe.
+2024-09-30 20:40:30,749 - WARNING - A UBS 'UBS Maceió' já existe.
+2024-09-30 20:40:30,755 - WARNING - A UBS 'UBS Madalenas' já existe.
+2024-09-30 20:40:30,759 - WARNING - A UBS 'UBS Marinheiros' já existe.
+2024-09-30 20:40:30,763 - WARNING - A UBS 'UBS Mourão' já existe.
+2024-09-30 20:40:30,769 - WARNING - A UBS 'UBS Mulatão' já existe.
+2024-09-30 20:40:30,772 - WARNING - A UBS 'UBS Picos' já existe.
+2024-09-30 20:40:30,776 - WARNING - A UBS 'UBS Salgado dos Pires' já existe.
+2024-09-30 20:40:30,779 - WARNING - A UBS 'UBS Sítio do Meio' já existe.
+2024-09-30 20:40:30,784 - WARNING - A UBS 'UBS Tabocal' já existe.
+2024-09-30 20:40:30,788 - WARNING - A UBS 'UBS Taboca' já existe.
+2024-09-30 20:40:30,792 - WARNING - A UBS 'UBS Vida Nova Vida Bela' já existe.
+2024-09-30 20:40:30,795 - WARNING - A UBS 'UBS Nova Aldeota' já existe.
+2024-09-30 20:40:30,798 - WARNING - A UBS 'UBS Violete' já existe.
+2024-09-30 20:40:30,803 - WARNING - A UBS 'UBS Violete II' já existe.
+2024-09-30 20:40:30,806 - WARNING - O setor 'Recepção' já existe.
+2024-09-30 20:40:30,810 - WARNING - O setor 'Consultório Médico' já existe.
+2024-09-30 20:40:30,813 - WARNING - O setor 'Farmácia' já existe.
+2024-09-30 20:40:30,819 - WARNING - O setor 'Sala da Enfermeira' já existe.
+2024-09-30 20:40:30,822 - WARNING - O setor 'Sala da Vacina' já existe.
+2024-09-30 20:40:30,825 - WARNING - O setor 'Consultório Odontológico' já existe.
+2024-09-30 20:40:30,878 - WARNING - O setor 'Sala de Administração' já existe.
+2024-09-30 20:40:30,879 - INFO - Banco de dados inicializado com sucesso.
+2024-09-30 20:49:08,069 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-09-30 20:49:08,106 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-09-30 20:49:08,136 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-09-30 20:49:08,210 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-09-30 20:49:08,273 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-09-30 20:49:08,289 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-09-30 20:49:08,320 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-09-30 20:49:08,350 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-09-30 20:49:08,375 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-09-30 20:49:08,409 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-09-30 20:49:08,452 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-09-30 20:49:08,499 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-09-30 20:49:08,513 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-09-30 20:49:08,545 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-09-30 20:49:08,560 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-09-30 20:49:08,574 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-09-30 20:49:08,614 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-09-30 20:49:08,629 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-09-30 20:49:08,643 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-09-30 20:49:08,657 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-09-30 20:49:08,684 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-09-30 20:49:08,699 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-09-30 20:49:08,711 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-09-30 20:49:08,729 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-09-30 20:49:08,747 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-09-30 20:49:08,762 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-09-30 20:49:08,777 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-09-30 20:49:08,795 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-09-30 20:49:08,819 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-09-30 20:49:08,833 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-09-30 20:49:08,849 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-09-30 20:49:08,862 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-09-30 20:49:08,890 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-09-30 20:49:08,910 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-09-30 20:49:08,929 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-09-30 20:49:08,945 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-09-30 20:49:08,984 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-09-30 20:49:09,005 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-09-30 20:49:09,035 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-09-30 20:49:09,074 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-09-30 20:49:09,096 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-09-30 20:49:09,113 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-09-30 20:49:09,128 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-09-30 20:49:09,142 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-09-30 20:49:09,164 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-09-30 20:49:09,237 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-09-30 20:49:09,239 - INFO - Banco de dados inicializado com sucesso.
+2024-09-30 21:00:09,833 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-09-30 21:00:09,855 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-09-30 21:00:09,873 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-09-30 21:00:09,887 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-09-30 21:00:09,906 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-09-30 21:00:09,927 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-09-30 21:00:09,943 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-09-30 21:00:09,963 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-09-30 21:00:09,986 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-09-30 21:00:10,022 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-09-30 21:00:10,069 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-09-30 21:00:10,208 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-09-30 21:00:10,278 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-09-30 21:00:10,599 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-09-30 21:00:10,928 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-09-30 21:00:11,447 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-09-30 21:00:12,190 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-09-30 21:00:12,232 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-09-30 21:00:12,261 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-09-30 21:00:12,304 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-09-30 21:00:12,354 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-09-30 21:00:12,579 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-09-30 21:00:12,824 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-09-30 21:00:12,863 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-09-30 21:00:12,900 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-09-30 21:00:13,064 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-09-30 21:00:13,108 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-09-30 21:00:13,164 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-09-30 21:00:13,188 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-09-30 21:00:13,416 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-09-30 21:00:13,463 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-09-30 21:00:13,509 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-09-30 21:00:13,530 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-09-30 21:00:13,572 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-09-30 21:00:13,717 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-09-30 21:00:13,754 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-09-30 21:00:13,782 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-09-30 21:00:13,807 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-09-30 21:00:13,884 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-09-30 21:00:13,938 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-09-30 21:00:14,139 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-09-30 21:00:14,380 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-09-30 21:00:14,409 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-09-30 21:00:14,451 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-09-30 21:00:14,479 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-09-30 21:00:14,531 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-09-30 21:00:37,509 - INFO - Usuário admin criado com sucesso.
+2024-09-30 21:00:37,511 - INFO - Banco de dados inicializado com sucesso.
+2024-09-30 21:03:11,710 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-09-30 21:03:11,751 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-09-30 21:03:11,773 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-09-30 21:03:11,801 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-09-30 21:03:11,830 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-09-30 21:03:11,846 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-09-30 21:03:11,864 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-09-30 21:03:11,883 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-09-30 21:03:11,905 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-09-30 21:03:11,922 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-09-30 21:03:11,952 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-09-30 21:03:11,972 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-09-30 21:03:11,992 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-09-30 21:03:12,013 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-09-30 21:03:12,039 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-09-30 21:03:12,101 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-09-30 21:03:12,140 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-09-30 21:03:12,165 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-09-30 21:03:12,187 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-09-30 21:03:12,207 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-09-30 21:03:12,228 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-09-30 21:03:12,244 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-09-30 21:03:12,263 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-09-30 21:03:12,287 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-09-30 21:03:12,307 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-09-30 21:03:12,335 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-09-30 21:03:12,354 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-09-30 21:03:12,382 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-09-30 21:03:12,407 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-09-30 21:03:12,445 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-09-30 21:03:12,472 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-09-30 21:03:12,517 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-09-30 21:03:12,540 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-09-30 21:03:12,573 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-09-30 21:03:12,595 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-09-30 21:03:12,615 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-09-30 21:03:12,634 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-09-30 21:03:12,656 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-09-30 21:03:12,680 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-09-30 21:03:12,702 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-09-30 21:03:12,724 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-09-30 21:03:12,741 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-09-30 21:03:12,899 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-09-30 21:03:12,939 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-09-30 21:03:13,034 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-09-30 21:03:13,068 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-09-30 21:03:28,992 - INFO - Usuário admin criado com sucesso.
+2024-09-30 21:03:28,994 - INFO - Banco de dados inicializado com sucesso.
+2024-09-30 21:20:17,200 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-09-30 21:20:17,228 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-09-30 21:20:17,260 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-09-30 21:20:17,286 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-09-30 21:20:17,320 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-09-30 21:20:17,339 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-09-30 21:20:17,361 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-09-30 21:20:17,380 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-09-30 21:20:17,440 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-09-30 21:20:17,458 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-09-30 21:20:17,477 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-09-30 21:20:17,501 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-09-30 21:20:17,518 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-09-30 21:20:17,548 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-09-30 21:20:17,565 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-09-30 21:20:17,587 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-09-30 21:20:17,618 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-09-30 21:20:17,639 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-09-30 21:20:17,657 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-09-30 21:20:17,684 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-09-30 21:20:17,719 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-09-30 21:20:17,754 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-09-30 21:20:17,790 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-09-30 21:20:17,830 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-09-30 21:20:17,858 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-09-30 21:20:17,888 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-09-30 21:20:17,908 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-09-30 21:20:17,926 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-09-30 21:20:17,960 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-09-30 21:20:17,980 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-09-30 21:20:18,014 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-09-30 21:20:18,032 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-09-30 21:20:18,051 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-09-30 21:20:18,079 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-09-30 21:20:18,096 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-09-30 21:20:18,118 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-09-30 21:20:18,144 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-09-30 21:20:18,188 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-09-30 21:20:18,207 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-09-30 21:20:18,238 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-09-30 21:20:18,264 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-09-30 21:20:18,286 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-09-30 21:20:18,316 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-09-30 21:20:18,346 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-09-30 21:20:18,365 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-09-30 21:20:18,387 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-09-30 21:32:59,096 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-09-30 21:32:59,148 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-09-30 21:32:59,167 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-09-30 21:32:59,204 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-09-30 21:32:59,309 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-09-30 21:32:59,347 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-09-30 21:32:59,377 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-09-30 21:32:59,400 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-09-30 21:32:59,438 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-09-30 21:32:59,476 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-09-30 21:32:59,530 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-09-30 21:32:59,559 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-09-30 21:32:59,604 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-09-30 21:32:59,630 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-09-30 21:32:59,671 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-09-30 21:32:59,692 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-09-30 21:32:59,731 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-09-30 21:32:59,760 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-09-30 21:32:59,779 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-09-30 21:32:59,800 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-09-30 21:32:59,855 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-09-30 21:32:59,920 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-09-30 21:32:59,942 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-09-30 21:32:59,968 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-09-30 21:32:59,987 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-09-30 21:33:00,008 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-09-30 21:33:00,037 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-09-30 21:33:00,075 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-09-30 21:33:00,099 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-09-30 21:33:00,126 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-09-30 21:33:00,169 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-09-30 21:33:00,196 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-09-30 21:33:00,217 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-09-30 21:33:00,271 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-09-30 21:33:00,415 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-09-30 21:33:00,623 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-09-30 21:33:00,799 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-09-30 21:33:00,844 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-09-30 21:33:00,884 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-09-30 21:33:00,926 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-09-30 21:33:00,970 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-09-30 21:33:01,014 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-09-30 21:33:01,046 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-09-30 21:33:01,085 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-09-30 21:33:01,109 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-09-30 21:33:01,163 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-09-30 21:33:38,750 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-09-30 21:33:38,789 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-09-30 21:33:38,847 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-09-30 21:33:38,903 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-09-30 21:33:39,189 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-09-30 21:33:39,401 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-09-30 21:33:39,632 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-09-30 21:33:39,716 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-09-30 21:33:39,932 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-09-30 21:33:40,123 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-09-30 21:33:40,169 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-09-30 21:33:40,350 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-09-30 21:33:40,465 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-09-30 21:33:40,490 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-09-30 21:33:40,536 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-09-30 21:33:40,556 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-09-30 21:33:40,609 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-09-30 21:33:40,689 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-09-30 21:33:40,711 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-09-30 21:33:40,749 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-09-30 21:33:40,784 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-09-30 21:33:40,842 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-09-30 21:33:40,868 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-09-30 21:33:40,903 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-09-30 21:33:40,939 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-09-30 21:33:41,117 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-09-30 21:33:41,321 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-09-30 21:33:41,372 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-09-30 21:33:41,884 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-09-30 21:33:42,185 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-09-30 21:33:42,374 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-09-30 21:33:42,781 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-09-30 21:33:42,928 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-09-30 21:33:43,165 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-09-30 21:33:43,530 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-09-30 21:33:44,112 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-09-30 21:33:44,236 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-09-30 21:33:44,287 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-09-30 21:33:44,331 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-09-30 21:33:44,378 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-09-30 21:33:44,395 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-09-30 21:33:44,412 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-09-30 21:33:44,430 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-09-30 21:33:44,449 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-09-30 21:33:44,475 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-09-30 21:33:44,497 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-09-30 21:40:08,239 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-09-30 21:40:08,260 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-09-30 21:40:08,274 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-09-30 21:40:08,288 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-09-30 21:40:08,315 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-09-30 21:40:08,331 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-09-30 21:40:08,344 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-09-30 21:40:08,359 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-09-30 21:40:08,375 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-09-30 21:40:08,390 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-09-30 21:40:08,411 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-09-30 21:40:08,429 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-09-30 21:40:08,446 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-09-30 21:40:08,463 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-09-30 21:40:08,477 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-09-30 21:40:08,490 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-09-30 21:40:08,503 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-09-30 21:40:08,515 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-09-30 21:40:08,537 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-09-30 21:40:08,560 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-09-30 21:40:08,584 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-09-30 21:40:08,604 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-09-30 21:40:08,619 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-09-30 21:40:08,634 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-09-30 21:40:08,650 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-09-30 21:40:08,665 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-09-30 21:40:08,681 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-09-30 21:40:08,695 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-09-30 21:40:08,713 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-09-30 21:40:08,728 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-09-30 21:40:08,745 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-09-30 21:40:08,763 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-09-30 21:40:08,790 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-09-30 21:40:08,815 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-09-30 21:40:08,833 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-09-30 21:40:08,849 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-09-30 21:40:08,865 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-09-30 21:40:08,880 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-09-30 21:40:08,911 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-09-30 21:40:08,938 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-09-30 21:40:08,968 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-09-30 21:40:08,989 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-09-30 21:40:09,023 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-09-30 21:40:09,058 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-09-30 21:40:09,074 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-09-30 21:40:09,089 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-09-30 21:40:15,707 - INFO - Usuário admin criado com sucesso.
+2024-09-30 21:40:15,708 - INFO - Banco de dados inicializado com sucesso.
+2024-09-30 21:47:37,626 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-09-30 21:47:37,658 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-09-30 21:47:37,683 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-09-30 21:47:37,711 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-09-30 21:47:37,730 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-09-30 21:47:37,805 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-09-30 21:47:37,850 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-09-30 21:47:37,890 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-09-30 21:47:37,927 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-09-30 21:47:37,955 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-09-30 21:47:37,977 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-09-30 21:47:38,004 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-09-30 21:47:38,024 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-09-30 21:47:38,044 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-09-30 21:47:38,068 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-09-30 21:47:38,089 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-09-30 21:47:38,114 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-09-30 21:47:38,131 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-09-30 21:47:38,161 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-09-30 21:47:38,177 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-09-30 21:47:38,200 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-09-30 21:47:38,219 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-09-30 21:47:38,243 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-09-30 21:47:38,264 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-09-30 21:47:38,302 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-09-30 21:47:38,380 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-09-30 21:47:38,438 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-09-30 21:47:38,462 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-09-30 21:47:38,491 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-09-30 21:47:38,516 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-09-30 21:47:38,606 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-09-30 21:47:38,637 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-09-30 21:47:38,661 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-09-30 21:47:38,694 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-09-30 21:47:38,722 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-09-30 21:47:38,745 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-09-30 21:47:38,772 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-09-30 21:47:38,800 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-09-30 21:47:38,825 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-09-30 21:47:38,857 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-09-30 21:47:38,887 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-09-30 21:47:38,921 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-09-30 21:47:38,943 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-09-30 21:47:38,963 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-09-30 21:47:38,985 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-09-30 21:47:39,005 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-09-30 21:47:39,016 - ERROR - Erro ao verificar ou criar usuário admin: no such table: usuarios
+2024-09-30 21:47:39,017 - INFO - Banco de dados inicializado com sucesso.
+2024-09-30 22:02:30,510 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-09-30 22:02:30,543 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-09-30 22:02:30,584 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-09-30 22:02:30,658 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-09-30 22:02:30,747 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-09-30 22:02:30,769 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-09-30 22:02:30,798 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-09-30 22:02:30,838 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-09-30 22:02:30,862 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-09-30 22:02:30,883 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-09-30 22:02:30,917 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-09-30 22:02:30,939 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-09-30 22:02:30,956 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-09-30 22:02:30,972 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-09-30 22:02:31,002 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-09-30 22:02:31,019 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-09-30 22:02:31,037 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-09-30 22:02:31,062 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-09-30 22:02:31,076 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-09-30 22:02:31,997 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-09-30 22:02:32,931 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-09-30 22:02:33,720 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-09-30 22:02:33,838 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-09-30 22:02:33,866 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-09-30 22:02:33,882 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-09-30 22:02:33,934 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-09-30 22:02:34,001 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-09-30 22:02:34,024 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-09-30 22:02:34,047 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-09-30 22:02:34,076 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-09-30 22:02:34,104 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-09-30 22:02:34,125 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-09-30 22:02:34,142 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-09-30 22:02:34,167 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-09-30 22:02:34,192 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-09-30 22:02:34,225 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-09-30 22:02:34,322 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-09-30 22:02:34,362 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-09-30 22:02:34,431 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-09-30 22:02:34,472 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-09-30 22:02:34,502 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-09-30 22:02:34,535 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-09-30 22:02:34,564 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-09-30 22:02:34,584 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-09-30 22:02:34,604 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-09-30 22:02:34,624 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-09-30 22:02:36,709 - INFO - Banco de dados inicializado com sucesso.
+2024-09-30 22:03:03,549 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-09-30 22:03:03,576 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-09-30 22:03:03,608 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-09-30 22:03:03,627 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-09-30 22:03:03,645 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-09-30 22:03:03,669 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-09-30 22:03:03,703 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-09-30 22:03:03,721 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-09-30 22:03:03,744 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-09-30 22:03:03,761 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-09-30 22:03:03,782 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-09-30 22:03:03,808 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-09-30 22:03:03,827 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-09-30 22:03:03,842 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-09-30 22:03:03,859 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-09-30 22:03:03,876 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-09-30 22:03:03,895 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-09-30 22:03:03,920 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-09-30 22:03:03,948 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-09-30 22:03:03,970 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-09-30 22:03:04,020 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-09-30 22:03:04,046 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-09-30 22:03:04,095 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-09-30 22:03:04,134 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-09-30 22:03:04,199 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-09-30 22:03:04,250 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-09-30 22:03:04,275 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-09-30 22:03:04,313 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-09-30 22:03:04,401 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-09-30 22:03:04,434 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-09-30 22:03:04,466 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-09-30 22:03:04,486 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-09-30 22:03:04,509 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-09-30 22:03:04,528 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-09-30 22:03:04,550 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-09-30 22:03:04,568 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-09-30 22:03:04,593 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-09-30 22:03:04,624 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-09-30 22:03:04,662 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-09-30 22:03:04,698 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-09-30 22:03:04,727 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-09-30 22:03:04,758 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-09-30 22:03:04,786 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-09-30 22:03:04,819 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-09-30 22:03:04,853 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-09-30 22:03:04,895 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-09-30 22:03:04,963 - INFO - Usuário admin criado com sucesso.
+2024-09-30 22:03:05,017 - INFO - Banco de dados inicializado com sucesso.
+2024-09-30 22:20:58,829 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-09-30 22:20:58,925 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-09-30 22:20:58,944 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-09-30 22:20:59,002 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-09-30 22:20:59,021 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-09-30 22:20:59,042 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-09-30 22:20:59,059 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-09-30 22:20:59,078 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-09-30 22:20:59,103 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-09-30 22:20:59,124 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-09-30 22:20:59,167 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-09-30 22:20:59,242 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-09-30 22:20:59,271 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-09-30 22:20:59,297 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-09-30 22:20:59,317 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-09-30 22:20:59,336 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-09-30 22:20:59,354 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-09-30 22:20:59,369 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-09-30 22:20:59,387 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-09-30 22:20:59,403 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-09-30 22:20:59,423 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-09-30 22:20:59,441 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-09-30 22:20:59,467 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-09-30 22:20:59,501 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-09-30 22:20:59,520 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-09-30 22:20:59,547 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-09-30 22:20:59,568 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-09-30 22:20:59,656 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-09-30 22:20:59,678 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-09-30 22:20:59,705 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-09-30 22:20:59,725 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-09-30 22:20:59,745 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-09-30 22:20:59,822 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-09-30 22:20:59,850 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-09-30 22:20:59,873 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-09-30 22:20:59,891 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-09-30 22:20:59,912 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-09-30 22:20:59,956 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-09-30 22:20:59,977 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-09-30 22:21:00,003 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-09-30 22:21:00,026 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-09-30 22:21:00,055 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-09-30 22:21:00,075 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-09-30 22:21:00,093 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-09-30 22:21:00,117 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-09-30 22:21:00,143 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-09-30 22:21:05,754 - INFO - Usuário 'admin' criado com sucesso.
+2024-09-30 22:21:05,758 - INFO - Banco de dados inicializado com sucesso.
+2024-09-30 22:27:08,292 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-09-30 22:27:08,317 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-09-30 22:27:08,342 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-09-30 22:27:08,359 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-09-30 22:27:08,382 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-09-30 22:27:08,397 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-09-30 22:27:08,417 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-09-30 22:27:08,439 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-09-30 22:27:08,459 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-09-30 22:27:08,479 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-09-30 22:27:08,498 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-09-30 22:27:08,518 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-09-30 22:27:08,547 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-09-30 22:27:08,582 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-09-30 22:27:08,604 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-09-30 22:27:08,625 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-09-30 22:27:08,648 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-09-30 22:27:08,671 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-09-30 22:27:08,688 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-09-30 22:27:08,707 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-09-30 22:27:08,729 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-09-30 22:27:08,753 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-09-30 22:27:08,786 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-09-30 22:27:08,812 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-09-30 22:27:08,837 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-09-30 22:27:08,855 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-09-30 22:27:08,880 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-09-30 22:27:08,898 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-09-30 22:27:08,918 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-09-30 22:27:08,939 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-09-30 22:27:08,961 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-09-30 22:27:08,981 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-09-30 22:27:09,031 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-09-30 22:27:09,058 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-09-30 22:27:09,075 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-09-30 22:27:09,096 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-09-30 22:27:09,122 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-09-30 22:27:09,144 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-09-30 22:27:09,165 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-09-30 22:27:09,189 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-09-30 22:27:09,210 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-09-30 22:27:09,232 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-09-30 22:27:09,253 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-09-30 22:27:09,276 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-09-30 22:27:09,294 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-09-30 22:27:09,313 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-09-30 22:27:17,798 - INFO - Usuário 'admin' criado com sucesso.
+2024-09-30 22:27:17,803 - INFO - Banco de dados inicializado com sucesso.
+2024-09-30 22:35:58,967 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-09-30 22:35:58,986 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-09-30 22:35:59,075 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-09-30 22:35:59,250 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-09-30 22:35:59,286 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-09-30 22:35:59,306 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-09-30 22:35:59,457 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-09-30 22:35:59,480 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-09-30 22:35:59,563 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-09-30 22:35:59,586 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-09-30 22:35:59,610 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-09-30 22:35:59,625 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-09-30 22:35:59,647 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-09-30 22:35:59,665 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-09-30 22:35:59,682 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-09-30 22:35:59,699 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-09-30 22:35:59,717 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-09-30 22:35:59,852 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-09-30 22:35:59,874 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-09-30 22:35:59,892 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-09-30 22:35:59,909 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-09-30 22:35:59,930 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-09-30 22:36:00,004 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-09-30 22:36:00,025 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-09-30 22:36:00,044 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-09-30 22:36:00,063 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-09-30 22:36:00,080 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-09-30 22:36:00,098 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-09-30 22:36:00,122 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-09-30 22:36:00,139 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-09-30 22:36:00,160 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-09-30 22:36:00,179 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-09-30 22:36:00,201 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-09-30 22:36:00,218 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-09-30 22:36:00,232 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-09-30 22:36:00,253 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-09-30 22:36:00,271 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-09-30 22:36:00,288 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-09-30 22:36:00,309 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-09-30 22:36:00,584 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-09-30 22:36:00,603 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-09-30 22:36:00,701 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-09-30 22:36:00,799 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-09-30 22:36:00,819 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-09-30 22:36:00,867 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-09-30 22:36:00,886 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-09-30 22:36:07,744 - INFO - Usuário 'admin' criado com sucesso.
+2024-09-30 22:36:07,767 - INFO - Banco de dados inicializado com sucesso.
+2024-09-30 22:44:33,950 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-09-30 22:44:33,993 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-09-30 22:44:34,019 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-09-30 22:44:34,041 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-09-30 22:44:34,103 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-09-30 22:44:34,137 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-09-30 22:44:34,178 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-09-30 22:44:34,196 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-09-30 22:44:34,229 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-09-30 22:44:34,274 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-09-30 22:44:34,292 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-09-30 22:44:34,320 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-09-30 22:44:34,348 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-09-30 22:44:34,365 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-09-30 22:44:34,385 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-09-30 22:44:34,412 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-09-30 22:44:34,430 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-09-30 22:44:34,448 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-09-30 22:44:34,477 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-09-30 22:44:34,510 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-09-30 22:44:34,529 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-09-30 22:44:34,552 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-09-30 22:44:34,570 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-09-30 22:44:34,590 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-09-30 22:44:34,608 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-09-30 22:44:34,627 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-09-30 22:44:34,650 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-09-30 22:44:34,686 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-09-30 22:44:34,713 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-09-30 22:44:34,746 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-09-30 22:44:34,783 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-09-30 22:44:34,807 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-09-30 22:44:34,836 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-09-30 22:44:34,868 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-09-30 22:44:34,894 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-09-30 22:44:34,935 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-09-30 22:44:34,960 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-09-30 22:44:34,988 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-09-30 22:44:35,012 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-09-30 22:44:35,033 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-09-30 22:44:35,055 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-09-30 22:44:35,100 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-09-30 22:44:35,141 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-09-30 22:44:35,178 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-09-30 22:44:35,217 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-09-30 22:44:35,247 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-09-30 22:44:35,272 - INFO - Usuário 'admin' já existe.
+2024-09-30 22:44:35,302 - INFO - Banco de dados inicializado com sucesso.
+2024-09-30 22:49:54,773 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-09-30 22:49:54,804 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-09-30 22:49:54,824 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-09-30 22:49:54,850 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-09-30 22:49:54,878 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-09-30 22:49:54,902 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-09-30 22:49:54,933 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-09-30 22:49:54,957 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-09-30 22:49:54,975 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-09-30 22:49:54,994 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-09-30 22:49:55,015 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-09-30 22:49:55,031 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-09-30 22:49:55,051 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-09-30 22:49:55,066 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-09-30 22:49:55,086 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-09-30 22:49:55,105 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-09-30 22:49:55,123 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-09-30 22:49:55,139 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-09-30 22:49:55,154 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-09-30 22:49:55,171 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-09-30 22:49:55,188 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-09-30 22:49:55,217 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-09-30 22:49:55,248 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-09-30 22:49:55,274 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-09-30 22:49:55,294 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-09-30 22:49:55,318 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-09-30 22:49:55,368 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-09-30 22:49:55,396 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-09-30 22:49:55,431 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-09-30 22:49:55,451 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-09-30 22:49:55,476 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-09-30 22:49:55,503 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-09-30 22:49:55,527 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-09-30 22:49:55,577 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-09-30 22:49:55,604 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-09-30 22:49:55,625 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-09-30 22:49:55,659 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-09-30 22:49:55,697 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-09-30 22:49:55,741 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-09-30 22:49:55,763 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-09-30 22:49:55,801 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-09-30 22:49:55,823 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-09-30 22:49:55,846 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-09-30 22:49:55,867 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-09-30 22:49:55,889 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-09-30 22:49:55,911 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-09-30 22:50:10,578 - INFO - Usuário 'admin' criado com sucesso.
+2024-09-30 22:50:10,581 - INFO - Banco de dados inicializado com sucesso.
+2024-09-30 23:36:50,387 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-09-30 23:36:50,407 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-09-30 23:36:50,436 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-09-30 23:36:50,453 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-09-30 23:36:50,468 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-09-30 23:36:50,496 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-09-30 23:36:50,521 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-09-30 23:36:50,545 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-09-30 23:36:50,570 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-09-30 23:36:50,592 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-09-30 23:36:50,604 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-09-30 23:36:50,617 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-09-30 23:36:50,639 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-09-30 23:36:50,652 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-09-30 23:36:50,676 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-09-30 23:36:50,698 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-09-30 23:36:50,717 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-09-30 23:36:50,738 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-09-30 23:36:50,760 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-09-30 23:36:50,791 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-09-30 23:36:50,841 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-09-30 23:36:50,865 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-09-30 23:36:50,882 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-09-30 23:36:50,909 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-09-30 23:36:50,928 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-09-30 23:36:50,944 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-09-30 23:36:50,960 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-09-30 23:36:50,980 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-09-30 23:36:50,996 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-09-30 23:36:51,010 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-09-30 23:36:51,027 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-09-30 23:36:51,048 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-09-30 23:36:51,066 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-09-30 23:36:51,088 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-09-30 23:36:51,116 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-09-30 23:36:51,132 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-09-30 23:36:51,144 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-09-30 23:36:51,162 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-09-30 23:36:51,180 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-09-30 23:36:51,199 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-09-30 23:36:51,220 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-09-30 23:36:51,237 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-09-30 23:36:51,260 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-09-30 23:36:51,281 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-09-30 23:36:51,310 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-09-30 23:36:51,338 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-09-30 23:37:03,132 - INFO - Usuário 'admin' criado com sucesso.
+2024-09-30 23:37:03,135 - INFO - Banco de dados inicializado com sucesso.
+2024-09-30 23:54:10,809 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-09-30 23:54:10,834 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-09-30 23:54:10,848 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-09-30 23:54:10,867 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-09-30 23:54:10,883 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-09-30 23:54:10,907 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-09-30 23:54:10,928 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-09-30 23:54:10,944 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-09-30 23:54:10,959 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-09-30 23:54:10,974 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-09-30 23:54:10,990 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-09-30 23:54:11,004 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-09-30 23:54:11,018 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-09-30 23:54:11,035 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-09-30 23:54:11,051 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-09-30 23:54:11,066 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-09-30 23:54:11,080 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-09-30 23:54:11,094 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-09-30 23:54:11,113 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-09-30 23:54:11,130 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-09-30 23:54:11,153 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-09-30 23:54:11,168 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-09-30 23:54:11,194 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-09-30 23:54:11,227 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-09-30 23:54:11,301 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-09-30 23:54:11,319 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-09-30 23:54:11,341 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-09-30 23:54:11,367 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-09-30 23:54:11,400 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-09-30 23:54:11,428 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-09-30 23:54:11,530 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-09-30 23:54:11,777 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-09-30 23:54:11,803 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-09-30 23:54:11,826 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-09-30 23:54:11,927 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-09-30 23:54:11,955 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-09-30 23:54:11,978 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-09-30 23:54:11,993 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-09-30 23:54:12,010 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-09-30 23:54:12,027 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-09-30 23:54:12,043 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-09-30 23:54:12,060 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-09-30 23:54:12,076 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-09-30 23:54:12,095 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-09-30 23:54:12,135 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-09-30 23:54:12,150 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-09-30 23:54:17,375 - INFO - Usuário 'admin' criado com sucesso.
+2024-09-30 23:54:17,378 - INFO - Banco de dados inicializado com sucesso.
+2024-10-01 02:28:14,432 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-10-01 02:28:14,499 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-10-01 02:28:14,526 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-10-01 02:28:14,594 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-10-01 02:28:14,611 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-10-01 02:28:14,628 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-10-01 02:28:14,785 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-10-01 02:28:14,930 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-10-01 02:28:14,949 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-10-01 02:28:14,967 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-10-01 02:28:14,982 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-10-01 02:28:15,004 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-10-01 02:28:15,017 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-10-01 02:28:15,031 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-10-01 02:28:15,049 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-10-01 02:28:15,070 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-10-01 02:28:15,090 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-10-01 02:28:15,109 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-10-01 02:28:15,128 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-10-01 02:28:15,152 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-10-01 02:28:15,180 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-10-01 02:28:15,198 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-10-01 02:28:15,218 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-10-01 02:28:15,233 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-10-01 02:28:15,252 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-10-01 02:28:15,274 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-10-01 02:28:15,288 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-10-01 02:28:15,359 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-10-01 02:28:15,466 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-10-01 02:28:15,492 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-10-01 02:28:15,506 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-10-01 02:28:15,522 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-10-01 02:28:15,535 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-10-01 02:28:15,567 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-10-01 02:28:15,589 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-10-01 02:28:15,640 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-10-01 02:28:15,950 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-10-01 02:28:16,211 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-10-01 02:28:16,278 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-10-01 02:28:16,356 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-10-01 02:28:16,380 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-10-01 02:28:16,405 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-10-01 02:28:16,424 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-10-01 02:28:16,443 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-10-01 02:28:16,479 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-10-01 02:28:16,684 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-10-01 02:28:16,861 - INFO - Usuário 'admin' já existe.
+2024-10-01 02:28:16,956 - INFO - Banco de dados inicializado com sucesso.
+2024-10-01 02:35:12,358 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-10-01 02:35:12,384 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-10-01 02:35:12,442 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-10-01 02:35:12,487 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-10-01 02:35:12,505 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-10-01 02:35:12,524 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-10-01 02:35:12,539 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-10-01 02:35:12,553 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-10-01 02:35:12,568 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-10-01 02:35:12,583 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-10-01 02:35:12,598 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-10-01 02:35:12,614 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-10-01 02:35:12,649 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-10-01 02:35:12,694 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-10-01 02:35:12,724 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-10-01 02:35:12,745 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-10-01 02:35:12,758 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-10-01 02:35:12,777 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-10-01 02:35:12,793 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-10-01 02:35:12,807 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-10-01 02:35:12,821 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-10-01 02:35:12,837 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-10-01 02:35:12,853 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-10-01 02:35:12,876 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-10-01 02:35:12,897 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-10-01 02:35:12,915 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-10-01 02:35:12,931 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-10-01 02:35:12,981 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-10-01 02:35:13,007 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-10-01 02:35:13,022 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-10-01 02:35:13,038 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-10-01 02:35:13,057 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-10-01 02:35:13,076 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-10-01 02:35:13,097 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-10-01 02:35:13,116 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-10-01 02:35:13,132 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-10-01 02:35:13,146 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-10-01 02:35:13,162 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-10-01 02:35:13,180 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-10-01 02:35:13,196 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-10-01 02:35:13,211 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-10-01 02:35:13,227 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-10-01 02:35:13,242 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-10-01 02:35:13,258 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-10-01 02:35:13,280 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-10-01 02:35:13,330 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-10-01 02:35:19,473 - INFO - Usuário 'admin' criado com sucesso.
+2024-10-01 02:35:19,476 - INFO - Banco de dados inicializado com sucesso.
+2024-10-01 20:31:54,950 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-10-01 20:31:54,963 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-10-01 20:31:54,974 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-10-01 20:31:54,986 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-10-01 20:31:54,998 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-10-01 20:31:55,011 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-10-01 20:31:55,025 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-10-01 20:31:55,040 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-10-01 20:31:55,060 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-10-01 20:31:55,072 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-10-01 20:31:55,085 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-10-01 20:31:55,098 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-10-01 20:31:55,111 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-10-01 20:31:55,124 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-10-01 20:31:55,136 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-10-01 20:31:55,148 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-10-01 20:31:55,158 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-10-01 20:31:55,171 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-10-01 20:31:55,182 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-10-01 20:31:55,194 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-10-01 20:31:55,207 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-10-01 20:31:55,220 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-10-01 20:31:55,231 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-10-01 20:31:55,245 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-10-01 20:31:55,257 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-10-01 20:31:55,271 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-10-01 20:31:55,286 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-10-01 20:31:55,298 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-10-01 20:31:55,316 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-10-01 20:31:55,329 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-10-01 20:31:55,343 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-10-01 20:31:55,357 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-10-01 20:31:55,377 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-10-01 20:31:55,393 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-10-01 20:31:55,410 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-10-01 20:31:55,424 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-10-01 20:31:55,440 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-10-01 20:31:55,454 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-10-01 20:31:55,468 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-10-01 20:31:55,486 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-10-01 20:31:55,508 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-10-01 20:31:55,539 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-10-01 20:31:55,583 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-10-01 20:31:55,636 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-10-01 20:31:55,663 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-10-01 20:31:55,686 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-10-01 20:31:55,948 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-10-01 20:31:55,969 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-10-01 20:31:55,988 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-10-01 20:31:56,012 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-10-01 20:31:56,031 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-10-01 20:31:56,047 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-10-01 20:31:56,063 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-10-01 20:31:56,077 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-10-01 20:31:56,092 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-10-01 20:31:56,104 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-10-01 20:31:56,119 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-10-01 20:31:56,136 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-10-01 20:31:56,149 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-10-01 20:31:56,163 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-10-01 20:31:56,177 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-10-01 20:31:56,192 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-10-01 20:31:56,208 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-10-01 20:31:56,224 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-10-01 20:31:56,239 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-10-01 20:31:56,250 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-10-01 20:31:56,265 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-10-01 20:31:56,295 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-10-01 20:31:56,312 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-10-01 20:31:56,327 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-10-01 20:31:56,346 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-10-01 20:31:56,361 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-10-01 20:31:56,382 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-10-01 20:31:56,404 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-10-01 20:31:56,418 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-10-01 20:31:56,434 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-10-01 20:31:56,456 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-10-01 20:31:56,488 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-10-01 20:31:56,510 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-10-01 20:31:56,532 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-10-01 20:31:56,562 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-10-01 20:31:56,576 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-10-01 20:31:56,588 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-10-01 20:31:56,606 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-10-01 20:31:56,621 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-10-01 20:31:56,653 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-10-01 20:31:56,672 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-10-01 20:31:56,700 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-10-01 20:31:56,713 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-10-01 20:31:56,728 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-10-01 20:31:56,772 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-10-01 20:31:56,793 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-10-01 20:33:46,929 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-10-01 20:33:46,960 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-10-01 20:33:46,977 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-10-01 20:33:46,994 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-10-01 20:33:47,009 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-10-01 20:33:47,033 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-10-01 20:33:47,048 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-10-01 20:33:47,066 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-10-01 20:33:47,081 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-10-01 20:33:47,101 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-10-01 20:33:47,124 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-10-01 20:33:47,142 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-10-01 20:33:47,162 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-10-01 20:33:47,177 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-10-01 20:33:47,202 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-10-01 20:33:47,217 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-10-01 20:33:47,231 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-10-01 20:33:47,247 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-10-01 20:33:47,263 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-10-01 20:33:47,285 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-10-01 20:33:47,377 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-10-01 20:33:47,396 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-10-01 20:33:47,414 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-10-01 20:33:47,438 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-10-01 20:33:47,451 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-10-01 20:33:47,469 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-10-01 20:33:47,483 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-10-01 20:33:47,506 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-10-01 20:33:47,533 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-10-01 20:33:47,551 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-10-01 20:33:48,192 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-10-01 20:33:48,208 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-10-01 20:33:48,289 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-10-01 20:33:48,316 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-10-01 20:33:48,388 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-10-01 20:33:48,458 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-10-01 20:33:48,486 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-10-01 20:33:48,534 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-10-01 20:33:48,553 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-10-01 20:33:48,572 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-10-01 20:33:48,599 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-10-01 20:33:48,641 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-10-01 20:33:48,736 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-10-01 20:33:48,772 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-10-01 20:33:48,803 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-10-01 20:33:48,818 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-10-01 20:33:49,039 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-10-01 20:33:49,103 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-10-01 20:33:49,162 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-10-01 20:33:49,276 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-10-01 20:33:49,320 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-10-01 20:33:49,336 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-10-01 20:33:49,349 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-10-01 20:33:49,364 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-10-01 20:33:49,384 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-10-01 20:33:49,400 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-10-01 20:33:49,449 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-10-01 20:33:49,491 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-10-01 20:33:49,700 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-10-01 20:33:49,897 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-10-01 20:33:50,047 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-10-01 20:33:50,063 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-10-01 20:33:50,075 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-10-01 20:33:50,092 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-10-01 20:33:50,107 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-10-01 20:33:50,133 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-10-01 20:33:50,146 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-10-01 20:33:50,159 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-10-01 20:33:50,222 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-10-01 20:33:50,240 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-10-01 20:33:50,256 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-10-01 20:33:50,347 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-10-01 20:33:50,365 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-10-01 20:33:50,385 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-10-01 20:33:50,459 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-10-01 20:33:50,481 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-10-01 20:33:50,512 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-10-01 20:33:50,530 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-10-01 20:33:50,543 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-10-01 20:33:51,205 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-10-01 20:33:51,258 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-10-01 20:33:51,283 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-10-01 20:33:51,301 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-10-01 20:33:51,322 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-10-01 20:33:51,338 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-10-01 20:33:51,369 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-10-01 20:33:51,383 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-10-01 20:33:51,399 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-10-01 20:33:51,413 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-10-01 20:33:51,432 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-10-01 20:33:51,447 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-10-01 20:33:51,469 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-10-01 20:34:04,422 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-10-01 20:34:04,454 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-10-01 20:34:04,472 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-10-01 20:34:04,503 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-10-01 20:34:04,527 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-10-01 20:34:04,574 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-10-01 20:34:04,592 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-10-01 20:34:04,608 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-10-01 20:34:04,621 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-10-01 20:34:04,637 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-10-01 20:34:04,653 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-10-01 20:34:04,670 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-10-01 20:34:04,683 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-10-01 20:34:04,697 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-10-01 20:34:04,714 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-10-01 20:34:04,726 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-10-01 20:34:04,739 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-10-01 20:34:04,754 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-10-01 20:34:04,767 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-10-01 20:34:04,782 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-10-01 20:34:04,797 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-10-01 20:34:04,809 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-10-01 20:34:04,824 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-10-01 20:34:04,839 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-10-01 20:34:04,854 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-10-01 20:34:04,866 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-10-01 20:34:04,877 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-10-01 20:34:04,891 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-10-01 20:34:04,905 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-10-01 20:34:04,921 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-10-01 20:34:04,935 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-10-01 20:34:04,948 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-10-01 20:34:04,963 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-10-01 20:34:04,978 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-10-01 20:34:04,992 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-10-01 20:34:05,006 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-10-01 20:34:05,019 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-10-01 20:34:05,037 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-10-01 20:34:05,054 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-10-01 20:34:05,075 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-10-01 20:34:05,091 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-10-01 20:34:05,109 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-10-01 20:34:05,129 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-10-01 20:34:05,159 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-10-01 20:34:05,174 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-10-01 20:34:05,189 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-10-01 20:36:16,550 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-10-01 20:36:16,607 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-10-01 20:36:16,621 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-10-01 20:36:16,634 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-10-01 20:36:16,656 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-10-01 20:36:16,673 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-10-01 20:36:16,690 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-10-01 20:36:16,710 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-10-01 20:36:16,730 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-10-01 20:36:16,747 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-10-01 20:36:16,765 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-10-01 20:36:16,784 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-10-01 20:36:16,802 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-10-01 20:36:16,818 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-10-01 20:36:16,839 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-10-01 20:36:16,861 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-10-01 20:36:16,910 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-10-01 20:36:16,965 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-10-01 20:36:17,018 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-10-01 20:36:17,044 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-10-01 20:36:17,069 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-10-01 20:36:17,099 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-10-01 20:36:17,155 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-10-01 20:36:17,174 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-10-01 20:36:17,195 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-10-01 20:36:17,220 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-10-01 20:36:17,250 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-10-01 20:36:17,277 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-10-01 20:36:17,294 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-10-01 20:36:17,314 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-10-01 20:36:17,332 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-10-01 20:36:17,354 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-10-01 20:36:17,385 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-10-01 20:36:17,406 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-10-01 20:36:17,444 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-10-01 20:36:17,472 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-10-01 20:36:17,495 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-10-01 20:36:17,516 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-10-01 20:36:17,563 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-10-01 20:36:17,588 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-10-01 20:36:17,616 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-10-01 20:36:17,765 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-10-01 20:36:17,832 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-10-01 20:36:17,979 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-10-01 20:36:18,002 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-10-01 20:36:18,026 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-10-01 20:36:29,590 - INFO - Usuário 'admin' criado com sucesso.
+2024-10-01 20:36:29,592 - INFO - Banco de dados inicializado com sucesso.
+2024-10-01 23:39:40,386 - INFO - Tabelas criadas ou já existentes verificadas com sucesso.
+2024-10-01 23:39:40,410 - INFO - UBS 'UBS Arapari/Cabeceiras' adicionada ou já existente.
+2024-10-01 23:39:40,426 - INFO - UBS 'UBS Assunção' adicionada ou já existente.
+2024-10-01 23:39:40,449 - INFO - UBS 'UBS Flores' adicionada ou já existente.
+2024-10-01 23:39:40,472 - INFO - UBS 'UBS Baleia' adicionada ou já existente.
+2024-10-01 23:39:40,567 - INFO - UBS 'UBS Barrento' adicionada ou já existente.
+2024-10-01 23:39:40,667 - INFO - UBS 'UBS Bastioes' adicionada ou já existente.
+2024-10-01 23:39:40,690 - INFO - UBS 'UBS Bela Vista' adicionada ou já existente.
+2024-10-01 23:39:40,713 - INFO - UBS 'UBS Betânia' adicionada ou já existente.
+2024-10-01 23:39:40,736 - INFO - UBS 'UBS Boa Vista' adicionada ou já existente.
+2024-10-01 23:39:40,756 - INFO - UBS 'UBS Cacimbas' adicionada ou já existente.
+2024-10-01 23:39:40,771 - INFO - UBS 'UBS Calugi' adicionada ou já existente.
+2024-10-01 23:39:40,786 - INFO - UBS 'UBS Centro' adicionada ou já existente.
+2024-10-01 23:39:40,806 - INFO - UBS 'UBS Coqueiro' adicionada ou já existente.
+2024-10-01 23:39:40,821 - INFO - UBS 'UBS Cruzeiro/Maranhão' adicionada ou já existente.
+2024-10-01 23:39:40,846 - INFO - UBS 'UBS Deserto/Mangueira' adicionada ou já existente.
+2024-10-01 23:39:40,865 - INFO - UBS 'UBS Encruzilhadas' adicionada ou já existente.
+2024-10-01 23:39:40,882 - INFO - UBS 'UBS Estação' adicionada ou já existente.
+2024-10-01 23:39:40,896 - INFO - UBS 'UBS Fazendinha' adicionada ou já existente.
+2024-10-01 23:39:40,914 - INFO - UBS 'UBS Ipu/Mazagão' adicionada ou já existente.
+2024-10-01 23:39:40,929 - INFO - UBS 'UBS Jacaré' adicionada ou já existente.
+2024-10-01 23:39:40,945 - INFO - UBS 'UBS Ladeira' adicionada ou já existente.
+2024-10-01 23:39:40,961 - INFO - UBS 'UBS Lagoa da Cruz' adicionada ou já existente.
+2024-10-01 23:39:40,977 - INFO - UBS 'UBS Lagoa das Mercês' adicionada ou já existente.
+2024-10-01 23:39:40,991 - INFO - UBS 'UBS Livramento' adicionada ou já existente.
+2024-10-01 23:39:41,006 - INFO - UBS 'UBS Maceió' adicionada ou já existente.
+2024-10-01 23:39:41,022 - INFO - UBS 'UBS Madalenas' adicionada ou já existente.
+2024-10-01 23:39:41,039 - INFO - UBS 'UBS Marinheiros' adicionada ou já existente.
+2024-10-01 23:39:41,054 - INFO - UBS 'UBS Mourão' adicionada ou já existente.
+2024-10-01 23:39:41,068 - INFO - UBS 'UBS Mulatão' adicionada ou já existente.
+2024-10-01 23:39:41,086 - INFO - UBS 'UBS Picos' adicionada ou já existente.
+2024-10-01 23:39:41,103 - INFO - UBS 'UBS Salgado dos Pires' adicionada ou já existente.
+2024-10-01 23:39:41,121 - INFO - UBS 'UBS Sítio do Meio' adicionada ou já existente.
+2024-10-01 23:39:41,140 - INFO - UBS 'UBS Tabocal' adicionada ou já existente.
+2024-10-01 23:39:41,161 - INFO - UBS 'UBS Taboca' adicionada ou já existente.
+2024-10-01 23:39:41,180 - INFO - UBS 'UBS Vida Nova Vida Bela' adicionada ou já existente.
+2024-10-01 23:39:41,202 - INFO - UBS 'UBS Nova Aldeota' adicionada ou já existente.
+2024-10-01 23:39:41,223 - INFO - UBS 'UBS Violete' adicionada ou já existente.
+2024-10-01 23:39:41,258 - INFO - UBS 'UBS Violete II' adicionada ou já existente.
+2024-10-01 23:39:41,284 - INFO - Setor 'Recepção' adicionado ou já existente.
+2024-10-01 23:39:41,304 - INFO - Setor 'Consultório Médico' adicionado ou já existente.
+2024-10-01 23:39:41,338 - INFO - Setor 'Farmácia' adicionado ou já existente.
+2024-10-01 23:39:41,354 - INFO - Setor 'Sala da Enfermeira' adicionado ou já existente.
+2024-10-01 23:39:41,371 - INFO - Setor 'Sala da Vacina' adicionado ou já existente.
+2024-10-01 23:39:41,526 - INFO - Setor 'Consultório Odontológico' adicionado ou já existente.
+2024-10-01 23:39:41,545 - INFO - Setor 'Sala de Administração' adicionado ou já existente.
+2024-10-01 23:39:46,896 - INFO - Usuário 'admin' criado com sucesso.
+2024-10-01 23:39:46,900 - INFO - Banco de dados inicializado com sucesso.

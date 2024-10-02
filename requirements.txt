@@ -1,0 +1,7 @@
+fpdf==1.7.2
+matplotlib
+pandas==2.0.3
+python_bcrypt==0.3.2
+seaborn==0.13.2
+streamlit==1.28.2
+twilio==8.10.3
