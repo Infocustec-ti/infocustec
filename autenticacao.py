@@ -2,6 +2,17 @@
 
 import sqlite3
 import bcrypt
+import logging
+
+# Configuração do logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("autenticacao.log"),
+        logging.StreamHandler()
+    ]
+)
 
 # Função para autenticar o usuário
 def authenticate(username, password):
@@ -21,16 +32,16 @@ def authenticate(username, password):
 
                 # Verifica a senha usando bcrypt
                 if bcrypt.checkpw(password.encode('utf-8'), stored_password):
-                    # print("Autenticação bem-sucedida!")  # Comentado para evitar prints desnecessários
+                    logging.info(f"Usuário '{username}' autenticado com sucesso.")
                     return True
                 else:
-                    # print("Senha incorreta.")  # Comentado para evitar prints desnecessários
+                    logging.warning(f"Senha incorreta para o usuário '{username}'.")
                     return False
             else:
-                # print("Usuário não encontrado.")  # Comentado para evitar prints desnecessários
+                logging.warning(f"Usuário '{username}' não encontrado.")
                 return False
     except Exception as e:
-        print(f"Erro na autenticação: {e}")
+        logging.error(f"Erro na autenticação: {e}")
         return False
 
 # Função para adicionar um novo usuário
@@ -44,19 +55,21 @@ def add_user(username, password, is_admin=False):
             existing_user = cursor.fetchone()
 
             if existing_user:
-                print("Usuário já existe.")
+                logging.warning(f"Usuário '{username}' já existe.")
                 return False
             else:
                 # Hashear a senha usando bcrypt
                 hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
                 role = 'admin' if is_admin else 'user'
-                cursor.execute("INSERT INTO usuarios (username, password, role) VALUES (?, ?, ?)",
-                               (username, hashed_password, role))
+                cursor.execute(
+                    "INSERT INTO usuarios (username, password, role) VALUES (?, ?, ?)",
+                    (username, hashed_password, role)
+                )
                 conn.commit()
-                print(f"Usuário '{username}' criado com sucesso como {role}.")
+                logging.info(f"Usuário '{username}' criado com sucesso como {role}.")
                 return True
     except Exception as e:
-        print(f"Erro ao adicionar usuário: {e}")
+        logging.error(f"Erro ao adicionar usuário '{username}': {e}")
         return False
 
 # Função para verificar se o usuário é administrador
@@ -68,7 +81,7 @@ def is_admin(username):
             user_role = cursor.fetchone()
             return user_role and user_role[0] == 'admin'
     except Exception as e:
-        print(f"Erro ao verificar função do usuário: {e}")
+        logging.error(f"Erro ao verificar função do usuário '{username}': {e}")
         return False
 
 # Função para listar todos os usuários cadastrados
@@ -76,11 +89,11 @@ def list_users():
     try:
         with sqlite3.connect('chamados.db') as conn:
             cursor = conn.cursor()
-            cursor.execute('SELECT username, role FROM usuarios')
+            cursor.execute("SELECT username, role FROM usuarios")
             users = cursor.fetchall()
             return users
     except Exception as e:
-        print(f"Erro ao listar usuários: {e}")
+        logging.error(f"Erro ao listar usuários: {e}")
         return []
 
 # Função para alterar a senha de um usuário
@@ -93,14 +106,16 @@ def change_password(username, new_password):
 
         with sqlite3.connect('chamados.db') as conn:
             cursor = conn.cursor()
-            cursor.execute("UPDATE usuarios SET password=? WHERE username=?", (hashed_new_password, username))
+            cursor.execute(
+                "UPDATE usuarios SET password=? WHERE username=?",
+                (hashed_new_password, username)
+            )
             conn.commit()
             logging.info(f"Senha do usuário '{username}' alterada com sucesso.")
             return True
     except Exception as e:
         logging.error(f"Erro ao alterar a senha do usuário '{username}': {e}")
         return False
-
 
 # Função para remover um usuário (apenas para administradores)
 def remove_user(admin_username, target_username):
@@ -110,11 +125,11 @@ def remove_user(admin_username, target_username):
                 cursor = conn.cursor()
                 cursor.execute("DELETE FROM usuarios WHERE username=?", (target_username,))
                 conn.commit()
-                print(f"Usuário '{target_username}' removido com sucesso.")
+                logging.info(f"Usuário '{target_username}' removido com sucesso por '{admin_username}'.")
                 return True
         except Exception as e:
-            print(f"Erro ao remover usuário: {e}")
+            logging.error(f"Erro ao remover usuário '{target_username}': {e}")
             return False
     else:
-        print("Permissão negada. Apenas administradores podem remover usuários.")
+        logging.warning(f"Permissão negada. Usuário '{admin_username}' não é administrador.")
         return False
