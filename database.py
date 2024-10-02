@@ -105,7 +105,6 @@ def create_tables():
     except sqlite3.Error as e:
         logging.error(f"Erro ao criar as tabelas: {e}")
 
-# Função para verificar se o usuário admin já existe e, se não, criá-lo
 def check_or_create_admin_user():
     try:
         with sqlite3.connect('chamados.db') as conn:
@@ -115,17 +114,15 @@ def check_or_create_admin_user():
             admin_user = cursor.fetchone()
 
             if not admin_user:
-                # Solicitar senha para o usuário admin via terminal
-                admin_password = os.getenv('ADMIN_PASSWORD')
-                if not admin_password:
-                    admin_password = input("Insira a senha para o usuário 'admin': ")
+                # Definir uma senha padrão
+                admin_password = 'admin'  # Substitua por uma senha segura
 
                 # Hashear a senha usando bcrypt
                 hashed_password = bcrypt.hashpw(admin_password.encode('utf-8'), bcrypt.gensalt())
                 cursor.execute("INSERT INTO usuarios (username, password, role) VALUES (?, ?, ?)", ('admin', hashed_password, 'admin'))
                 conn.commit()
-                logging.info("Usuário 'admin' criado com sucesso.")
-                print("Usuário 'admin' criado com sucesso.")
+                logging.info("Usuário 'admin' criado com sucesso com senha padrão.")
+                print("Usuário 'admin' criado com sucesso com senha padrão.")
             else:
                 logging.info("Usuário 'admin' já existe.")
                 print("Usuário 'admin' já existe.")
