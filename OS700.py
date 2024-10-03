@@ -5,11 +5,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from datetime import datetime
+from streamlit_option_menu import option_menu
 
-# Importar as funções do database.py
-from database import create_tables, initialize_ubs_setores, check_or_create_admin_user
-
-from autenticacao import authenticate, add_user, is_admin, list_users, change_password
+# Importar as funções dos módulos
+from database import create_tables, initialize_ubs_setores, check_or_create_admin_user, is_admin
+from autenticacao import authenticate, add_user, list_users, change_password
 from chamados import (
     add_chamado,
     list_chamados,
@@ -78,17 +78,37 @@ else:
 # Título da aplicação
 st.title('Gestão de Parque de Informática - UBS ITAPIPOCA')
 
-# Sidebar para navegação
-st.sidebar.title('Menu')
-
-# Menu de opções
-menu_options = ['Login', 'Abrir Chamado', 'Administração', 'Relatórios', 'Chamados Técnicos', 'Buscar Protocolo']
+# Menu de navegação utilizando o streamlit-option-menu
 if st.session_state.get('logged_in') and is_admin(st.session_state.get('username')):
-    menu_options.append('Configurações')
+    menu_options = ['Login', 'Abrir Chamado', 'Administração', 'Relatórios', 'Chamados Técnicos', 'Buscar Protocolo', 'Configurações']
+    icons = ['box-arrow-in-right', 'plus-square', 'gear', 'bar-chart', 'tools', 'search', 'wrench']
+else:
+    menu_options = ['Login', 'Abrir Chamado', 'Buscar Protocolo']
+    icons = ['box-arrow-in-right', 'plus-square', 'search']
 
-page = st.sidebar.selectbox('Selecione uma opção:', menu_options)
+# Crie o menu horizontal
+selected_option = option_menu(
+    menu_title=None,
+    options=menu_options,
+    icons=icons,
+    menu_icon="cast",
+    default_index=0,
+    orientation="horizontal",
+    styles={
+        "container": {"padding": "0!important", "background-color": "#00008B"},
+        "icon": {"color": "white", "font-size": "18px"},
+        "nav-link": {
+            "font-size": "16px",
+            "text-align": "center",
+            "margin": "0px",
+            "color": "white",
+            "--hover-color": "#1E90FF",
+        },
+        "nav-link-selected": {"background-color": "#1E90FF"},
+    }
+)
 
-# Função para realizar o login
+# Funções da aplicação
 def login():
     st.subheader('Login')
     username = st.text_input('Nome de usuário')
@@ -195,7 +215,6 @@ def abrir_chamado():
         )
         st.success(f'Chamado aberto com sucesso! Seu protocolo é: {protocolo}')
 
-# Função para administração com a lista de setores para cadastro de máquina
 def administracao():
     if not st.session_state.get('logged_in') or not is_admin(st.session_state.get('username')):
         st.warning('Você precisa estar logado como administrador para acessar esta área.')
@@ -322,7 +341,7 @@ def administracao():
         st.subheader('Lista de Usuários')
         try:
             usuarios = list_users()
-            df_usuarios = pd.DataFrame(usuarios, columns=['Nome de Usuário', 'Administrador'])
+            df_usuarios = pd.DataFrame(usuarios, columns=['Nome de Usuário', 'Função'])
             st.dataframe(df_usuarios)
             logging.info("Lista de usuários exibida.")
         except Exception as e:
@@ -347,7 +366,6 @@ def administracao():
             st.error(f"Erro ao gerenciar Setores: {e}")
             logging.error(f"Erro ao gerenciar Setores: {e}")
 
-# Função para exibir o painel de chamados técnicos com gráficos
 def painel_chamados_tecnicos():
     if not st.session_state.get('logged_in') or not is_admin(st.session_state.get('username')):
         st.warning('Você precisa estar logado como administrador para acessar esta área.')
@@ -365,7 +383,7 @@ def painel_chamados_tecnicos():
 
     # Lista de peças que podem ser utilizadas (pode ser expandida conforme necessário)
     pecas_disponiveis = [
-        'Placa Mãe', 'Fonte', 'Memória RAM', 'HD', 'SSD', 
+        'Placa Mãe', 'Fonte', 'Memória RAM', 'HD', 'SSD',
         'Teclado', 'Mouse', 'Monitor', 'Cabo de Rede', 'Placa de Rede',
         'Processador', 'Cooler', 'Fonte da Impressora', 'Cartucho', 'Toner'
     ]
@@ -387,12 +405,12 @@ def painel_chamados_tecnicos():
 
                 # Selectbox para selecionar múltiplas peças utilizadas
                 pecas_selecionadas = st.multiselect(
-                    'Selecione as peças utilizadas', 
-                    pecas_disponiveis, 
+                    'Selecione as peças utilizadas',
+                    pecas_disponiveis,
                     key=f"pecas_{chamado[0]}"
                 )
 
-                if st.button(f"Finalizar Chamado ID: {chamado[0]}"):
+                if st.button(f"Finalizar Chamado ID: {chamado[0]}", key=f"finalizar_{chamado[0]}"):
                     if solucao:
                         try:
                             # Finaliza o chamado e registra as peças usadas
@@ -414,7 +432,7 @@ def painel_chamados_tecnicos():
     # Obter todos os chamados
     try:
         chamados = list_chamados()
-        
+
     except Exception as e:
         st.error(f"Erro ao listar todos os chamados: {e}")
         logging.error(f"Erro ao listar todos os chamados: {e}")
@@ -425,7 +443,7 @@ def painel_chamados_tecnicos():
         'Hora Abertura', 'Solução', 'Hora Fechamento',
         'Protocolo', 'Patrimônio', 'Machine'
     ])
-    
+
     try:
         df_chamados['Tempo Decorrido'] = df_chamados.apply(lambda row: calculate_tempo_decorrido(row), axis=1)
     except Exception as e:
@@ -521,7 +539,6 @@ def painel_chamados_tecnicos():
             st.error(f"Erro ao gerar gráfico 'Quantidade de Chamados por Setor': {e}")
             logging.error(f"Erro ao gerar gráfico 'Quantidade de Chamados por Setor': {e}")
 
-# Função para gerar relatórios
 def painel_relatorios():
     if not st.session_state.get('logged_in') or not is_admin(st.session_state.get('username')):
         st.warning('Você precisa estar logado como administrador para acessar esta área.')
@@ -554,7 +571,7 @@ def painel_relatorios():
                 try:
                     # Filtrar o DataFrame pelo mês selecionado
                     filtered_df = df[df['Mês'].astype(str) == selected_month]
-                    
+
                     # Gerar o relatório PDF com os dados filtrados
                     pdf_output = generate_monthly_report(filtered_df, selected_month, logo_path)
 
@@ -603,7 +620,6 @@ def painel_relatorios():
             st.error(f"Erro ao gerar relatório de inventário: {e}")
             logging.error(f"Erro ao gerar relatório de inventário: {e}")
 
-# Função para buscar chamado por protocolo
 def buscar_protocolo():
     st.subheader('Buscar Chamado por Protocolo')
     protocolo = st.text_input('Digite o número do protocolo:')
@@ -678,23 +694,21 @@ def configuracoes():
             st.error('Erro ao alterar a senha.')
             logging.error(f"Erro ao alterar a senha do usuário '{selected_user}'.")
 
-
-
 # Páginas disponíveis no menu
-if page == 'Login':
+if selected_option == 'Login':
     login()
-elif page == 'Abrir Chamado':
+elif selected_option == 'Abrir Chamado':
     abrir_chamado()
-elif page == 'Administração':
+elif selected_option == 'Administração':
     administracao()
-elif page == 'Relatórios':
+elif selected_option == 'Relatórios':
     painel_relatorios()
-elif page == 'Chamados Técnicos':
+elif selected_option == 'Chamados Técnicos':
     painel_chamados_tecnicos()
-elif page == 'Buscar Protocolo':
+elif selected_option == 'Buscar Protocolo':
     buscar_protocolo()
-elif page == 'Configurações':
+elif selected_option == 'Configurações':
     configuracoes()
 else:
     st.error("Página selecionada não existe.")
-    logging.error(f"Página selecionada inválida: {page}")
+    logging.error(f"Página selecionada inválida: {selected_option}")
