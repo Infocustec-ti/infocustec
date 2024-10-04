@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from datetime import datetime
 from streamlit_option_menu import option_menu
+import plotly.express as px
+from st_aggrid import AgGrid, GridOptionsBuilder
 
 # Importar as funções dos módulos
 from database import create_tables, initialize_ubs_setores, check_or_create_admin_user, is_admin
@@ -86,7 +88,7 @@ else:
     menu_options = ['Login', 'Abrir Chamado', 'Buscar Protocolo']
     icons = ['box-arrow-in-right', 'plus-square', 'search']
 
-# Crie o menu horizontal
+# Crie o menu horizontal com estilos personalizados
 selected_option = option_menu(
     menu_title=None,
     options=menu_options,
@@ -108,7 +110,6 @@ selected_option = option_menu(
     }
 )
 
-# Funções da aplicação
 def login():
     st.subheader('Login')
     username = st.text_input('Nome de usuário')
@@ -133,6 +134,12 @@ def login():
         else:
             st.error('Nome de usuário ou senha incorretos.')
             logging.warning(f"Falha no login para o usuário '{username}'.")
+
+def logout():
+    st.session_state.logged_in = False
+    st.session_state.username = ''
+    st.success('Você saiu da sessão.')
+    logging.info("Usuário deslogado com sucesso.")
 
 def abrir_chamado():
     if not st.session_state.get('logged_in'):
@@ -215,6 +222,7 @@ def abrir_chamado():
         )
         st.success(f'Chamado aberto com sucesso! Seu protocolo é: {protocolo}')
 
+
 def administracao():
     if not st.session_state.get('logged_in') or not is_admin(st.session_state.get('username')):
         st.warning('Você precisa estar logado como administrador para acessar esta área.')
@@ -223,7 +231,6 @@ def administracao():
 
     st.subheader('Administração')
 
-    # Menu de opções para administração
     admin_option = st.selectbox(
         'Selecione uma opção:',
         ['Cadastro de Usuário', 'Cadastro de Máquina', 'Lista de Inventário', 'Lista de Usuários', 'Gerenciar UBSs', 'Gerenciar Setores']
@@ -232,26 +239,27 @@ def administracao():
     if admin_option == 'Cadastro de Máquina':
         st.subheader('Cadastro de Máquina no Inventário')
 
-        # Usar a função get_setores_list para obter os setores
         setores_existentes = get_setores_list()
 
         with st.form("Cadastro_de_Maquina_Admin", clear_on_submit=True):
-            tipo = st.selectbox('Tipo de Equipamento', ['Computador', 'Impressora', 'Monitor', 'Outro'])
-            marca = st.text_input('Marca')
-            modelo = st.text_input('Modelo')
-            numero_serie = st.text_input('Número de Série (Opcional)', value='')  # Número de série como opcional
-            patrimonio = st.text_input('Número de Patrimônio')  # Número de patrimônio obrigatório
-            status = st.selectbox('Status', ['Ativo', 'Em Manutenção', 'Inativo'])
-            localizacao = st.selectbox('Localização (UBS)', get_ubs_list())
-            propria_locada = st.selectbox('Própria ou Locada', ['Própria', 'Locada'])
+            col1, col2 = st.columns(2)
 
-            # Verificar se setores estão disponíveis
-            setor = st.selectbox('Setor', setores_existentes)
+            with col1:
+                tipo = st.selectbox('Tipo de Equipamento', ['Computador', 'Impressora', 'Monitor', 'Outro'])
+                marca = st.text_input('Marca')
+                modelo = st.text_input('Modelo')
+                numero_serie = st.text_input('Número de Série (Opcional)', value='')
+
+            with col2:
+                patrimonio = st.text_input('Número de Patrimônio')
+                status = st.selectbox('Status', ['Ativo', 'Em Manutenção', 'Inativo'])
+                localizacao = st.selectbox('Localização (UBS)', get_ubs_list())
+                propria_locada = st.selectbox('Própria ou Locada', ['Própria', 'Locada'])
+                setor = st.selectbox('Setor', setores_existentes)
 
             submit_button = st.form_submit_button(label='Adicionar ao Inventário')
 
             if submit_button:
-                # Validação do número de patrimônio
                 def validar_patrimonio(patrimonio):
                     return patrimonio.isdigit()
 
@@ -260,7 +268,6 @@ def administracao():
                     logging.warning(f"Número de patrimônio inválido no cadastro de máquina: {patrimonio}")
                     return
 
-                # Verificar se os campos obrigatórios estão preenchidos
                 if marca and modelo and patrimonio and localizacao and setor:
                     try:
                         add_machine_to_inventory(
@@ -303,13 +310,12 @@ def administracao():
             submit_button = st.form_submit_button(label='Cadastrar Usuário')
 
             if submit_button:
-                # Validação de inputs
                 def validar_username(username):
                     import re
                     return re.match(r'^[A-Za-z0-9_]{3,20}$', username)
 
                 def validar_password(password):
-                    return len(password) >= 6  # Exemplo simples
+                    return len(password) >= 6
 
                 if not novo_username or not novo_password:
                     st.error("Por favor, preencha todos os campos obrigatórios.")
@@ -351,7 +357,7 @@ def administracao():
     elif admin_option == 'Gerenciar UBSs':
         st.subheader('Gerenciar UBSs')
         try:
-            manage_ubs()  # Chama a função para gerenciar UBSs
+            manage_ubs()
             logging.info("Gerenciamento de UBSs realizado.")
         except Exception as e:
             st.error(f"Erro ao gerenciar UBSs: {e}")
@@ -360,7 +366,7 @@ def administracao():
     elif admin_option == 'Gerenciar Setores':
         st.subheader('Gerenciar Setores')
         try:
-            manage_setores()  # Chama a função para gerenciar Setores
+            manage_setores()
             logging.info("Gerenciamento de Setores realizado.")
         except Exception as e:
             st.error(f"Erro ao gerenciar Setores: {e}")
@@ -374,170 +380,174 @@ def painel_chamados_tecnicos():
 
     st.subheader('Painel de Chamados Técnicos')
 
-    try:
-        chamados_abertos = list_chamados_em_aberto()
-    except Exception as e:
-        st.error(f"Erro ao listar chamados em aberto: {e}")
-        logging.error(f"Erro ao listar chamados em aberto: {e}")
-        chamados_abertos = []
+    chamados_abertos = list_chamados_em_aberto()
+    chamados = list_chamados()
 
-    # Lista de peças que podem ser utilizadas (pode ser expandida conforme necessário)
-    pecas_disponiveis = [
-        'Placa Mãe', 'Fonte', 'Memória RAM', 'HD', 'SSD',
-        'Teclado', 'Mouse', 'Monitor', 'Cabo de Rede', 'Placa de Rede',
-        'Processador', 'Cooler', 'Fonte da Impressora', 'Cartucho', 'Toner'
-    ]
+    if chamados:  # Certifique-se de que há dados de chamados
+        df_chamados = pd.DataFrame(chamados, columns=[
+            'ID', 'Usuário', 'UBS', 'Setor', 'Tipo de Defeito', 'Problema',
+            'Hora Abertura', 'Solução', 'Hora Fechamento',
+            'Protocolo', 'Patrimônio', 'Machine'
+        ])
+        df_chamados['Tempo Decorrido'] = df_chamados.apply(lambda row: calculate_tempo_decorrido(row), axis=1)
 
-    if chamados_abertos:
-        st.subheader('Chamados em Aberto')
+        tab1, tab2, tab3 = st.tabs(['Chamados em Aberto', 'Painel de Chamados', 'Análise de Chamados'])
 
-        for chamado in chamados_abertos:
-            with st.expander(f"Chamado ID: {chamado[0]}"):
-                st.write(f"**ID do Chamado:** {chamado[0]}")
-                st.write(f"**Usuário:** {chamado[1]}")
-                st.write(f"**UBS:** {chamado[2]}")
-                st.write(f"**Setor:** {chamado[3]}")  # Exibe o setor do chamado
-                st.write(f"**Tipo de Defeito:** {chamado[4]}")
-                st.write(f"**Problema:** {chamado[5]}")
-                st.write(f"**Hora de Abertura:** {chamado[6]}")
+        with tab1:
+            st.subheader('Chamados em Aberto')
 
-                solucao = st.text_area('Insira a solução para o chamado', key=f"solucao_{chamado[0]}")
+            if chamados_abertos:
+                df_abertos = pd.DataFrame(chamados_abertos, columns=[
+                    'ID', 'Usuário', 'UBS', 'Setor', 'Tipo de Defeito', 'Problema',
+                    'Hora Abertura', 'Solução', 'Hora Fechamento',
+                    'Protocolo', 'Patrimônio', 'Machine'
+                ])
 
-                # Selectbox para selecionar múltiplas peças utilizadas
-                pecas_selecionadas = st.multiselect(
-                    'Selecione as peças utilizadas',
-                    pecas_disponiveis,
-                    key=f"pecas_{chamado[0]}"
+                gb = GridOptionsBuilder.from_dataframe(df_abertos)
+                gb.configure_pagination()
+                gb.configure_selection('single', use_checkbox=True)  # Permite seleção de uma única linha com checkbox
+                gridOptions = gb.build()
+
+                grid_response = AgGrid(
+                    df_abertos,
+                    gridOptions=gridOptions,
+                    update_mode='MODEL_CHANGED',
+                    fit_columns_on_grid_load=True,
+                    enable_enterprise_modules=True,
+                    height=350,
+                    reload_data=True
                 )
 
-                if st.button(f"Finalizar Chamado ID: {chamado[0]}", key=f"finalizar_{chamado[0]}"):
-                    if solucao:
-                        try:
-                            # Finaliza o chamado e registra as peças usadas
-                            finalizar_chamado(chamado[0], solucao, pecas_selecionadas)
-                            st.success(f'Chamado ID: {chamado[0]} finalizado com sucesso!')
-                            logging.info(f"Chamado ID: {chamado[0]} finalizado por {st.session_state.username}.")
-                            st.experimental_rerun()
-                        except Exception as e:
-                            st.error(f"Erro ao finalizar chamado: {e}")
-                            logging.error(f"Erro ao finalizar chamado ID: {chamado[0]}: {e}")
+                selected_rows = grid_response.get('selected_rows', [])
+
+                # Inicializar variável para o chamado selecionado
+                chamado_selecionado = None
+
+                # Verificar se selected_rows é uma lista e contém elementos
+                if isinstance(selected_rows, list) and len(selected_rows) > 0:
+                    chamado_selecionado = selected_rows[0]
+                # Verificar se selected_rows é um DataFrame e não está vazio
+                elif isinstance(selected_rows, pd.DataFrame) and not selected_rows.empty:
+                    chamado_selecionado = selected_rows.iloc[0].to_dict()
+
+                if chamado_selecionado:
+                    # Verificar se as chaves necessárias estão presentes
+                    if 'ID' in chamado_selecionado and 'Problema' in chamado_selecionado:
+                        st.write('### Finalizar Chamado Selecionado')
+                        st.write(f"ID do Chamado: {chamado_selecionado.get('ID', 'N/A')}")
+                        st.write(f"Problema: {chamado_selecionado.get('Problema', 'N/A')}")
+
+                        solucao = st.text_area('Insira a solução para o chamado')
+
+                        pecas_disponiveis = [
+                            'Placa Mãe', 'Fonte', 'Memória RAM', 'HD', 'SSD',
+                            'Teclado', 'Mouse', 'Monitor', 'Cabo de Rede', 'Placa de Rede',
+                            'Processador', 'Cooler', 'Fonte da Impressora', 'Cartucho', 'Toner'
+                        ]
+
+                        pecas_selecionadas = st.multiselect(
+                            'Selecione as peças utilizadas',
+                            pecas_disponiveis
+                        )
+
+                        if st.button('Finalizar Chamado'):
+                            if solucao:
+                                try:
+                                    # Finalizar o chamado e atualizar o banco de dados
+                                    finalizar_chamado(chamado_selecionado.get('ID'), solucao, pecas_selecionadas)
+                                    st.success(f'Chamado ID: {chamado_selecionado["ID"]} finalizado com sucesso!')
+                                    logging.info(f"Chamado ID: {chamado_selecionado['ID']} finalizado por {st.session_state.username}.")
+                                    st.experimental_rerun()  # Atualiza a página
+                                except Exception as e:
+                                    st.error(f"Erro ao finalizar o chamado: {e}")
+                                    logging.error(f"Erro ao finalizar o chamado ID {chamado_selecionado.get('ID')}: {e}")
+                                    st.experimental_set_query_params(updated='true')
+                            else:
+                                st.error('Por favor, insira a solução antes de finalizar o chamado.')
                     else:
-                        st.error('Por favor, insira a solução antes de finalizar o chamado.')
-                        logging.warning(f"Chamado ID: {chamado[0]} tentou ser finalizado sem solução.")
+                        st.error("O chamado selecionado não contém informações completas.")
+                else:
+                    st.info('Nenhum chamado selecionado.')
+            else:
+                st.info("Não há chamados em aberto no momento.")
+                logging.info("Nenhum chamado em aberto para exibir.")
+
+        with tab2:
+            st.subheader('Painel de Chamados')
+
+            status_options = ['Todos', 'Em Aberto', 'Finalizado']
+            status = st.selectbox('Filtrar por Status', status_options)
+
+            ubs_list = ['Todas'] + df_chamados['UBS'].unique().tolist()
+            ubs_selecionada = st.selectbox('Filtrar por UBS', ubs_list)
+
+            df_filtrado = df_chamados.copy()
+
+            if status != 'Todos':
+                if status == 'Em Aberto':
+                    df_filtrado = df_filtrado[df_filtrado['Hora Fechamento'].isnull()]
+                else:
+                    df_filtrado = df_filtrado[df_filtrado['Hora Fechamento'].notnull()]
+
+            if ubs_selecionada != 'Todas':
+                df_filtrado = df_filtrado[df_filtrado['UBS'] == ubs_selecionada]
+
+            gb = GridOptionsBuilder.from_dataframe(df_filtrado)
+            gb.configure_pagination()
+            gb.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc='sum', editable=False)
+            gridOptions = gb.build()
+
+            AgGrid(
+                df_filtrado,
+                gridOptions=gridOptions,
+                enable_enterprise_modules=True
+            )
+
+        with tab3:
+            st.subheader('Análise de Chamados')
+            # Exibir tempo médio de atendimento
+            st.subheader('Tempo Médio de Atendimento')
+            try:
+                show_average_time(chamados)  # Chamada da função que exibe o tempo médio de atendimento
+            except Exception as e:
+                st.error(f"Erro ao exibir tempo médio de atendimento: {e}")
+                logging.error(f"Erro ao exibir tempo médio de atendimento: {e}")
+
+            fig = px.bar(
+                df_chamados,
+                 x='UBS',
+                 title='Quantidade de Chamados por UBS',
+                 labels={'x': 'UBS', 'count': 'Quantidade'},
+                 color='UBS'  # Definir cor diferente para cada UBS
+            )
+            fig.update_layout(yaxis=dict(tickmode='linear', tick0=1))
+            st.plotly_chart(fig)
+
+            fig_defeitos = px.bar(
+                df_chamados,
+                 x='Tipo de Defeito', 
+                 title='Quantidade de Chamados por Tipo de Defeito',
+                 labels={'x': 'Tipo de Defeito', 'count': 'Quantidade'},
+                 color='Tipo de Defeito'  # Definir cor diferente para cada tipo de defeito
+            )
+                 
+            fig.update_layout(yaxis=dict(tickmode='linear', tick0=1))
+            st.plotly_chart(fig_defeitos)
+
+            fig_setor = px.bar(
+                df_chamados,
+                 x='Setor',
+                  title='Quantidade de Chamados por Setor',
+                  labels={'x': 'Setor', 'count': 'Quantidade'},
+                  color='Setor'  # Definir cor diferente para cada setor
+            )
+            fig.update_layout(yaxis=dict(tickmode='linear', tick0=1))
+            st.plotly_chart(fig_setor)
 
     else:
-        st.info("Não há chamados em aberto no momento.")
-        logging.info("Nenhum chamado em aberto para exibir.")
+        st.warning("Nenhum chamado foi encontrado no banco de dados.")
+        logging.warning("Nenhum chamado encontrado no banco de dados.")
 
-    # Obter todos os chamados
-    try:
-        chamados = list_chamados()
-
-    except Exception as e:
-        st.error(f"Erro ao listar todos os chamados: {e}")
-        logging.error(f"Erro ao listar todos os chamados: {e}")
-        chamados = []
-
-    df_chamados = pd.DataFrame(chamados, columns=[
-        'ID', 'Usuário', 'UBS', 'Setor', 'Tipo de Defeito', 'Problema',
-        'Hora Abertura', 'Solução', 'Hora Fechamento',
-        'Protocolo', 'Patrimônio', 'Machine'
-    ])
-
-    try:
-        df_chamados['Tempo Decorrido'] = df_chamados.apply(lambda row: calculate_tempo_decorrido(row), axis=1)
-    except Exception as e:
-        st.error(f"Erro ao calcular tempo decorrido: {e}")
-        logging.error(f"Erro ao calcular tempo decorrido: {e}")
-        df_chamados['Tempo Decorrido'] = None
-
-    st.subheader('Painel de Chamados')
-    st.dataframe(df_chamados)
-
-    # Exibir tempo médio de atendimento
-    st.subheader('Tempo Médio de Atendimento')
-    try:
-        show_average_time(chamados)
-    except Exception as e:
-        st.error(f"Erro ao exibir tempo médio de atendimento: {e}")
-        logging.error(f"Erro ao exibir tempo médio de atendimento: {e}")
-
-    # Gráfico de tempo linear
-    st.subheader('Tempo Decorrido entre Chamados')
-    try:
-        generate_linear_time_chart(chamados)
-    except Exception as e:
-        st.error(f"Erro ao gerar gráfico de tempo linear: {e}")
-        logging.error(f"Erro ao gerar gráfico de tempo linear: {e}")
-
-    # Gráficos de análise dos dados
-    if not df_chamados.empty:
-        st.subheader('Análise de Chamados')
-
-        try:
-            # Tipos de Defeito por UBS
-            df_defeitos_ubs = df_chamados.groupby(['UBS', 'Tipo de Defeito']).size().unstack(fill_value=0)
-            fig, ax = plt.subplots(figsize=(12, 8))
-            df_defeitos_ubs.plot(kind='bar', stacked=True, ax=ax)
-            ax.set_title('Tipos de Defeito por UBS')
-            ax.set_xlabel('UBS')
-            ax.set_ylabel('Quantidade de Chamados')
-            ax.yaxis.get_major_locator().set_params(integer=True)
-            plt.xticks(rotation=45)
-            plt.tight_layout()
-            st.pyplot(fig)
-            logging.info("Gráfico 'Tipos de Defeito por UBS' exibido.")
-        except Exception as e:
-            st.error(f"Erro ao gerar gráfico 'Tipos de Defeito por UBS': {e}")
-            logging.error(f"Erro ao gerar gráfico 'Tipos de Defeito por UBS': {e}")
-
-        try:
-            # Quantidade de Chamados por UBS
-            st.subheader('Quantidade de Chamados por UBS')
-            ubs_counts = df_chamados['UBS'].value_counts()
-            fig1, ax1 = plt.subplots(figsize=(8, 6))
-            sns.barplot(x=ubs_counts.index, y=ubs_counts.values, ax=ax1)
-            ax1.set_title('Quantidade de Chamados por UBS')
-            ax1.yaxis.get_major_locator().set_params(integer=True)
-            plt.xticks(rotation=45)
-            plt.tight_layout()
-            st.pyplot(fig1)
-            logging.info("Gráfico 'Quantidade de Chamados por UBS' exibido.")
-        except Exception as e:
-            st.error(f"Erro ao gerar gráfico 'Quantidade de Chamados por UBS': {e}")
-            logging.error(f"Erro ao gerar gráfico 'Quantidade de Chamados por UBS': {e}")
-
-        try:
-            # Quantidade de Chamados por Tipo de Defeito
-            st.subheader('Quantidade de Chamados por Tipo de Defeito')
-            defeito_counts = df_chamados['Tipo de Defeito'].value_counts()
-            fig2, ax2 = plt.subplots(figsize=(8, 6))
-            sns.barplot(x=defeito_counts.index, y=defeito_counts.values, ax=ax2)
-            ax2.set_title('Quantidade de Chamados por Tipo de Defeito')
-            ax2.yaxis.get_major_locator().set_params(integer=True)
-            plt.xticks(rotation=45)
-            plt.tight_layout()
-            st.pyplot(fig2)
-            logging.info("Gráfico 'Quantidade de Chamados por Tipo de Defeito' exibido.")
-        except Exception as e:
-            st.error(f"Erro ao gerar gráfico 'Quantidade de Chamados por Tipo de Defeito': {e}")
-            logging.error(f"Erro ao gerar gráfico 'Quantidade de Chamados por Tipo de Defeito': {e}")
-
-        try:
-            # Quantidade de Chamados por Setor
-            st.subheader('Quantidade de Chamados por Setor')
-            setor_counts = df_chamados['Setor'].value_counts()
-            fig3, ax3 = plt.subplots(figsize=(8, 6))
-            sns.barplot(x=setor_counts.index, y=setor_counts.values, ax=ax3)
-            ax3.set_title('Quantidade de Chamados por Setor')
-            ax3.yaxis.get_major_locator().set_params(integer=True)
-            plt.xticks(rotation=45)
-            plt.tight_layout()
-            st.pyplot(fig3)
-            logging.info("Gráfico 'Quantidade de Chamados por Setor' exibido.")
-        except Exception as e:
-            st.error(f"Erro ao gerar gráfico 'Quantidade de Chamados por Setor': {e}")
-            logging.error(f"Erro ao gerar gráfico 'Quantidade de Chamados por Setor': {e}")
 
 def painel_relatorios():
     if not st.session_state.get('logged_in') or not is_admin(st.session_state.get('username')):
@@ -554,28 +564,21 @@ def painel_relatorios():
     if report_option == 'Chamados Técnicos':
         st.subheader('Relatório de Chamados Técnicos')
         try:
-            # Chamar a função que retorna o DataFrame e a lista de meses
             df, months_list = get_monthly_technical_data()
 
-            # Verifique se 'df' é realmente um DataFrame
             if not isinstance(df, pd.DataFrame):
                 st.error("Erro: O retorno de dados não é um DataFrame.")
                 logging.error("Esperava-se um DataFrame, mas o retorno foi de outro tipo.")
                 return
 
-            # Exibir a seleção do mês
             selected_month = st.selectbox('Selecione o Mês', months_list)
 
-            # Quando o botão 'Gerar Relatório' for pressionado
             if st.button('Gerar Relatório'):
                 try:
-                    # Filtrar o DataFrame pelo mês selecionado
                     filtered_df = df[df['Mês'].astype(str) == selected_month]
 
-                    # Gerar o relatório PDF com os dados filtrados
                     pdf_output = generate_monthly_report(filtered_df, selected_month, logo_path)
 
-                    # Se o PDF for gerado com sucesso, exibir o botão de download
                     if pdf_output:
                         st.download_button(
                             label="Download Relatório PDF",
@@ -598,13 +601,10 @@ def painel_relatorios():
     elif report_option == 'Inventário':
         st.subheader('Relatório de Inventário')
         try:
-            # Obter os itens do inventário
             inventory_items = get_machines_from_inventory()
 
-            # Gerar o relatório PDF de inventário
             pdf_output = create_inventory_report(inventory_items, logo_path)
 
-            # Se o PDF for gerado com sucesso, exibir o botão de download
             if pdf_output:
                 st.download_button(
                     label="Download Relatório de Inventário",
@@ -662,7 +662,6 @@ def configuracoes():
 
     st.subheader('Configurações de Usuários')
 
-    # Obter a lista de usuários
     usuarios = list_users()
     if not usuarios:
         st.info("Nenhum usuário encontrado.")
@@ -670,10 +669,8 @@ def configuracoes():
 
     usernames = [user[0] for user in usuarios]
 
-    # Selecionar o usuário para alterar a senha
     selected_user = st.selectbox('Selecione um usuário para alterar a senha:', usernames)
 
-    # Campos para inserir a nova senha
     nova_senha = st.text_input('Nova senha', type='password')
     confirmar_senha = st.text_input('Confirme a nova senha', type='password')
 
@@ -712,3 +709,8 @@ elif selected_option == 'Configurações':
 else:
     st.error("Página selecionada não existe.")
     logging.error(f"Página selecionada inválida: {selected_option}")
+
+# Opção de logout
+if st.session_state.get('logged_in'):
+    if st.button('Logout'):
+        logout()
