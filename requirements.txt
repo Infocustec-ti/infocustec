@@ -8,5 +8,5 @@ bcrypt==3.2.0
 streamlit-option-menu
 streamlit-aggrid==1.0.5
 plotly
-numpy==1.23.5  # Versão compatível com pandas==2.0.3
+numpy
 
