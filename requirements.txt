@@ -6,7 +6,7 @@ streamlit==1.28.2
 twilio==8.10.3
 bcrypt==3.2.0
 streamlit-option-menu
-streamlit-aggrid 1.0.5
+streamlit-aggrid==1.0.5
 plotly
 
 
