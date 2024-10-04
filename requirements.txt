@@ -2,7 +2,7 @@ fpdf==1.7.2
 matplotlib
 pandas==2.0.3
 seaborn==0.13.2
-streamlit==1.28.2
+streamlit==1.39.0
 twilio==8.10.3
 bcrypt==3.2.0
 streamlit-option-menu
