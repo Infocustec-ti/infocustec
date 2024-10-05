@@ -91,7 +91,7 @@ def update_ubs(old_name: str, new_name: str) -> bool:
 
 # Função para inicializar algumas UBSs no banco de dados (se necessário)
 def initialize_ubs():
-    setores_iniciais = [
+    ubs_iniciais = [
         "UBS Arapari/Cabeceiras", "UBS Assunçao", "UBS Flores", "UBS Baleia",
         "UBS Barrento", "UBS Bastioes", "UBS Bela Vista", "UBS Betania",
         "UBS Boa Vista", "UBS Cacimbas", "UBS Calugi", "UBS Centro",
@@ -103,7 +103,7 @@ def initialize_ubs():
         "UBS Sitio do Meio", "UBS Tabocal", "UBS Taboca", "UBS Vida Nova Vida Bela",
         "UBS Nova Aldeota", "UBS Violete", "UBS Violete II"
     ]
-    for ubs in setores_iniciais:
+    for ubs in ubs_iniciais:
         add_ubs(ubs)
 
 # Função para exibir e gerenciar UBSs usando Streamlit
