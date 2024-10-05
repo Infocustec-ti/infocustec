@@ -1,148 +1,182 @@
-# setores.py
-from sqlalchemy.orm import Session
-from database import SessionLocal, Setor
+import os
 import streamlit as st
+from sqlalchemy.orm import Session
+from database import SessionLocal, UBS
 import logging
 
-def add_setor(nome_setor: str) -> bool:
+# Configuração do logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("os500.log"),
+        logging.StreamHandler()
+    ]
+)
+
+# Função para adicionar uma nova UBS
+def add_ubs(nome_ubs: str) -> bool:
     session: Session = SessionLocal()
     try:
-        setor_existente = session.query(Setor).filter(Setor.nome_setor == nome_setor).first()
+        # Verifica se a UBS já existe
+        setor_existente = session.query(UBS).filter(UBS.nome_ubs == nome_ubs).first()
         if setor_existente:
+            logging.warning(f"UBS '{nome_ubs}' já está cadastrada.")
             return False
-        novo_setor = Setor(nome_setor=nome_setor)
-        session.add(novo_setor)
+        nova_ubs = UBS(nome_ubs=nome_ubs)
+        session.add(nova_ubs)
         session.commit()
-        logging.info(f"Setor '{nome_setor}' adicionado ao banco de dados.")
+        logging.info(f"UBS '{nome_ubs}' adicionada com sucesso.")
         return True
     except Exception as e:
         session.rollback()
-        logging.error(f"Erro ao adicionar setor '{nome_setor}': {e}")
-        st.error("Erro interno ao adicionar setor. Tente novamente mais tarde.")
+        logging.error(f"Erro ao adicionar UBS '{nome_ubs}': {e}")
+        st.error("Erro interno ao adicionar UBS. Tente novamente mais tarde.")
         return False
     finally:
         session.close()
 
-def get_setores_list() -> list:
+# Função para listar todas as UBSs cadastradas
+def get_ubs_list() -> list:
     session: Session = SessionLocal()
     try:
-        setores = session.query(Setor.nome_setor).all()
-        logging.info("Setores recuperados do banco de dados.")
-        return [setor[0] for setor in setores]
+        ubs = session.query(UBS.nome_ubs).all()
+        ubs_list = [item[0] for item in ubs]
+        logging.info("UBSs recuperadas com sucesso.")
+        return ubs_list
     except Exception as e:
-        logging.error(f"Erro ao recuperar setores: {e}")
-        st.error("Erro interno ao recuperar setores. Tente novamente mais tarde.")
+        logging.error(f"Erro ao recuperar UBSs: {e}")
+        st.error("Erro interno ao recuperar UBSs. Tente novamente mais tarde.")
         return []
     finally:
         session.close()
 
-def remove_setor(nome_setor: str) -> bool:
+# Função para remover uma UBS
+def remove_ubs(nome_ubs: str) -> bool:
     session: Session = SessionLocal()
     try:
-        setor = session.query(Setor).filter(Setor.nome_setor == nome_setor).first()
-        if setor:
-            session.delete(setor)
+        ubs = session.query(UBS).filter(UBS.nome_ubs == nome_ubs).first()
+        if ubs:
+            session.delete(ubs)
             session.commit()
-            logging.info(f"Setor '{nome_setor}' removido do banco de dados.")
+            logging.info(f"UBS '{nome_ubs}' removida com sucesso.")
             return True
         else:
+            logging.warning(f"UBS '{nome_ubs}' não encontrada para remoção.")
             return False
     except Exception as e:
         session.rollback()
-        logging.error(f"Erro ao remover setor '{nome_setor}': {e}")
-        st.error("Erro interno ao remover setor. Tente novamente mais tarde.")
+        logging.error(f"Erro ao remover UBS '{nome_ubs}': {e}")
+        st.error("Erro interno ao remover UBS. Tente novamente mais tarde.")
         return False
     finally:
         session.close()
 
-def update_setor(old_name: str, new_name: str) -> bool:
+# Função para atualizar o nome de uma UBS
+def update_ubs(old_name: str, new_name: str) -> bool:
     session: Session = SessionLocal()
     try:
-        setor = session.query(Setor).filter(Setor.nome_setor == old_name).first()
-        if setor:
-            setor_existente = session.query(Setor).filter(Setor.nome_setor == new_name).first()
-            if setor_existente:
-                st.warning(f"Setor '{new_name}' já está cadastrado.")
-                logging.warning(f"Tentativa de atualizar setor para um nome já existente: {new_name}")
-                return False
-            setor.nome_setor = new_name
+        # Verifica se o novo nome já existe
+        ubs_existente = session.query(UBS).filter(UBS.nome_ubs == new_name).first()
+        if ubs_existente:
+            st.warning(f"UBS '{new_name}' já está cadastrada.")
+            logging.warning(f"Tentativa de atualizar UBS para um nome já existente: {new_name}")
+            return False
+
+        ubs = session.query(UBS).filter(UBS.nome_ubs == old_name).first()
+        if ubs:
+            ubs.nome_ubs = new_name
             session.commit()
-            logging.info(f"Setor '{old_name}' atualizado para '{new_name}'.")
+            logging.info(f"UBS '{old_name}' atualizada para '{new_name}'.")
             return True
         else:
+            logging.error(f"UBS '{old_name}' não encontrada para atualização.")
             return False
     except Exception as e:
         session.rollback()
-        logging.error(f"Erro ao atualizar setor de '{old_name}' para '{new_name}': {e}")
-        st.error("Erro interno ao atualizar setor. Tente novamente mais tarde.")
+        logging.error(f"Erro ao atualizar UBS de '{old_name}' para '{new_name}': {e}")
+        st.error("Erro interno ao atualizar UBS. Tente novamente mais tarde.")
         return False
     finally:
         session.close()
 
-def initialize_setores():
-    setores_iniciais = [
-        "Recepção", "Consultório médico", "Farmácia", "Sala da Enfermeira", 
-        "Sala da vacina", "Consultório odontológico", "Sala administração"
+# Inicializar algumas UBSs no banco de dados
+def initialize_ubs():
+    # Lista de UBSs iniciais que queremos cadastrar
+    ubs_iniciais = [
+        "UBS Arapari/Cabeceiras", "UBS Assunçao", "UBS Flores", "UBS Baleia",
+        "UBS Barrento", "UBS Bastioes", "UBS Bela Vista", "UBS Betania",
+        "UBS Boa Vista", "UBS Cacimbas", "UBS Calugi", "UBS Centro",
+        "UBS Coqueiro", "UBS Cruzeiro/Maranhao", "UBS Deserto/Mangueira",
+        "UBS Encruzilhadas", "UBS Estaçao", "UBS Fazendinha", "UBS Ipu/Mazagao",
+        "UBS Jacare", "UBS Ladeira", "UBS Lagoa da Cruz", "UBS Lagoa das Merces",
+        "UBS Livramento", "UBS Maceio", "UBS Madalenas", "UBS Marinheiros",
+        "UBS Mourao", "UBS Mulatao", "UBS Picos", "UBS Salgado dos Pires",
+        "UBS Sitio do Meio", "UBS Tabocal", "UBS Taboca", "UBS Vida Nova Vida Bela",
+        "UBS Nova Aldeota", "UBS Violete", "UBS Violete II"
     ]
-    for setor in setores_iniciais:
-        add_setor(setor)
 
-def manage_setores():
-    st.subheader('Gerenciar Setores')
+    for ubs in ubs_iniciais:
+        add_ubs(ubs)
 
-    action = st.selectbox('Selecione uma ação:', ['Listar Setores', 'Adicionar Setor', 'Editar Setor', 'Remover Setor'])
+# Função para exibir e gerenciar UBSs usando Streamlit
+def manage_ubs():
+    st.subheader('Gerenciar UBSs')
 
-    if action == 'Listar Setores':
-        setores_list = get_setores_list()
-        if setores_list:
-            st.write('Setores cadastrados:')
-            for setor in setores_list:
-                st.write(f"- {setor}")
+    action = st.selectbox('Selecione uma ação:', ['Listar UBSs', 'Adicionar UBS', 'Editar UBS', 'Remover UBS'])
+
+    if action == 'Listar UBSs':
+        ubs_list = get_ubs_list()
+        if ubs_list:
+            st.write('UBSs cadastradas:')
+            for ubs in ubs_list:
+                st.write(f"- {ubs}")
         else:
-            st.write('Nenhum setor cadastrado.')
+            st.write('Nenhuma UBS cadastrada.')
 
-    elif action == 'Adicionar Setor':
-        nome_setor = st.text_input('Nome do Setor')
+    elif action == 'Adicionar UBS':
+        nome_ubs = st.text_input('Nome da UBS')
         if st.button('Adicionar'):
-            if nome_setor:
-                if add_setor(nome_setor):
-                    st.success(f"Setor '{nome_setor}' adicionado com sucesso.")
+            if nome_ubs:
+                if add_ubs(nome_ubs):
+                    st.success(f"UBS '{nome_ubs}' adicionada com sucesso.")
                 else:
-                    st.warning(f"Setor '{nome_setor}' já está cadastrado.")
+                    st.warning(f"UBS '{nome_ubs}' já está cadastrada.")
             else:
-                st.error('Por favor, insira o nome do setor.')
+                st.error('Por favor, insira o nome da UBS.')
 
-    elif action == 'Editar Setor':
-        setores_list = get_setores_list()
-        if setores_list:
-            old_name = st.selectbox('Selecione o setor para editar:', setores_list)
-            new_name = st.text_input('Novo nome do setor', value=old_name)
+    elif action == 'Editar UBS':
+        ubs_list = get_ubs_list()
+        if ubs_list:
+            old_name = st.selectbox('Selecione a UBS para editar:', ubs_list)
+            new_name = st.text_input('Novo nome da UBS', value=old_name)
             if st.button('Atualizar'):
                 if new_name:
-                    if update_setor(old_name, new_name):
-                        st.success(f"Setor '{old_name}' atualizado para '{new_name}'.")
+                    if update_ubs(old_name, new_name):
+                        st.success(f"UBS '{old_name}' atualizada para '{new_name}'.")
                     else:
-                        st.error('Erro ao atualizar o setor ou o novo nome já está em uso.')
+                        st.error('Erro ao atualizar a UBS.')
                 else:
-                    st.error('Por favor, insira o novo nome do setor.')
+                    st.error('Por favor, insira o novo nome da UBS.')
         else:
-            st.write('Nenhum setor cadastrado para editar.')
+            st.write('Nenhuma UBS cadastrada para editar.')
 
-    elif action == 'Remover Setor':
-        setores_list = get_setores_list()
-        if setores_list:
-            nome_setor = st.selectbox('Selecione o setor para remover:', setores_list)
+    elif action == 'Remover UBS':
+        ubs_list = get_ubs_list()
+        if ubs_list:
+            nome_ubs = st.selectbox('Selecione a UBS para remover:', ubs_list)
             if st.button('Remover'):
-                if remove_setor(nome_setor):
-                    st.success(f"Setor '{nome_setor}' removido com sucesso.")
+                if remove_ubs(nome_ubs):
+                    st.success(f"UBS '{nome_ubs}' removida com sucesso.")
                 else:
-                    st.error('Erro ao remover o setor.')
+                    st.error('Erro ao remover a UBS.')
         else:
-            st.write('Nenhum setor cadastrado para remover.')
+            st.write('Nenhuma UBS cadastrada para remover.')
 
-if __name__ == "__main__":
-    initialize_setores()
-    setores_list = get_setores_list()
-    print("Setores cadastrados:")
-    for setor in setores_list:
-        print(setor)
+# Inicializar o sistema de UBS ao rodar o script
+initialize_ubs()
+# Exibir UBSs cadastradas para verificação
+ubs_list = get_ubs_list()
+print("UBSs cadastradas:")
+for ubs in ubs_list:
+    print(ubs)
