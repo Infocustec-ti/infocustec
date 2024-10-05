@@ -129,28 +129,42 @@ selected_option = option_menu(
 
 def login():
     st.subheader('Login')
+    
+    # Campos de entrada para login
     username = st.text_input('Nome de usuário')
     password = st.text_input('Senha', type='password')
 
+    # Verificação se o botão 'Entrar' foi clicado
     if st.button('Entrar'):
         if not username or not password:
             st.error('Por favor, preencha ambos os campos de usuário e senha.')
             logging.warning("Tentativa de login com campos vazios.")
             return
 
+        # Verifica se as credenciais estão corretas
         if authenticate(username, password):
             st.success(f'Login bem-sucedido! Bem-vindo, {username}.')
-            st.session_state.logged_in = True
-            st.session_state.username = username
+            st.session_state['logged_in'] = True
+            st.session_state['username'] = username
             logging.info(f"Usuário '{username}' fez login.")
+
+            # Verifica se o usuário é administrador
             if is_admin(username):
+                st.session_state['is_admin'] = True
                 st.info('Você está logado como administrador.')
                 logging.info(f"Usuário '{username}' tem privilégios de administrador.")
             else:
+                st.session_state['is_admin'] = False
                 st.info('Você está logado como usuário.')
+                logging.info(f"Usuário '{username}' não tem privilégios de administrador.")
+            
+            # Recarrega a página para refletir as mudanças no estado da sessão
+            st.experimental_rerun()
         else:
             st.error('Nome de usuário ou senha incorretos.')
             logging.warning(f"Falha no login para o usuário '{username}'.")
+
+
 
 def logout():
     st.session_state.logged_in = False
