@@ -78,13 +78,6 @@ initialize_ubs()
 initialize_setores()
 check_or_create_admin_user()
 logging.info("Banco de dados inicializado com sucesso.")
-
-# Inicializar session_state
-if 'logged_in' not in st.session_state:
-    st.session_state['logged_in'] = False
-if 'username' not in st.session_state:
-    st.session_state['username'] = ''
-
 # Gerenciar caminho do logotipo via variável de ambiente
 logo_path = os.getenv('LOGO_PATH', 'infocustec.png')
 if os.path.exists(logo_path):
@@ -127,43 +120,32 @@ selected_option = option_menu(
     }
 )
 
-def login():
+# Função de login
+def login_form():
     st.subheader('Login')
-    
-    # Campos de entrada para login
     username = st.text_input('Nome de usuário')
     password = st.text_input('Senha', type='password')
 
-    # Verificação se o botão 'Entrar' foi clicado
     if st.button('Entrar'):
         if not username or not password:
             st.error('Por favor, preencha ambos os campos de usuário e senha.')
             logging.warning("Tentativa de login com campos vazios.")
             return
 
-        # Verifica se as credenciais estão corretas
         if authenticate(username, password):
             st.success(f'Login bem-sucedido! Bem-vindo, {username}.')
-            st.session_state['logged_in'] = True
-            st.session_state['username'] = username
+            st.session_state.logged_in = True
+            st.session_state.username = username
             logging.info(f"Usuário '{username}' fez login.")
-
-            # Verifica se o usuário é administrador
-            if is_admin(username):
-                st.session_state['is_admin'] = True
+            if is_admin(username):  # Verifica se o usuário é admin
                 st.info('Você está logado como administrador.')
                 logging.info(f"Usuário '{username}' tem privilégios de administrador.")
             else:
-                st.session_state['is_admin'] = False
                 st.info('Você está logado como usuário.')
-                logging.info(f"Usuário '{username}' não tem privilégios de administrador.")
-            
-            # Recarrega a página para refletir as mudanças no estado da sessão
-            st.experimental_rerun()
+            st.experimental_rerun()  # Recarrega a página após login
         else:
             st.error('Nome de usuário ou senha incorretos.')
             logging.warning(f"Falha no login para o usuário '{username}'.")
-
 
 
 def logout():
