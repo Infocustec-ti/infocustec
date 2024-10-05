@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
 from streamlit_option_menu import option_menu
-from streamlit_aggrid import AgGrid, GridOptionsBuilder
+from st_aggrid import AgGrid, GridOptionsBuilder
 from fpdf import FPDF
 from io import BytesIO
 
