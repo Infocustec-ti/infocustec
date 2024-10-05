@@ -97,20 +97,13 @@ else:
 # Título da aplicação
 st.title('Gestão de Parque de Informática - UBS ITAPIPOCA')
 
-# Definir o menu com base no estado de login
-if not st.session_state.get('logged_in'):
-    # Se não estiver logado, exibir apenas as opções de login
-    menu_options = ['Login', 'Buscar Protocolo']
-    icons = ['box-arrow-in-right', 'search']
+# Menu de navegação utilizando o streamlit-option-menu
+if st.session_state.get('logged_in') and is_admin(st.session_state.get('username')):
+    menu_options = ['Login', 'Abrir Chamado', 'Administração', 'Relatórios', 'Chamados Técnicos', 'Buscar Protocolo', 'Configurações']
+    icons = ['box-arrow-in-right', 'plus-square', 'gear', 'bar-chart', 'tools', 'search', 'wrench']
 else:
-    # Se estiver logado, exibir opções de administração para administradores
-    if is_admin(st.session_state['username']):
-        menu_options = ['Abrir Chamado', 'Administração', 'Relatórios', 'Chamados Técnicos', 'Buscar Protocolo', 'Configurações', 'Logout']
-        icons = ['plus-square', 'gear', 'bar-chart', 'tools', 'search', 'wrench', 'box-arrow-right']
-    else:
-        # Menu de usuário normal
-        menu_options = ['Abrir Chamado', 'Buscar Protocolo', 'Logout']
-        icons = ['plus-square', 'search', 'box-arrow-right']
+    menu_options = ['Login', 'Abrir Chamado', 'Buscar Protocolo']
+    icons = ['box-arrow-in-right', 'plus-square', 'search']
 
 # Crie o menu horizontal com estilos personalizados
 selected_option = option_menu(
@@ -134,49 +127,36 @@ selected_option = option_menu(
     }
 )
 
-# Função de Login
 def login():
     st.subheader('Login')
-    
-    # Inicializar o estado de sessão, se ainda não existir
-    if 'logged_in' not in st.session_state:
-        st.session_state['logged_in'] = False
-    if 'username' not in st.session_state:
-        st.session_state['username'] = ''
-    
-    # Campos de login
     username = st.text_input('Nome de usuário')
     password = st.text_input('Senha', type='password')
 
-    # Botão de login
     if st.button('Entrar'):
         if not username or not password:
             st.error('Por favor, preencha ambos os campos de usuário e senha.')
             logging.warning("Tentativa de login com campos vazios.")
             return
-        
-        # Autenticação
+
         if authenticate(username, password):
+            st.success(f'Login bem-sucedido! Bem-vindo, {username}.')
             st.session_state.logged_in = True
             st.session_state.username = username
-            logging.info(f"Usuário '{username}' fez login com sucesso.")
-            st.success(f'Login bem-sucedido! Bem-vindo, {username}.')
-            st.experimental_rerun()  # Recarregar a página após o login
+            logging.info(f"Usuário '{username}' fez login.")
+            if is_admin(username):
+                st.info('Você está logado como administrador.')
+                logging.info(f"Usuário '{username}' tem privilégios de administrador.")
+            else:
+                st.info('Você está logado como usuário.')
         else:
             st.error('Nome de usuário ou senha incorretos.')
             logging.warning(f"Falha no login para o usuário '{username}'.")
 
-# Função de Logout
 def logout():
-    # Verificar se o estado de sessão está inicializado
-    if 'logged_in' in st.session_state:
-        st.session_state.logged_in = False
-    if 'username' in st.session_state:
-        st.session_state.username = ''
-    
+    st.session_state.logged_in = False
+    st.session_state.username = ''
     st.success('Você saiu da sessão.')
     logging.info("Usuário deslogado com sucesso.")
-    st.experimental_rerun()  # Recarregar a página após o logout
 def abrir_chamado():
     if not st.session_state.get('logged_in'):
         st.warning('Você precisa estar logado para abrir um chamado.')
