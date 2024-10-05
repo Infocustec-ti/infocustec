@@ -24,7 +24,6 @@ from database import (
 from autenticacao import (
     authenticate,
     add_user,
-    is_admin,
     list_users,
     change_password
 )
@@ -61,6 +60,7 @@ st.set_page_config(
     page_icon="✅",
     layout="wide",
 )
+
 # Configuração do logging
 logging.basicConfig(
     level=logging.INFO,
@@ -84,6 +84,7 @@ if 'logged_in' not in st.session_state:
     st.session_state['logged_in'] = False
 if 'username' not in st.session_state:
     st.session_state['username'] = ''
+
 # Gerenciar caminho do logotipo via variável de ambiente
 logo_path = os.getenv('LOGO_PATH', 'infocustec.png')
 if os.path.exists(logo_path):
@@ -96,13 +97,20 @@ else:
 # Título da aplicação
 st.title('Gestão de Parque de Informática - UBS ITAPIPOCA')
 
-# Menu de navegação utilizando o streamlit-option-menu
-if st.session_state.get('logged_in') and is_admin(st.session_state.get('username')):
-    menu_options = ['Login', 'Abrir Chamado', 'Administração', 'Relatórios', 'Chamados Técnicos', 'Buscar Protocolo', 'Configurações']
-    icons = ['box-arrow-in-right', 'plus-square', 'gear', 'bar-chart', 'tools', 'search', 'wrench']
+# Definir o menu com base no estado de login
+if not st.session_state.get('logged_in'):
+    # Se não estiver logado, exibir apenas as opções de login
+    menu_options = ['Login', 'Buscar Protocolo']
+    icons = ['box-arrow-in-right', 'search']
 else:
-    menu_options = ['Login', 'Abrir Chamado', 'Buscar Protocolo']
-    icons = ['box-arrow-in-right', 'plus-square', 'search']
+    # Se estiver logado, exibir opções de administração para administradores
+    if is_admin(st.session_state['username']):
+        menu_options = ['Abrir Chamado', 'Administração', 'Relatórios', 'Chamados Técnicos', 'Buscar Protocolo', 'Configurações', 'Logout']
+        icons = ['plus-square', 'gear', 'bar-chart', 'tools', 'search', 'wrench', 'box-arrow-right']
+    else:
+        # Menu de usuário normal
+        menu_options = ['Abrir Chamado', 'Buscar Protocolo', 'Logout']
+        icons = ['plus-square', 'search', 'box-arrow-right']
 
 # Crie o menu horizontal com estilos personalizados
 selected_option = option_menu(
@@ -126,6 +134,7 @@ selected_option = option_menu(
     }
 )
 
+# Função de Login
 def login():
     st.subheader('Login')
     username = st.text_input('Nome de usuário')
@@ -142,21 +151,18 @@ def login():
             st.session_state.logged_in = True
             st.session_state.username = username
             logging.info(f"Usuário '{username}' fez login.")
-            if is_admin(username):
-                st.info('Você está logado como administrador.')
-                logging.info(f"Usuário '{username}' tem privilégios de administrador.")
-            else:
-                st.info('Você está logado como usuário.')
+            st.experimental_rerun()  # Recarregar a página após o login
         else:
             st.error('Nome de usuário ou senha incorretos.')
             logging.warning(f"Falha no login para o usuário '{username}'.")
 
+# Função de Logout
 def logout():
     st.session_state.logged_in = False
     st.session_state.username = ''
     st.success('Você saiu da sessão.')
     logging.info("Usuário deslogado com sucesso.")
-
+    st.experimental_rerun()  # Recarregar a página após o logout
 def abrir_chamado():
     if not st.session_state.get('logged_in'):
         st.warning('Você precisa estar logado para abrir um chamado.')
