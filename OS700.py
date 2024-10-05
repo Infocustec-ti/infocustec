@@ -720,7 +720,7 @@ def painel_chamados_tecnicos():
 
     # Páginas disponíveis no menu
     if selected_option == 'Login':
-        login()
+        login_form()
     elif selected_option == 'Abrir Chamado':
         abrir_chamado()
     elif selected_option == 'Administração':
