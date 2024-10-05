@@ -54,9 +54,12 @@ from inventario import (
 from ubs import initialize_ubs, manage_ubs, get_ubs_list
 from setores import initialize_setores, manage_setores, get_setores_list
 
-# Print Python version
-print(sys.version)
-
+# Configuração da página do Streamlit
+    st.set_page_config(
+    page_title="Gestão de Parque de Informática - UBS",
+    page_icon="✅",
+    layout="wide",
+)
 # Configuração do logging
 logging.basicConfig(
     level=logging.INFO,
@@ -80,14 +83,6 @@ if 'logged_in' not in st.session_state:
     st.session_state['logged_in'] = False
 if 'username' not in st.session_state:
     st.session_state['username'] = ''
-
-# Configuração da página do Streamlit
-    st.set_page_config(
-    page_title="Gestão de Parque de Informática - UBS",
-    page_icon="✅",
-    layout="wide",
-)
-
 # Gerenciar caminho do logotipo via variável de ambiente
 logo_path = os.getenv('LOGO_PATH', 'infocustec.png')
 if os.path.exists(logo_path):
