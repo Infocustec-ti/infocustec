@@ -1,7 +1,7 @@
 import os
 import bcrypt
 import logging
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, ForeignKey, UniqueConstraint
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 import streamlit as st
