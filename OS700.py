@@ -137,20 +137,30 @@ selected_option = option_menu(
 # Função de Login
 def login():
     st.subheader('Login')
+    
+    # Inicializar o estado de sessão, se ainda não existir
+    if 'logged_in' not in st.session_state:
+        st.session_state['logged_in'] = False
+    if 'username' not in st.session_state:
+        st.session_state['username'] = ''
+    
+    # Campos de login
     username = st.text_input('Nome de usuário')
     password = st.text_input('Senha', type='password')
 
+    # Botão de login
     if st.button('Entrar'):
         if not username or not password:
             st.error('Por favor, preencha ambos os campos de usuário e senha.')
             logging.warning("Tentativa de login com campos vazios.")
             return
-
+        
+        # Autenticação
         if authenticate(username, password):
-            st.success(f'Login bem-sucedido! Bem-vindo, {username}.')
             st.session_state.logged_in = True
             st.session_state.username = username
-            logging.info(f"Usuário '{username}' fez login.")
+            logging.info(f"Usuário '{username}' fez login com sucesso.")
+            st.success(f'Login bem-sucedido! Bem-vindo, {username}.')
             st.experimental_rerun()  # Recarregar a página após o login
         else:
             st.error('Nome de usuário ou senha incorretos.')
@@ -158,8 +168,12 @@ def login():
 
 # Função de Logout
 def logout():
-    st.session_state.logged_in = False
-    st.session_state.username = ''
+    # Verificar se o estado de sessão está inicializado
+    if 'logged_in' in st.session_state:
+        st.session_state.logged_in = False
+    if 'username' in st.session_state:
+        st.session_state.username = ''
+    
     st.success('Você saiu da sessão.')
     logging.info("Usuário deslogado com sucesso.")
     st.experimental_rerun()  # Recarregar a página após o logout
