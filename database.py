@@ -1,7 +1,10 @@
-import sqlite3
+import os
 import bcrypt
 import logging
-import os
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, ForeignKey, UniqueConstraint
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, relationship
+from dotenv import load_dotenv
 
 # Configuração do logging
 logging.basicConfig(
@@ -13,144 +16,123 @@ logging.basicConfig(
     ]
 )
 
-# Função para criar as tabelas de inventário, setores, UBSs, peças usadas e usuários, se elas não existirem
+# Configuração do banco de dados PostgreSQL (Supabase)
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    logging.error("DATABASE_URL não está definido nas variáveis de ambiente.")
+    raise ValueError("DATABASE_URL não está definido nas variáveis de ambiente.")
+
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+# Definição dos modelos ORM
+class Inventario(Base):
+    __tablename__ = 'inventario'
+    id = Column(Integer, primary_key=True, index=True)
+    numero_patrimonio = Column(String, unique=True, nullable=False)
+    tipo = Column(String, nullable=False)
+    marca = Column(String, nullable=False)
+    modelo = Column(String, nullable=False)
+    numero_serie = Column(String, nullable=False)
+    status = Column(String, nullable=False)
+    localizacao = Column(String, nullable=False)
+    propria_locada = Column(String, nullable=False)
+    setor = Column(String, nullable=False)
+    historico = relationship("HistoricoManutencao", back_populates="inventario")
+
+class UBS(Base):
+    __tablename__ = 'ubs'
+    id = Column(Integer, primary_key=True, index=True)
+    nome_ubs = Column(String, unique=True, nullable=False)
+
+class Setor(Base):
+    __tablename__ = 'setores'
+    id = Column(Integer, primary_key=True, index=True)
+    nome_setor = Column(String, unique=True, nullable=False)
+
+class HistoricoManutencao(Base):
+    __tablename__ = 'historico_manutencao'
+    id = Column(Integer, primary_key=True, index=True)
+    numero_patrimonio = Column(String, ForeignKey('inventario.numero_patrimonio'), nullable=False)
+    descricao = Column(String, nullable=False)
+    data_manutencao = Column(String, nullable=False)
+    inventario = relationship("Inventario", back_populates="historico")
+
+class Chamado(Base):
+    __tablename__ = 'chamados'
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, nullable=False)
+    ubs = Column(String, nullable=False)
+    setor = Column(String, nullable=False)
+    tipo_defeito = Column(String, nullable=False)
+    problema = Column(String, nullable=False)
+    hora_abertura = Column(String, nullable=False)
+    solucao = Column(String)
+    hora_fechamento = Column(String)
+    protocolo = Column(Integer, unique=True, nullable=False)
+    machine = Column(String)
+    patrimonio = Column(String)
+    pecas_usadas = relationship("PecaUsada", back_populates="chamado")
+
+class PecaUsada(Base):
+    __tablename__ = 'pecas_usadas'
+    id = Column(Integer, primary_key=True, index=True)
+    chamado_id = Column(Integer, ForeignKey('chamados.id'), nullable=False)
+    peca_nome = Column(String, nullable=False)
+    data_uso = Column(String, nullable=False)
+    chamado = relationship("Chamado", back_populates="pecas_usadas")
+
+class Usuario(Base):
+    __tablename__ = 'usuarios'
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, nullable=False)
+    password = Column(String, nullable=False)
+    role = Column(String, default='user', nullable=False)
+
+# Função para criar as tabelas no banco de dados
 def create_tables():
     try:
-        with sqlite3.connect('chamados.db') as conn:
-            cursor = conn.cursor()
-
-            # Tabela inventário
-            cursor.execute('''
-                CREATE TABLE IF NOT EXISTS inventario (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    numero_patrimonio TEXT UNIQUE,
-                    tipo TEXT,
-                    marca TEXT,
-                    modelo TEXT,
-                    numero_serie TEXT,
-                    status TEXT,
-                    localizacao TEXT,
-                    propria_locada TEXT,
-                    setor TEXT
-                )
-            ''')
-
-            # Tabela UBSs
-            cursor.execute('''
-                CREATE TABLE IF NOT EXISTS ubs (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    nome_ubs TEXT UNIQUE
-                )
-            ''')
-
-            # Tabela Setores
-            cursor.execute('''
-                CREATE TABLE IF NOT EXISTS setores (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    nome_setor TEXT UNIQUE
-                )
-            ''')
-
-            # Tabela de histórico de manutenção
-            cursor.execute('''
-                CREATE TABLE IF NOT EXISTS historico_manutencao (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    numero_patrimonio TEXT,
-                    descricao TEXT,
-                    data_manutencao TEXT,
-                    FOREIGN KEY (numero_patrimonio) REFERENCES inventario(numero_patrimonio)
-                )
-            ''')
-
-            # Tabela de chamados
-            cursor.execute('''
-                CREATE TABLE IF NOT EXISTS chamados (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    username TEXT NOT NULL,
-                    ubs TEXT NOT NULL,
-                    setor TEXT NOT NULL,
-                    tipo_defeito TEXT NOT NULL,
-                    problema TEXT NOT NULL,
-                    hora_abertura TEXT NOT NULL,
-                    solucao TEXT,
-                    hora_fechamento TEXT,
-                    protocolo INTEGER UNIQUE NOT NULL,
-                    machine TEXT,
-                    patrimonio TEXT                )
-            ''')
-
-            # Tabela de peças usadas
-            cursor.execute('''
-                CREATE TABLE IF NOT EXISTS pecas_usadas (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    chamado_id INTEGER,
-                    peca_nome TEXT,
-                    data_uso TEXT,
-                    FOREIGN KEY (chamado_id) REFERENCES chamados(id)
-                )
-            ''')
-
-            # Tabela de usuários (incluindo a coluna 'role' para definir o tipo de usuário)
-            cursor.execute('''
-                CREATE TABLE IF NOT EXISTS usuarios (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    username TEXT UNIQUE,
-                    password TEXT,
-                    role TEXT DEFAULT 'user'  -- Adicionando a coluna 'role'
-                )
-            ''')
-
-            conn.commit()
-            logging.info("Tabelas criadas ou já existentes verificadas com sucesso.")
-    except sqlite3.Error as e:
+        Base.metadata.create_all(bind=engine)
+        logging.info("Tabelas criadas ou já existentes verificadas com sucesso.")
+    except Exception as e:
         logging.error(f"Erro ao criar as tabelas: {e}")
-
-def check_or_create_admin_user():
-    try:
-        with sqlite3.connect('chamados.db') as conn:
-            cursor = conn.cursor()
-            # Verificar se o usuário admin já existe
-            cursor.execute("SELECT * FROM usuarios WHERE username=?", ('admin',))
-            admin_user = cursor.fetchone()
-
-            if not admin_user:
-                # Definir uma senha padrão
-                admin_password = 'admin'  # Substitua por uma senha segura
-
-                # Hashear a senha usando bcrypt
-                hashed_password = bcrypt.hashpw(admin_password.encode('utf-8'), bcrypt.gensalt())
-                cursor.execute("INSERT INTO usuarios (username, password, role) VALUES (?, ?, ?)", ('admin', hashed_password, 'admin'))
-                conn.commit()
-                logging.info("Usuário 'admin' criado com sucesso com senha padrão.")
-                print("Usuário 'admin' criado com sucesso com senha padrão.")
-            else:
-                logging.info("Usuário 'admin' já existe.")
-                print("Usuário 'admin' já existe.")
-    except sqlite3.Error as e:
-        logging.error(f"Erro ao verificar ou criar usuário admin: {e}")
-        print(f"Erro ao verificar ou criar usuário admin: {e}")
 
 # Função para adicionar uma UBS ao banco de dados
 def add_ubs(nome_ubs):
+    session = SessionLocal()
     try:
-        with sqlite3.connect('chamados.db') as conn:
-            cursor = conn.cursor()
-            cursor.execute("INSERT OR IGNORE INTO ubs (nome_ubs) VALUES (?)", (nome_ubs,))
-            conn.commit()
-            logging.info(f"UBS '{nome_ubs}' adicionada ou já existente.")
-    except sqlite3.Error as e:
+        ubs = session.query(UBS).filter(UBS.nome_ubs == nome_ubs).first()
+        if not ubs:
+            novo_ubs = UBS(nome_ubs=nome_ubs)
+            session.add(novo_ubs)
+            session.commit()
+            logging.info(f"UBS '{nome_ubs}' adicionada com sucesso.")
+        else:
+            logging.info(f"UBS '{nome_ubs}' já existente.")
+    except Exception as e:
+        session.rollback()
         logging.error(f"Erro ao adicionar UBS: {e}")
+    finally:
+        session.close()
 
 # Função para adicionar um setor ao banco de dados
 def add_setor(nome_setor):
+    session = SessionLocal()
     try:
-        with sqlite3.connect('chamados.db') as conn:
-            cursor = conn.cursor()
-            cursor.execute("INSERT OR IGNORE INTO setores (nome_setor) VALUES (?)", (nome_setor,))
-            conn.commit()
-            logging.info(f"Setor '{nome_setor}' adicionado ou já existente.")
-    except sqlite3.Error as e:
+        setor = session.query(Setor).filter(Setor.nome_setor == nome_setor).first()
+        if not setor:
+            novo_setor = Setor(nome_setor=nome_setor)
+            session.add(novo_setor)
+            session.commit()
+            logging.info(f"Setor '{nome_setor}' adicionado com sucesso.")
+        else:
+            logging.info(f"Setor '{nome_setor}' já existente.")
+    except Exception as e:
+        session.rollback()
         logging.error(f"Erro ao adicionar setor: {e}")
+    finally:
+        session.close()
 
 # Função para inicializar UBSs e setores no banco de dados
 def initialize_ubs_setores():
@@ -172,25 +154,50 @@ def initialize_ubs_setores():
         "Sala da Vacina", "Consultório Odontológico", "Sala de Administração"
     ]
 
-    # Inicializar UBSs
     for ubs in ubs_iniciais:
         add_ubs(ubs)
 
-    # Inicializar Setores
     for setor in setores_iniciais:
         add_setor(setor)
 
 # Função para verificar se o usuário é administrador
 def is_admin(username):
+    session = SessionLocal()
     try:
-        with sqlite3.connect('chamados.db') as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT role FROM usuarios WHERE username=?", (username,))
-            user_role = cursor.fetchone()
-            return user_role and user_role[0] == 'admin'
-    except sqlite3.Error as e:
+        usuario = session.query(Usuario).filter(Usuario.username == username).first()
+        return usuario and usuario.role == 'admin'
+    except Exception as e:
         logging.error(f"Erro ao verificar função do usuário: {e}")
         return False
+    finally:
+        session.close()
+
+# Função para criar um usuário
+def create_user(username, password, role='user'):
+    session = SessionLocal()
+    try:
+        usuario = session.query(Usuario).filter(Usuario.username == username).first()
+        if not usuario:
+            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+            novo_usuario = Usuario(username=username, password=hashed_password, role=role)
+            session.add(novo_usuario)
+            session.commit()
+            logging.info(f"Usuário '{username}' criado com sucesso.")
+            return True
+        else:
+            logging.warning(f"Falha ao criar usuário '{username}': já existe.")
+            return False
+    except Exception as e:
+        session.rollback()
+        logging.error(f"Erro ao criar usuário '{username}': {e}")
+        return False
+    finally:
+        session.close()
+
+# Função para verificar e criar o usuário admin
+def check_or_create_admin_user():
+    if not create_user('admin', 'admin', 'admin'):
+        logging.info("Usuário 'admin' já existe.")
 
 # Inicialização do banco de dados ao rodar o script
 if __name__ == "__main__":
