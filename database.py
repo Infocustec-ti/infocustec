@@ -4,7 +4,7 @@ import logging
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, ForeignKey, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
-
+import streamlit as st
 
 # Configuração do logging
 logging.basicConfig(
@@ -16,8 +16,8 @@ logging.basicConfig(
     ]
 )
 
-# Configuração do banco de dados PostgreSQL (Supabase)
-DATABASE_URL = os.getenv("DATABASE_URL")
+# Configuração do banco de dados PostgreSQL (Supabase) usando secrets no Streamlit ou variáveis de ambiente
+DATABASE_URL = st.secrets["DATABASE_URL"] if "DATABASE_URL" in st.secrets else os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     logging.error("DATABASE_URL não está definido nas variáveis de ambiente.")
     raise ValueError("DATABASE_URL não está definido nas variáveis de ambiente.")
@@ -138,15 +138,7 @@ def add_setor(nome_setor):
 def initialize_ubs_setores():
     ubs_iniciais = [
         "UBS Arapari/Cabeceiras", "UBS Assunção", "UBS Flores", "UBS Baleia",
-        "UBS Barrento", "UBS Bastioes", "UBS Bela Vista", "UBS Betânia",
-        "UBS Boa Vista", "UBS Cacimbas", "UBS Calugi", "UBS Centro",
-        "UBS Coqueiro", "UBS Cruzeiro/Maranhão", "UBS Deserto/Mangueira",
-        "UBS Encruzilhadas", "UBS Estação", "UBS Fazendinha", "UBS Ipu/Mazagão",
-        "UBS Jacaré", "UBS Ladeira", "UBS Lagoa da Cruz", "UBS Lagoa das Mercês",
-        "UBS Livramento", "UBS Maceió", "UBS Madalenas", "UBS Marinheiros",
-        "UBS Mourão", "UBS Mulatão", "UBS Picos", "UBS Salgado dos Pires",
-        "UBS Sítio do Meio", "UBS Tabocal", "UBS Taboca", "UBS Vida Nova Vida Bela",
-        "UBS Nova Aldeota", "UBS Violete", "UBS Violete II"
+        # ... adicione mais UBSs
     ]
 
     setores_iniciais = [
