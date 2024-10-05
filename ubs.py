@@ -173,10 +173,3 @@ def manage_ubs():
         else:
             st.write('Nenhuma UBS cadastrada para remover.')
 
-# Inicializar o sistema de UBS ao rodar o script
-initialize_ubs()
-# Exibir UBSs cadastradas para verificação
-ubs_list = get_ubs_list()
-print("UBSs cadastradas:")
-for ubs in ubs_list:
-    print(ubs)
