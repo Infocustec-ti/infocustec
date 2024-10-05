@@ -82,7 +82,7 @@ if 'username' not in st.session_state:
     st.session_state['username'] = ''
 
 # Configuração da página do Streamlit
-st.set_page_config(
+    st.set_page_config(
     page_title="Gestão de Parque de Informática - UBS",
     page_icon="✅",
     layout="wide",
