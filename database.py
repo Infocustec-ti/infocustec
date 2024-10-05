@@ -4,7 +4,7 @@ import logging
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, ForeignKey, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
-from dotenv import load_dotenv
+
 
 # Configuração do logging
 logging.basicConfig(
