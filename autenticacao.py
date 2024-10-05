@@ -1,8 +1,9 @@
 # autenticacao.py
 
-import sqlite3
 import bcrypt
 import logging
+from sqlalchemy.orm import Session
+from database import SessionLocal, Usuario
 
 # Configuração do logging
 logging.basicConfig(
@@ -15,121 +16,116 @@ logging.basicConfig(
 )
 
 # Função para autenticar o usuário
-def authenticate(username, password):
+def authenticate(username: str, password: str) -> bool:
+    session: Session = SessionLocal()
     try:
-        with sqlite3.connect('chamados.db') as conn:
-            cursor = conn.cursor()
-
-            # Busca o hash da senha armazenada no banco de dados
-            cursor.execute("SELECT password FROM usuarios WHERE username=?", (username,))
-            result = cursor.fetchone()
-
-            if result:
-                stored_password = result[0]
-                # Garantir que stored_password é do tipo bytes
-                if isinstance(stored_password, str):
-                    stored_password = stored_password.encode('utf-8')
-
-                # Verifica a senha usando bcrypt
-                if bcrypt.checkpw(password.encode('utf-8'), stored_password):
-                    logging.info(f"Usuário '{username}' autenticado com sucesso.")
-                    return True
-                else:
-                    logging.warning(f"Senha incorreta para o usuário '{username}'.")
-                    return False
-            else:
-                logging.warning(f"Usuário '{username}' não encontrado.")
-                return False
+        user = session.query(Usuario).filter(Usuario.username == username).first()
+        if user and bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
+            logging.info(f"Autenticação bem-sucedida para usuário '{username}'.")
+            return True
+        else:
+            logging.warning(f"Falha na autenticação para usuário '{username}'.")
+            return False
     except Exception as e:
         logging.error(f"Erro na autenticação: {e}")
         return False
+    finally:
+        session.close()
 
 # Função para adicionar um novo usuário
-def add_user(username, password, is_admin=False):
+def add_user(username: str, password: str, is_admin: bool = False) -> bool:
+    session: Session = SessionLocal()
     try:
-        with sqlite3.connect('chamados.db') as conn:
-            cursor = conn.cursor()
-
-            # Verifica se o usuário já existe
-            cursor.execute("SELECT * FROM usuarios WHERE username=?", (username,))
-            existing_user = cursor.fetchone()
-
-            if existing_user:
-                logging.warning(f"Usuário '{username}' já existe.")
-                return False
-            else:
-                # Hashear a senha usando bcrypt
-                hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-                role = 'admin' if is_admin else 'user'
-                cursor.execute(
-                    "INSERT INTO usuarios (username, password, role) VALUES (?, ?, ?)",
-                    (username, hashed_password, role)
-                )
-                conn.commit()
-                logging.info(f"Usuário '{username}' criado com sucesso como {role}.")
-                return True
+        existing_user = session.query(Usuario).filter(Usuario.username == username).first()
+        if existing_user:
+            logging.warning(f"Falha ao criar usuário '{username}': já existe.")
+            return False
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        role = 'admin' if is_admin else 'user'
+        new_user = Usuario(username=username, password=hashed_password, role=role)
+        session.add(new_user)
+        session.commit()
+        logging.info(f"Usuário '{username}' criado com sucesso como '{role}'.")
+        return True
     except Exception as e:
+        session.rollback()
         logging.error(f"Erro ao adicionar usuário '{username}': {e}")
         return False
+    finally:
+        session.close()
 
 # Função para verificar se o usuário é administrador
-def is_admin(username):
+def is_admin(username: str) -> bool:
+    session: Session = SessionLocal()
     try:
-        with sqlite3.connect('chamados.db') as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT role FROM usuarios WHERE username=?", (username,))
-            user_role = cursor.fetchone()
-            return user_role and user_role[0] == 'admin'
+        user = session.query(Usuario).filter(Usuario.username == username).first()
+        if user and user.role == 'admin':
+            logging.info(f"Usuário '{username}' é um administrador.")
+            return True
+        else:
+            logging.info(f"Usuário '{username}' não é um administrador.")
+            return False
     except Exception as e:
         logging.error(f"Erro ao verificar função do usuário '{username}': {e}")
         return False
+    finally:
+        session.close()
 
 # Função para listar todos os usuários cadastrados
 def list_users():
+    session: Session = SessionLocal()
     try:
-        with sqlite3.connect('chamados.db') as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT username, role FROM usuarios")
-            users = cursor.fetchall()
-            return users
+        users = session.query(Usuario.username, Usuario.role).all()
+        logging.info("Lista de usuários obtida com sucesso.")
+        return users
     except Exception as e:
         logging.error(f"Erro ao listar usuários: {e}")
         return []
+    finally:
+        session.close()
 
 # Função para alterar a senha de um usuário
-def change_password(username, new_password):
+def change_password(username: str, old_password: str, new_password: str) -> bool:
+    session: Session = SessionLocal()
     try:
-        if not username or not new_password:
-            raise ValueError("Usuário ou nova senha inválidos.")
-
-        hashed_new_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
-
-        with sqlite3.connect('chamados.db') as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                "UPDATE usuarios SET password=? WHERE username=?",
-                (hashed_new_password, username)
-            )
-            conn.commit()
+        user = session.query(Usuario).filter(Usuario.username == username).first()
+        if user and bcrypt.checkpw(old_password.encode('utf-8'), user.password.encode('utf-8')):
+            hashed_new_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+            user.password = hashed_new_password
+            session.commit()
             logging.info(f"Senha do usuário '{username}' alterada com sucesso.")
             return True
+        else:
+            logging.warning(f"Falha na alteração da senha para usuário '{username}': autenticação falhou.")
+            return False
     except Exception as e:
+        session.rollback()
         logging.error(f"Erro ao alterar a senha do usuário '{username}': {e}")
         return False
+    finally:
+        session.close()
 
 # Função para remover um usuário (apenas para administradores)
-def remove_user(admin_username, target_username):
-    if is_admin(admin_username):
-        try:
-            with sqlite3.connect('chamados.db') as conn:
-                cursor = conn.cursor()
-                cursor.execute("DELETE FROM usuarios WHERE username=?", (target_username,))
-                conn.commit()
-                logging.info(f"Usuário '{target_username}' removido com sucesso por '{admin_username}'.")
-                return True
-        except Exception as e:
-            logging.error(f"Erro ao remover usuário '{target_username}': {e}")
+def remove_user(admin_username: str, target_username: str) -> bool:
+    session: Session = SessionLocal()
+    try:
+        admin_user = session.query(Usuario).filter(Usuario.username == admin_username).first()
+        if not admin_user or admin_user.role != 'admin':
+            logging.warning(f"Permissão negada para remover usuário '{target_username}' por '{admin_username}'.")
             return False
-    else:
-        logging.warning(f"Permissão negada. Usuário '{admin_username}' não é administrador.")
+        
+        target_user = session.query(Usuario).filter(Usuario.username == target_username).first()
+        if not target_user:
+            logging.warning(f"Usuário '{target_username}' não encontrado para remoção.")
+            return False
+        
+        session.delete(target_user)
+        session.commit()
+        logging.info(f"Usuário '{target_username}' removido com sucesso por '{admin_username}'.")
+        return True
+    except Exception as e:
+        session.rollback()
+        logging.error(f"Erro ao remover usuário '{target_username}': {e}")
         return False
+    finally:
+        session.close()
