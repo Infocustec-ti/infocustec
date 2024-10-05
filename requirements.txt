@@ -8,8 +8,8 @@ seaborn==0.13.2
 streamlit==1.39.0
 twilio==8.10.3
 bcrypt==3.2.0
-streamlit-option-menu==0.3.13
-streamlit-aggrid>=1.0.5
+streamlit-option-menu
+streamlit-aggrid
 plotly==5.24.1
 sqlalchemy
 psycopg2-binary
