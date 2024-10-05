@@ -1,32 +1,22 @@
-import os
-import streamlit as st
+# ubs.py
 from sqlalchemy.orm import Session
 from database import SessionLocal, UBS
+import streamlit as st
 import logging
-
-# Configuração do logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler("os500.log"),
-        logging.StreamHandler()
-    ]
-)
 
 # Função para adicionar uma nova UBS
 def add_ubs(nome_ubs: str) -> bool:
     session: Session = SessionLocal()
     try:
         # Verifica se a UBS já existe
-        setor_existente = session.query(UBS).filter(UBS.nome_ubs == nome_ubs).first()
-        if setor_existente:
+        ubs_existente = session.query(UBS).filter(UBS.nome_ubs == nome_ubs).first()
+        if ubs_existente:
             logging.warning(f"UBS '{nome_ubs}' já está cadastrada.")
             return False
         nova_ubs = UBS(nome_ubs=nome_ubs)
         session.add(nova_ubs)
         session.commit()
-        logging.info(f"UBS '{nome_ubs}' adicionada com sucesso.")
+        logging.info(f"UBS '{nome_ubs}' adicionada ao banco de dados.")
         return True
     except Exception as e:
         session.rollback()
@@ -42,7 +32,7 @@ def get_ubs_list() -> list:
     try:
         ubs = session.query(UBS.nome_ubs).all()
         ubs_list = [item[0] for item in ubs]
-        logging.info("UBSs recuperadas com sucesso.")
+        logging.info("UBSs recuperadas do banco de dados.")
         return ubs_list
     except Exception as e:
         logging.error(f"Erro ao recuperar UBSs: {e}")
@@ -59,7 +49,7 @@ def remove_ubs(nome_ubs: str) -> bool:
         if ubs:
             session.delete(ubs)
             session.commit()
-            logging.info(f"UBS '{nome_ubs}' removida com sucesso.")
+            logging.info(f"UBS '{nome_ubs}' removida do banco de dados.")
             return True
         else:
             logging.warning(f"UBS '{nome_ubs}' não encontrada para remoção.")
@@ -76,15 +66,14 @@ def remove_ubs(nome_ubs: str) -> bool:
 def update_ubs(old_name: str, new_name: str) -> bool:
     session: Session = SessionLocal()
     try:
-        # Verifica se o novo nome já existe
-        ubs_existente = session.query(UBS).filter(UBS.nome_ubs == new_name).first()
-        if ubs_existente:
-            st.warning(f"UBS '{new_name}' já está cadastrada.")
-            logging.warning(f"Tentativa de atualizar UBS para um nome já existente: {new_name}")
-            return False
-
         ubs = session.query(UBS).filter(UBS.nome_ubs == old_name).first()
         if ubs:
+            # Verifica se o novo nome já existe
+            ubs_existente = session.query(UBS).filter(UBS.nome_ubs == new_name).first()
+            if ubs_existente:
+                st.warning(f"UBS '{new_name}' já está cadastrada.")
+                logging.warning(f"Tentativa de atualizar UBS para um nome já existente: {new_name}")
+                return False
             ubs.nome_ubs = new_name
             session.commit()
             logging.info(f"UBS '{old_name}' atualizada para '{new_name}'.")
@@ -100,10 +89,9 @@ def update_ubs(old_name: str, new_name: str) -> bool:
     finally:
         session.close()
 
-# Inicializar algumas UBSs no banco de dados
+# Função para inicializar algumas UBSs no banco de dados (se necessário)
 def initialize_ubs():
-    # Lista de UBSs iniciais que queremos cadastrar
-    ubs_iniciais = [
+    setores_iniciais = [
         "UBS Arapari/Cabeceiras", "UBS Assunçao", "UBS Flores", "UBS Baleia",
         "UBS Barrento", "UBS Bastioes", "UBS Bela Vista", "UBS Betania",
         "UBS Boa Vista", "UBS Cacimbas", "UBS Calugi", "UBS Centro",
@@ -115,8 +103,7 @@ def initialize_ubs():
         "UBS Sitio do Meio", "UBS Tabocal", "UBS Taboca", "UBS Vida Nova Vida Bela",
         "UBS Nova Aldeota", "UBS Violete", "UBS Violete II"
     ]
-
-    for ubs in ubs_iniciais:
+    for ubs in setores_iniciais:
         add_ubs(ubs)
 
 # Função para exibir e gerenciar UBSs usando Streamlit
@@ -155,7 +142,7 @@ def manage_ubs():
                     if update_ubs(old_name, new_name):
                         st.success(f"UBS '{old_name}' atualizada para '{new_name}'.")
                     else:
-                        st.error('Erro ao atualizar a UBS.')
+                        st.error('Erro ao atualizar a UBS ou o novo nome já está em uso.')
                 else:
                     st.error('Por favor, insira o novo nome da UBS.')
         else:
@@ -173,3 +160,10 @@ def manage_ubs():
         else:
             st.write('Nenhuma UBS cadastrada para remover.')
 
+# Inicializar o sistema de UBS ao rodar o script
+initialize_ubs()
+# Exibir UBSs cadastradas para verificação
+ubs_list = get_ubs_list()
+print("UBSs cadastradas:")
+for ubs in ubs_list:
+    print(ubs)
