@@ -17,7 +17,7 @@ logging.basicConfig(
 )
 
 # Configuração do banco de dados PostgreSQL (Supabase) usando secrets no Streamlit ou variáveis de ambiente
-DATABASE_URL = st.secrets["DATABASE_URL"] if "DATABASE_URL" in st.secrets else os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     logging.error("DATABASE_URL não está definido nas variáveis de ambiente.")
     raise ValueError("DATABASE_URL não está definido nas variáveis de ambiente.")
@@ -86,10 +86,11 @@ class PecaUsada(Base):
 class Usuario(Base):
     __tablename__ = 'usuarios'
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, nullable=False)
-    password = Column(String, nullable=False)
-    role = Column(String, default='user', nullable=False)
+    username = Column(String(50), unique=True, nullable=False)  # Definindo tamanho máximo
+    password = Column(String(128), nullable=False)  # Definindo tamanho máximo para senha criptografada
+    role = Column(String(10), default='user', nullable=False)
 
+# Função para criar as tabelas no banco de dados
 # Função para criar as tabelas no banco de dados
 def create_tables():
     try:
@@ -97,7 +98,9 @@ def create_tables():
         logging.info("Tabelas criadas ou já existentes verificadas com sucesso.")
     except Exception as e:
         logging.error(f"Erro ao criar as tabelas: {e}")
-        print(f"Erro ao criar as tabelas: {e}")  # Log visível
+        print(f"Erro ao criar as tabelas: {e}")
+        raise  # Relevanta o erro para parar a execução do sistema caso falhe
+# Função para adicionar uma UBS ao banco de dados
 # Função para adicionar uma UBS ao banco de dados
 def add_ubs(nome_ubs):
     session = SessionLocal()
@@ -152,12 +155,15 @@ def initialize_ubs_setores():
     for setor in setores_iniciais:
         add_setor(setor)
 
-# Função para verificar se o usuário é administrador
 def is_admin(username):
     session = SessionLocal()
     try:
         usuario = session.query(Usuario).filter(Usuario.username == username).first()
-        return usuario and usuario.role == 'admin'
+        if usuario:
+            return usuario.role == 'admin'
+        else:
+            logging.warning(f"Usuário '{username}' não encontrado.")
+            return False
     except Exception as e:
         logging.error(f"Erro ao verificar função do usuário: {e}")
         return False
