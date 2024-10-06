@@ -60,7 +60,9 @@ st.set_page_config(
 )
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
-    st.write(st.session_state)
+if 'username' not in st.session_state:
+    st.session_state.username = ''
+
 
 # Configuração do logging
 logging.basicConfig(
