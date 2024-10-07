@@ -317,7 +317,7 @@ def calculate_average_time(chamados):
     total_tempo = 0
     total_chamados_finalizados = 0
     for chamado in chamados:
-        if chamado.hora_abertura and chamado.hora_fechamento:
+        if chamado['hora_abertura'] and chamado['hora_fechamento']:
             tempo_segundos = calculate_tempo_decorrido_em_segundos(chamado)
             if tempo_segundos is not None:
                 total_tempo += tempo_segundos
@@ -329,6 +329,7 @@ def calculate_average_time(chamados):
         media_tempo = 0
         logging.info("Nenhum chamado finalizado para calcular tempo médio de atendimento.")
     return media_tempo
+
 
 def show_average_time(chamados):
     if chamados:
@@ -564,7 +565,8 @@ def generate_linear_time_chart(chamados):
     try:
         if chamados:
             tempos_decorridos = []
-            chamados_sorted = sorted(chamados, key=lambda x: datetime.strptime(x.hora_abertura, '%d/%m/%Y %H:%M:%S'))
+            chamados_sorted = sorted(chamados, key=lambda x: datetime.strptime(x['hora_abertura'], '%d/%m/%Y %H:%M:%S'))
+
             for i in range(1, len(chamados_sorted)):
                 tempo_decorrido = calculate_tempo_decorrido_entre_chamados(chamados_sorted[i - 1], chamados_sorted[i])
                 if tempo_decorrido:
