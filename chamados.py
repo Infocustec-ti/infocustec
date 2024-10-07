@@ -316,7 +316,7 @@ def calculate_average_time(chamados):
     total_tempo = 0
     total_chamados_finalizados = 0
     for chamado in chamados:
-        if chamado['hora_abertura'] and chamado['hora_fechamento']:
+        if chamado.hora_abertura and chamado.hora_fechamento:
             tempo_segundos = calculate_tempo_decorrido_em_segundos(chamado)
             if tempo_segundos is not None:
                 total_tempo += tempo_segundos
@@ -559,12 +559,12 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
         st.error("Erro ao gerar relatório. Tente novamente mais tarde.")
         return None
 
-# Função para gerar gráfico de tempo linear
 def generate_linear_time_chart(chamados):
     try:
         if chamados:
             tempos_decorridos = []
-            chamados_sorted = sorted(chamados, key=lambda x: datetime.strptime(x['hora_abertura'], '%d/%m/%Y %H:%M:%S'))
+            # Ordenar os chamados usando a notação de ponto
+            chamados_sorted = sorted(chamados, key=lambda x: datetime.strptime(x.hora_abertura, '%d/%m/%Y %H:%M:%S'))
 
             for i in range(1, len(chamados_sorted)):
                 tempo_decorrido = calculate_tempo_decorrido_entre_chamados(chamados_sorted[i - 1], chamados_sorted[i])
@@ -582,7 +582,8 @@ def generate_linear_time_chart(chamados):
                 plt.tight_layout(pad=2.0)
 
                 linear_time_chart = save_plot_to_temp_file()
-                
+                plt.close()
+
                 pdf = FPDF(orientation='L')
                 pdf.add_page()
                 pdf.set_font('Arial', 'B', 14)
@@ -600,7 +601,6 @@ def generate_linear_time_chart(chamados):
     except Exception as e:
         logging.error(f"Erro ao gerar gráfico de tempo linear: {e}")
         return None
-
 # Função para calcular tempo decorrido entre chamados consecutivos
 def calculate_tempo_decorrido_entre_chamados(chamado_anterior, chamado_atual):
     try:
