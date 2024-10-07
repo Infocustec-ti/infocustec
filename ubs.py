@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from database import SessionLocal, UBS
 import streamlit as st
 import logging
+import sys
 
 # Função para adicionar uma nova UBS
 def add_ubs(nome_ubs: str) -> bool:
@@ -27,6 +28,7 @@ def add_ubs(nome_ubs: str) -> bool:
         session.close()
 
 # Função para listar todas as UBSs cadastradas
+@st.cache_data(ttl=300)
 def get_ubs_list() -> list:
     session: Session = SessionLocal()
     try:
