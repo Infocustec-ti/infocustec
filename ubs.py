@@ -94,16 +94,7 @@ def update_ubs(old_name: str, new_name: str) -> bool:
 # Função para inicializar algumas UBSs no banco de dados (se necessário)
 def initialize_ubs():
     ubs_iniciais = [
-        "UBS Arapari/Cabeceiras", "UBS Assunçao", "UBS Flores", "UBS Baleia",
-        "UBS Barrento", "UBS Bastioes", "UBS Bela Vista", "UBS Betania",
-        "UBS Boa Vista", "UBS Cacimbas", "UBS Calugi", "UBS Centro",
-        "UBS Coqueiro", "UBS Cruzeiro/Maranhao", "UBS Deserto/Mangueira",
-        "UBS Encruzilhadas", "UBS Estaçao", "UBS Fazendinha", "UBS Ipu/Mazagao",
-        "UBS Jacare", "UBS Ladeira", "UBS Lagoa da Cruz", "UBS Lagoa das Merces",
-        "UBS Livramento", "UBS Maceio", "UBS Madalenas", "UBS Marinheiros",
-        "UBS Mourao", "UBS Mulatao", "UBS Picos", "UBS Salgado dos Pires",
-        "UBS Sitio do Meio", "UBS Tabocal", "UBS Taboca", "UBS Vida Nova Vida Bela",
-        "UBS Nova Aldeota", "UBS Violete", "UBS Violete II"
+        "UBS Arapari/Cabeceiras"
     ]
     for ubs in ubs_iniciais:
         add_ubs(ubs)
