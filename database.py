@@ -140,13 +140,12 @@ def add_setor(nome_setor):
 # Função para inicializar UBSs e setores no banco de dados
 def initialize_ubs_setores():
     ubs_iniciais = [
-        "UBS Arapari/Cabeceiras", "UBS Assunção", "UBS Flores", "UBS Baleia",
+        "UBS Baleia"
         # ... adicione mais UBSs
     ]
 
     setores_iniciais = [
-        "Recepção", "Consultório Médico", "Farmácia", "Sala da Enfermeira",
-        "Sala da Vacina", "Consultório Odontológico", "Sala de Administração"
+        "Recepção"
     ]
 
     for ubs in ubs_iniciais:
