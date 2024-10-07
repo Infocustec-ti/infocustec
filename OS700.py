@@ -35,7 +35,6 @@ from chamados import (
     finalizar_chamado,
     get_chamado_by_protocolo,
     show_average_time,
-    generate_linear_time_chart,
     get_monthly_technical_data,
     generate_monthly_report,
     calculate_tempo_decorrido,
