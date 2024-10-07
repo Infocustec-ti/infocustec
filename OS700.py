@@ -55,6 +55,10 @@ from inventario import (
 from ubs import initialize_ubs, manage_ubs, get_ubs_list
 from setores import initialize_setores, manage_setores, get_setores_list
 
+# Inicializar UBSs apenas uma vez
+if 'ubs_initialized' not in st.session_state:
+    initialize_ubs()
+    st.session_state.ubs_initialized = True
 # Inicialização do estado da sessão
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
