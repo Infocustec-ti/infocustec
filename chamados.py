@@ -167,8 +167,8 @@ def finalizar_chamado(id_chamado, solucao, pecas_usadas=None):
             st.success(f'Chamado ID: {id_chamado} finalizado com sucesso e histórico de manutenção criado!')
             logging.info(f"Chamado ID: {id_chamado} finalizado e histórico de manutenção criado para patrimônio {chamado.patrimonio}.")
         else:
-            st.error("Número de patrimônio não encontrado para o chamado.")
-            logging.warning(f"Número de patrimônio não encontrado para o chamado ID {id_chamado}.")
+            st.error("Chamado não encontrado.")
+            logging.warning(f"Chamado ID {id_chamado} não encontrado.")
     except Exception as e:
         session.rollback()
         logging.error(f"Erro ao finalizar chamado ID {id_chamado}: {e}")
@@ -236,6 +236,7 @@ def calculate_working_hours(start, end):
 
     return timedelta(seconds=total_seconds)
 
+# Função para calcular tempo decorrido
 def calculate_tempo_decorrido(chamado):
     try:
         hora_abertura = chamado.hora_abertura
@@ -264,13 +265,14 @@ def calculate_tempo_decorrido(chamado):
         tempo_formatado += f'{seconds}s'
 
         return tempo_formatado
-    except KeyError as e:
-        logging.error(f"Erro ao calcular tempo decorrido: Coluna ausente {e}")
+    except AttributeError as e:
+        logging.error(f"Erro ao calcular tempo decorrido: {e}")
         return "Erro no cálculo"
     except Exception as e:
         logging.error(f"Erro ao calcular tempo decorrido: {e}")
         return "Erro no cálculo"
 
+# Função para calcular tempo decorrido em segundos
 def calculate_tempo_decorrido_em_segundos(chamado):
     try:
         hora_abertura = chamado.hora_abertura
@@ -283,13 +285,14 @@ def calculate_tempo_decorrido_em_segundos(chamado):
 
         tempo_uteis = calculate_working_hours(hora_abertura, hora_fechamento)
         return tempo_uteis.total_seconds()
-    except KeyError as e:
-        logging.error(f"Erro ao calcular tempo decorrido em segundos: Coluna ausente {e}")
+    except AttributeError as e:
+        logging.error(f"Erro ao calcular tempo decorrido em segundos: {e}")
         return None
     except Exception as e:
         logging.error(f"Erro ao calcular tempo decorrido em segundos: {e}")
         return None
 
+# Função para formatar tempo
 def formatar_tempo(total_seconds):
     try:
         total_seconds = int(total_seconds)
@@ -311,7 +314,7 @@ def formatar_tempo(total_seconds):
         logging.error(f"Erro ao formatar tempo: {e}")
         return "Erro no formato"
 
-
+# Função para calcular tempo médio
 def calculate_average_time(chamados):
     total_tempo = 0
     total_chamados_finalizados = 0
@@ -329,7 +332,7 @@ def calculate_average_time(chamados):
         logging.info("Nenhum chamado finalizado para calcular tempo médio de atendimento.")
     return media_tempo
 
-
+# Função para mostrar tempo médio
 def show_average_time(chamados):
     if chamados:
         media_tempo_segundos = calculate_average_time(chamados)
@@ -338,6 +341,7 @@ def show_average_time(chamados):
     else:
         st.write('Nenhum chamado finalizado para calcular o tempo médio.')
 
+# Função para obter dados mensais técnicos
 def get_monthly_technical_data():
     chamados = list_chamados()
     data = []
@@ -364,6 +368,7 @@ def get_monthly_technical_data():
     logging.info("Dados mensais dos chamados técnicos preparados.")
     return df, months_list
 
+# Função para salvar gráfico em arquivo temporário
 def save_plot_to_temp_file():
     try:
         tmpfile = tempfile.NamedTemporaryFile(suffix='.png', delete=False)
@@ -375,6 +380,7 @@ def save_plot_to_temp_file():
         logging.error(f"Erro ao salvar gráfico temporariamente: {e}")
         return None
 
+# Função para adicionar imagem ao PDF
 def add_image_to_pdf(pdf, image_path, title):
     try:
         pdf.set_font('Arial', 'B', 12)
@@ -386,6 +392,7 @@ def add_image_to_pdf(pdf, image_path, title):
     except Exception as e:
         logging.error(f"Erro ao adicionar imagem {title} ao PDF: {e}")
 
+# Função para gerar relatório mensal
 def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=None):
     try:
         if not isinstance(df, pd.DataFrame):
@@ -414,7 +421,7 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
             return None
         
         df_filtered['Tempo Decorrido (s)'] = df_filtered.apply(
-            calculate_tempo_decorrido_em_segundos, axis=1
+            lambda row: calculate_tempo_decorrido_em_segundos_row(row), axis=1
         )
         
         df_filtered = df_filtered.dropna(subset=['Tempo Decorrido (s)'])
@@ -443,6 +450,7 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
         total_pecas_usadas = pecas_usadas_df['peca_nome'].count() if not pecas_usadas_df.empty else 0
         pecas_mais_usadas = pecas_usadas_df['peca_nome'].value_counts().head(5) if not pecas_usadas_df.empty else pd.Series([], dtype="int64")
 
+        # Gráfico: Número de Chamados por UBS
         fig, ax = plt.subplots(figsize=(10, 6))
         sns.countplot(data=df_filtered, x='UBS', order=df_filtered['UBS'].value_counts().index, ax=ax)
         ax.set_title('Número de Chamados por UBS')
@@ -451,6 +459,7 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
         chamados_por_ubs_chart = save_plot_to_temp_file()
         plt.close(fig)
 
+        # Gráfico: Número de Chamados por Tipo de Defeito
         fig, ax = plt.subplots(figsize=(10, 6))
         sns.countplot(data=df_filtered, x='Tipo de Defeito', order=df_filtered['Tipo de Defeito'].value_counts().index, ax=ax)
         ax.set_title('Número de Chamados por Tipo de Defeito')
@@ -459,6 +468,7 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
         chamados_por_defeito_chart = save_plot_to_temp_file()
         plt.close(fig)
 
+        # Gráfico: Tempo Médio de Resolução por UBS
         fig, ax = plt.subplots(figsize=(10, 6))
         tempo_medio_por_ubs = df_filtered.groupby('UBS')['Tempo Decorrido (s)'].mean().reset_index()
         tempo_medio_por_ubs['Tempo Médio'] = tempo_medio_por_ubs['Tempo Decorrido (s)'].apply(formatar_tempo)
@@ -470,6 +480,7 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
         tempo_medio_por_ubs_chart = save_plot_to_temp_file()
         plt.close(fig)
 
+        # Gráfico: Peças Mais Usadas
         if not pecas_mais_usadas.empty:
             fig, ax = plt.subplots(figsize=(10, 6))
             sns.barplot(x=pecas_mais_usadas.index, y=pecas_mais_usadas.values, ax=ax)
@@ -479,6 +490,7 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
             pecas_mais_usadas_chart = save_plot_to_temp_file()
             plt.close(fig)
 
+        # Criação do PDF
         pdf = FPDF(orientation='L')
         pdf.add_page()
         
@@ -559,11 +571,11 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
         st.error("Erro ao gerar relatório. Tente novamente mais tarde.")
         return None
 
+# Função para gerar gráfico de tempo linear
 def generate_linear_time_chart(chamados):
     try:
         if chamados:
             tempos_decorridos = []
-            # Ordenar os chamados usando a notação de ponto
             chamados_sorted = sorted(chamados, key=lambda x: datetime.strptime(x.hora_abertura, '%d/%m/%Y %H:%M:%S'))
 
             for i in range(1, len(chamados_sorted)):
@@ -601,6 +613,7 @@ def generate_linear_time_chart(chamados):
     except Exception as e:
         logging.error(f"Erro ao gerar gráfico de tempo linear: {e}")
         return None
+
 # Função para calcular tempo decorrido entre chamados consecutivos
 def calculate_tempo_decorrido_entre_chamados(chamado_anterior, chamado_atual):
     try:
@@ -615,4 +628,16 @@ def calculate_tempo_decorrido_entre_chamados(chamado_anterior, chamado_atual):
         return hora_abertura_atual - hora_abertura_anterior
     except Exception as e:
         logging.error(f"Erro ao calcular tempo decorrido entre chamados consecutivos: {e}")
+        return None
+
+# Função para calcular tempo decorrido em segundos para DataFrame row
+def calculate_tempo_decorrido_em_segundos_row(row):
+    try:
+        hora_abertura = row['Hora Abertura']
+        hora_fechamento = row['Hora Fechamento'] or datetime.now()
+
+        tempo_uteis = calculate_working_hours(hora_abertura, hora_fechamento)
+        return tempo_uteis.total_seconds()
+    except Exception as e:
+        logging.error(f"Erro ao calcular tempo decorrido em segundos para a linha: {e}")
         return None
