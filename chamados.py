@@ -87,6 +87,7 @@ def buscar_no_inventario_por_patrimonio(patrimonio):
 def add_chamado(username, ubs, setor, tipo_defeito, problema, machine=None, patrimonio=None):
     protocolo = gerar_protocolo_sequencial()
     if protocolo is None:
+        st.error("Não foi possível gerar um protocolo para o chamado. Tente novamente mais tarde.")
         return
 
     hora_abertura = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
@@ -142,6 +143,13 @@ def add_maquina(numero_patrimonio, tipo, marca, modelo, numero_serie, status, lo
         if not numero_serie:
             numero_serie = "N/A"  # Definindo um valor padrão para número de série
 
+        # Verificar se a máquina já existe pelo número de patrimônio
+        existing_machine = session.query(Inventario).filter(Inventario.numero_patrimonio == numero_patrimonio).first()
+        if existing_machine:
+            st.error(f"Máquina com o número de patrimônio {numero_patrimonio} já existe no inventário.")
+            logging.warning(f"Tentativa de duplicação de patrimônio: {numero_patrimonio}")
+            return
+
         nova_maquina = Inventario(
             numero_patrimonio=numero_patrimonio,
             tipo=tipo,
@@ -163,7 +171,6 @@ def add_maquina(numero_patrimonio, tipo, marca, modelo, numero_serie, status, lo
         st.error("Erro interno ao adicionar máquina ao inventário. Verifique os dados e tente novamente.")
     finally:
         session.close()
-
 
 # Função para finalizar um chamado
 def finalizar_chamado(id_chamado, solucao, pecas_usadas=None):
@@ -242,27 +249,32 @@ def calculate_working_hours(start, end):
 
     while current < end:
         if current.weekday() >= 5:
+            # Pular finais de semana
             next_day = current + timedelta(days=1)
             current = next_day.replace(hour=0, minute=0, second=0, microsecond=0)
             continue
 
+        # Definir os intervalos de trabalho
         start_morning = current.replace(hour=8, minute=0, second=0, microsecond=0)
         end_morning = current.replace(hour=12, minute=0, second=0, microsecond=0)
         start_afternoon = current.replace(hour=13, minute=0, second=0, microsecond=0)
         end_afternoon = current.replace(hour=17, minute=0, second=0, microsecond=0)
 
+        # Calcular horas da manhã
         if start <= end_morning and end > start_morning:
             interval_start = max(start, start_morning)
             interval_end = min(end, end_morning)
             if interval_end > interval_start:
                 total_seconds += (interval_end - interval_start).total_seconds()
 
+        # Calcular horas da tarde
         if start <= end_afternoon and end > start_afternoon:
             interval_start = max(start, start_afternoon)
             interval_end = min(end, end_afternoon)
             if interval_end > interval_start:
                 total_seconds += (interval_end - interval_start).total_seconds()
 
+        # Avançar para o próximo dia
         current = (current + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
 
     return timedelta(seconds=total_seconds)
@@ -549,6 +561,7 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
         pdf.set_font('Arial', 'B', 12)
         pdf.cell(0, 10, 'Dashboard', ln=True, align='C')
         
+        # Adicionar gráficos ao PDF
         pdf.add_page()
         add_image_to_pdf(pdf, chamados_por_ubs_chart, 'Chamados por UBS')
         
@@ -571,7 +584,7 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
         pdf.cell(0, 10, 'Detalhamento dos Chamados', ln=True, align='C')
 
         columns = ['Protocolo', 'UBS', 'Setor', 'Tipo de Defeito', 'Problema', 'Hora Abertura', 'Hora Fechamento', 'Tempo Decorrido', 'Peças Usadas']
-        col_widths = [16, 34, 34, 31, 36, 31, 31, 31, 26]
+        col_widths = [20, 40, 40, 35, 50, 30, 30, 30, 40]
 
         pdf.set_font('Arial', 'B', 10)
         for i, col in enumerate(columns):
@@ -584,12 +597,14 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
             pdf.cell(col_widths[1], 8, str(row['UBS']), border=1, align='C')
             pdf.cell(col_widths[2], 8, str(row['Setor']), border=1, align='C')
             pdf.cell(col_widths[3], 8, str(row['Tipo de Defeito']), border=1, align='C')
-            pdf.cell(col_widths[4], 8, str(row['Problema']), border=1, align='L')
+            problema = str(row['Problema'])[:47] + '...' if len(str(row['Problema'])) > 50 else str(row['Problema'])
+            pdf.cell(col_widths[4], 8, problema, border=1, align='L')
             pdf.cell(col_widths[5], 8, row['Hora Abertura'].strftime('%d/%m/%Y %H:%M:%S'), border=1, align='C')
             pdf.cell(col_widths[6], 8, row['Hora Fechamento'].strftime('%d/%m/%Y %H:%M:%S') if row['Hora Fechamento'] else '-', border=1, align='C')
             tempo_formatado = formatar_tempo(row['Tempo Decorrido (s)'])
             pdf.cell(col_widths[7], 8, tempo_formatado, border=1, align='C')
-            pdf.cell(col_widths[8], 8, row['peca_nome'], border=1, align='L')
+            peca_nome = str(row['peca_nome'])[:37] + '...' if len(str(row['peca_nome'])) > 40 else str(row['peca_nome'])
+            pdf.cell(col_widths[8], 8, peca_nome, border=1, align='L')
             pdf.ln()
 
         pdf_content = pdf.output(dest='S').encode('latin1')
@@ -602,29 +617,49 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
         st.error("Erro ao gerar relatório. Tente novamente mais tarde.")
         return None
 
-# Função para salvar gráfico em arquivo temporário
-def save_plot_to_temp_file():
+# Função para gerar gráfico de tempo linear
+def generate_linear_time_chart(chamados):
     try:
-        tmpfile = tempfile.NamedTemporaryFile(suffix='.png', delete=False)
-        plt.savefig(tmpfile.name, format='png')
-        plt.close()
-        logging.info(f"Gráfico salvo temporariamente em {tmpfile.name}")
-        return tmpfile.name
-    except Exception as e:
-        logging.error(f"Erro ao salvar gráfico temporariamente: {e}")
-        return None
+        if chamados:
+            tempos_decorridos = []
+            chamados_sorted = sorted(chamados, key=lambda x: datetime.strptime(x.hora_abertura, '%d/%m/%Y %H:%M:%S'))
 
-# Função para adicionar imagem ao PDF
-def add_image_to_pdf(pdf, image_path, title):
-    try:
-        pdf.set_font('Arial', 'B', 12)
-        pdf.ln(10)
-        pdf.cell(0, 10, title, ln=True, align='C')
-        pdf.image(image_path, x=10, y=pdf.get_y() + 10, w=270)
-        os.remove(image_path)
-        logging.info(f"Imagem {title} adicionada ao PDF e arquivo temporário removido.")
+            for i in range(1, len(chamados_sorted)):
+                tempo_decorrido = calculate_tempo_decorrido_entre_chamados(chamados_sorted[i - 1], chamados_sorted[i])
+                if tempo_decorrido:
+                    # Convertendo timedelta para minutos
+                    minutos = int(tempo_decorrido.total_seconds() / 60)
+                    tempos_decorridos.append(minutos)
+
+            if tempos_decorridos:
+                plt.figure(figsize=(10, 6))
+                plt.plot(range(1, len(tempos_decorridos) + 1), tempos_decorridos, marker='o', linestyle='-')
+                plt.title('Tempo Decorrido entre Chamados Consecutivos')
+                plt.xlabel('Chamados Consecutivos')
+                plt.ylabel('Tempo Decorrido (minutos)')
+                plt.gca().yaxis.set_major_locator(MaxNLocator(integer=True))
+                plt.tight_layout(pad=2.0)
+
+                linear_time_chart = save_plot_to_temp_file()
+                plt.close()
+
+                pdf = FPDF(orientation='L')
+                pdf.add_page()
+                pdf.set_font('Arial', 'B', 14)
+                pdf.cell(0, 10, 'Tempo Decorrido entre Chamados Consecutivos', ln=True, align='C')
+                pdf.image(linear_time_chart, x=10, y=30, w=270)
+
+                pdf_output = BytesIO()
+                pdf_output_bytes = pdf.output(dest='S').encode('latin1')
+                pdf_output.write(pdf_output_bytes)
+                pdf_output.seek(0)
+
+                logging.info("Gráfico de tempo linear gerado com sucesso.")
+                return pdf_output
+        return None
     except Exception as e:
-        logging.error(f"Erro ao adicionar imagem {title} ao PDF: {e}")
+        logging.error(f"Erro ao gerar gráfico de tempo linear: {e}")
+        return None
 
 # Função para calcular tempo decorrido entre chamados consecutivos
 def calculate_tempo_decorrido_entre_chamados(chamado_anterior, chamado_atual):
