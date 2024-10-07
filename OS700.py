@@ -793,5 +793,5 @@ else:
 # Página padrão ou conteúdo adicional
 st.markdown("""
 ---
-Desenvolvido por [Sua Empresa](https://www.suaempresa.com)
+Desenvolvido por Infocustec (Email: atendimento@infocustec.com.br)
 """)
