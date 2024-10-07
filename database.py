@@ -11,8 +11,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler("database.log"),
-        logging.StreamHandler()
+        logging.StreamHandler(sys.stdout),,
     ]
 )
 
@@ -34,7 +33,7 @@ class Inventario(Base):
     tipo = Column(String, nullable=False)
     marca = Column(String, nullable=False)
     modelo = Column(String, nullable=False)
-    numero_serie = Column(String, nullable=False)
+    numero_serie = Column(String, nullable=True)
     status = Column(String, nullable=False)
     localizacao = Column(String, nullable=False)
     propria_locada = Column(String, nullable=False)
@@ -194,8 +193,31 @@ def create_user(username, password, role='user'):
 
 # Função para verificar e criar o usuário admin
 def check_or_create_admin_user():
-    if not create_user('admin', 'admin', 'admin'):
-        logging.info("Usuário 'admin' já existe.")
+    admin_username = os.getenv("ADMIN_USERNAME", "admin")
+    admin_password = os.getenv("ADMIN_PASSWORD", "admin")
+    
+    session = SessionLocal()
+    try:
+        usuario = session.query(Usuario).filter(Usuario.username == admin_username).first()
+        if not usuario:
+            # Criar novo usuário admin
+            create_user(admin_username, admin_password, 'admin')
+        else:
+            # Verificar se a senha está hashada (começa com '$2')
+            if not usuario.password.startswith('$2'):
+                # Atualizar a senha com hash bcrypt
+                hashed_password = bcrypt.hashpw(admin_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+                usuario.password = hashed_password
+                usuario.role = 'admin'  # Assegura que o papel é admin
+                session.commit()
+                logging.info(f"Senha do usuário admin '{admin_username}' atualizada com hash bcrypt.")
+            else:
+                logging.info(f"Usuário admin '{admin_username}' já existe com senha hashada.")
+    except Exception as e:
+        session.rollback()
+        logging.error(f"Erro ao verificar/criar usuário admin: {e}")
+    finally:
+        session.close()
 
 # Inicialização do banco de dados ao rodar o script
 if __name__ == "__main__":
