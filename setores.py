@@ -88,8 +88,7 @@ def update_setor(old_name: str, new_name: str) -> bool:
 # Função para inicializar alguns setores no banco de dados (se necessário)
 def initialize_setores():
     setores_iniciais = [
-        "Recepção", "Consultório médico", "Farmácia", "Sala da Enfermeira", 
-        "Sala da vacina", "Consultório odontológico", "Sala administração"
+        "Recepção"
     ]
     for setor in setores_iniciais:
         add_setor(setor)
