@@ -573,7 +573,7 @@ def painel_chamados_tecnicos():
                                 except Exception as e:
                                     st.error(f"Erro ao finalizar o chamado: {e}")
                                     logging.error(f"Erro ao finalizar o chamado ID {chamado_selecionado.get('ID')}: {e}")
-                                    st.experimental_set_query_params(updated='true')
+                                    
                             else:
                                 st.error('Por favor, insira a solução antes de finalizar o chamado.')
                     else:
