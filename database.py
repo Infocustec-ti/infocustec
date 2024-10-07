@@ -220,9 +220,4 @@ def check_or_create_admin_user():
     finally:
         session.close()
 
-# Inicialização do banco de dados ao rodar o script
-if __name__ == "__main__":
-    create_tables()
-    initialize_ubs_setores()
-    check_or_create_admin_user()
-    logging.info("Banco de dados inicializado com sucesso.")
+
