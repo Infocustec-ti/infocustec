@@ -11,6 +11,8 @@ from streamlit_option_menu import option_menu
 from st_aggrid import AgGrid, GridOptionsBuilder
 from fpdf import FPDF
 from io import BytesIO
+
+# Importações dos módulos personalizados
 from database import (
     create_tables,
     initialize_ubs_setores,
@@ -53,73 +55,58 @@ from inventario import (
 from ubs import initialize_ubs, manage_ubs, get_ubs_list
 from setores import initialize_setores, manage_setores, get_setores_list
 
+# Inicialização do estado da sessão
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 if 'username' not in st.session_state:
     st.session_state.username = ''
+
+# Configuração da página
 st.set_page_config(
     page_title="Gestão de Parque de Informática - UBS",
     page_icon="✅",
     layout="wide",
 )
+
 # Configuração do logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler("os500.log"),
-        logging.StreamHandler()
+        logging.StreamHandler(sys.stdout),  # Logs para stdout (visíveis no Streamlit Cloud)
     ]
 )
 
 # Inicializar o banco de dados e tabelas
-create_tables()
-initialize_ubs_setores()
-initialize_ubs()
-initialize_setores()
-check_or_create_admin_user()
-logging.info("Banco de dados inicializado com sucesso.")
-# Gerenciar caminho do logotipo via variável de ambiente
-logo_path = os.getenv('LOGO_PATH', 'infocustec.png')
-if os.path.exists(logo_path):
-    st.image(logo_path, width=300)
-    logging.info("Logotipo carregado com sucesso.")
-else:
-    st.warning("Logotipo não encontrado. Verifique o caminho configurado.")
-    logging.warning("Logotipo não encontrado no caminho especificado.")
+try:
+    create_tables()
+    initialize_ubs_setores()
+    initialize_ubs()
+    initialize_setores()
+    check_or_create_admin_user()
+    logging.info("Banco de dados inicializado com sucesso.")
+except Exception as e:
+    logging.error(f"Erro ao inicializar o banco de dados: {e}")
+    st.error("Erro ao inicializar o banco de dados. Verifique os logs para mais detalhes.")
+
+# Carregar o logotipo
+def carregar_logotipo():
+    logo_path = st.secrets.get('LOGO_PATH', 'infocustec.png')  # Utilize st.secrets para o caminho
+    logo_url = st.secrets.get('LOGO_URL', None)  # Alternativa via URL
+    if logo_path and os.path.exists(logo_path):
+        st.image(logo_path, width=300)
+        logging.info("Logotipo carregado com sucesso do caminho local.")
+    elif logo_url:
+        st.image(logo_url, width=300)
+        logging.info("Logotipo carregado com sucesso via URL.")
+    else:
+        st.warning("Logotipo não encontrado. Verifique as configurações.")
+        logging.warning("Logotipo não encontrado no caminho especificado e nenhuma URL fornecida.")
+
+carregar_logotipo()
 
 # Título da aplicação
 st.title('Gestão de Parque de Informática - UBS ITAPIPOCA')
-
-# Menu de navegação utilizando o streamlit-option-menu
-if st.session_state.get('logged_in') and is_admin(st.session_state.get('username')):
-    menu_options = ['Login', 'Abrir Chamado', 'Administração', 'Relatórios', 'Chamados Técnicos', 'Buscar Protocolo', 'Configurações']
-    icons = ['box-arrow-in-right', 'plus-square', 'gear', 'bar-chart', 'tools', 'search', 'wrench']
-else:
-    menu_options = ['Login', 'Abrir Chamado', 'Buscar Protocolo']
-    icons = ['box-arrow-in-right', 'plus-square', 'search']
-
-# Crie o menu horizontal com estilos personalizados
-selected_option = option_menu(
-    menu_title=None,
-    options=menu_options,
-    icons=icons,
-    menu_icon="cast",
-    default_index=0,
-    orientation="horizontal",
-    styles={
-        "container": {"padding": "0!important", "background-color": "#00008B"},
-        "icon": {"color": "white", "font-size": "18px"},
-        "nav-link": {
-            "font-size": "16px",
-            "text-align": "center",
-            "margin": "0px",
-            "color": "white",
-            "--hover-color": "#1E90FF",
-        },
-        "nav-link-selected": {"background-color": "#1E90FF"},
-    }
-)
 
 # Função de login
 def login_form():
@@ -133,32 +120,38 @@ def login_form():
             logging.warning("Tentativa de login com campos vazios.")
             return
 
-        if authenticate(username, password):
-            st.success(f'Login bem-sucedido! Bem-vindo, {username}.')
-            st.session_state.logged_in = True
-            st.session_state.username = username
-            logging.info(f"Usuário '{username}' fez login.")
-            if is_admin(username):  # Verifica se o usuário é admin
-                st.info('Você está logado como administrador.')
-                logging.info(f"Usuário '{username}' tem privilégios de administrador.")
+        try:
+            if authenticate(username, password):
+                st.success(f'Login bem-sucedido! Bem-vindo, {username}.')
+                st.session_state.logged_in = True
+                st.session_state.username = username
+                logging.info(f"Usuário '{username}' fez login.")
+                if is_admin(username):  # Verifica se o usuário é admin
+                    st.session_state.is_admin = True
+                    st.info('Você está logado como administrador.')
+                    logging.info(f"Usuário '{username}' tem privilégios de administrador.")
+                else:
+                    st.session_state.is_admin = False
+                    st.info('Você está logado como usuário.')
+                st.experimental_rerun()  # Recarrega a página após login
             else:
-                st.info('Você está logado como usuário.')
-            st.experimental_rerun()  # Recarrega a página após login
-        else:
-            st.error('Nome de usuário ou senha incorretos.')
-            logging.warning(f"Falha no login para o usuário '{username}'.")
+                st.error('Nome de usuário ou senha incorretos.')
+                logging.warning(f"Falha no login para o usuário '{username}'.")
+        except Exception as e:
+            st.error('Ocorreu um erro durante a autenticação. Verifique os logs para mais detalhes.')
+            logging.error(f"Erro durante a autenticação do usuário '{username}': {e}")
 
-
+# Função de logout
 def logout():
     st.session_state.logged_in = False
     st.session_state.username = ''
+    st.session_state.is_admin = False
     st.success('Você saiu da sessão.')
     logging.info("Usuário deslogado com sucesso.")
-def abrir_chamado():
-    if not st.session_state.get('logged_in'):
-        st.warning('Você precisa estar logado para abrir um chamado.')
-        return
+    st.experimental_rerun()  # Recarrega a página após logout
 
+# Função para abrir chamado
+def abrir_chamado():
     st.subheader('Abrir Chamado Técnico')
 
     patrimonio = st.text_input('Número de Patrimônio')
@@ -224,22 +217,29 @@ def abrir_chamado():
         if not problema:
             st.error('Por favor, descreva o problema ou solicitação.')
             return
-        protocolo = add_chamado(
-            st.session_state.username,
-            ubs_selecionada,
-            setor,
-            tipo_defeito,
-            problema,
-            machine=selected_machine,
-            patrimonio=patrimonio
-        )
-        if protocolo:
-            st.success(f'Chamado aberto com sucesso! Seu protocolo é: {protocolo}')
-        else:
-            st.error('Erro ao abrir chamado.')
+        try:
+            protocolo = add_chamado(
+                st.session_state.username,
+                ubs_selecionada,
+                setor,
+                tipo_defeito,
+                problema,
+                machine=selected_machine,
+                patrimonio=patrimonio
+            )
+            if protocolo:
+                st.success(f'Chamado aberto com sucesso! Seu protocolo é: {protocolo}')
+                logging.info(f"Chamado '{protocolo}' aberto por '{st.session_state.username}'.")
+            else:
+                st.error('Erro ao abrir chamado.')
+                logging.error(f"Erro ao abrir chamado por '{st.session_state.username}'.")
+        except Exception as e:
+            st.error('Erro ao abrir chamado. Verifique os logs para mais detalhes.')
+            logging.error(f"Erro ao abrir chamado: {e}")
 
+# Função de administração (apenas para admins)
 def administracao():
-    if not st.session_state.get('logged_in') or not is_admin(st.session_state.get('username')):
+    if not st.session_state.get('logged_in') or not st.session_state.get('is_admin'):
         st.warning('Você precisa estar logado como administrador para acessar esta área.')
         logging.warning("Usuário sem privilégios tentou acessar a administração.")
         return
@@ -387,8 +387,82 @@ def administracao():
             st.error(f"Erro ao gerenciar Setores: {e}")
             logging.error(f"Erro ao gerenciar Setores: {e}")
 
+# Função para relatórios
+def painel_relatorios():
+    if not st.session_state.get('logged_in') or not st.session_state.get('is_admin'):
+        st.warning('Você precisa estar logado como administrador para acessar esta área.')
+        logging.warning("Usuário sem privilégios tentou acessar os relatórios.")
+        return
+
+    st.subheader('Relatórios')
+    report_option = st.selectbox(
+        'Selecione um tipo de relatório:',
+        ['Chamados Técnicos', 'Inventário']
+    )
+
+    if report_option == 'Chamados Técnicos':
+        st.subheader('Relatório de Chamados Técnicos')
+        try:
+            df, months_list = get_monthly_technical_data()
+
+            if not isinstance(df, pd.DataFrame):
+                st.error("Erro: O retorno de dados não é um DataFrame.")
+                logging.error("Esperava-se um DataFrame, mas o retorno foi de outro tipo.")
+                return
+
+            selected_month = st.selectbox('Selecione o Mês', months_list)
+
+            if st.button('Gerar Relatório'):
+                try:
+                    filtered_df = df[df['Mês'].astype(str) == selected_month]
+
+                    pdf_output = generate_monthly_report(filtered_df, selected_month, logo_path=st.secrets.get('LOGO_PATH', 'infocustec.png'))
+
+                    if pdf_output:
+                        st.download_button(
+                            label="Download Relatório PDF",
+                            data=pdf_output,
+                            file_name=f"Relatorio_Chamados_Mensal_{selected_month}.pdf",
+                            mime="application/pdf"
+                        )
+                        logging.info(f"Relatório mensal gerado para o mês: {selected_month}")
+                    else:
+                        st.error(f"Erro ao gerar o relatório para o mês: {selected_month}")
+                        logging.error(f"Erro ao gerar o relatório para o mês: {selected_month}")
+
+                except Exception as e:
+                    st.error(f"Erro ao gerar relatório: {e}")
+                    logging.error(f"Erro ao gerar relatório mensal: {e}")
+
+        except Exception as e:
+            st.error(f"Erro ao preparar dados para relatório: {e}")
+            logging.error(f"Erro ao preparar dados para relatório: {e}")
+
+    elif report_option == 'Inventário':
+        st.subheader('Relatório de Inventário')
+        try:
+            inventory_items = get_machines_from_inventory()
+
+            pdf_output = create_inventory_report(inventory_items, logo_path=st.secrets.get('LOGO_PATH', 'infocustec.png'))
+
+            if pdf_output:
+                st.download_button(
+                    label="Download Relatório de Inventário",
+                    data=pdf_output,
+                    file_name="Relatorio_Inventario.pdf",
+                    mime="application/pdf"
+                )
+                logging.info("Relatório de inventário gerado com sucesso.")
+            else:
+                st.error("Erro ao gerar relatório de inventário.")
+                logging.error("Erro ao gerar relatório de inventário.")
+        except Exception as e:
+            st.error(f"Erro ao gerar relatório de inventário: {e}")
+            logging.error(f"Erro ao gerar relatório de inventário: {e}")
+
+# Função para painel de chamados técnicos
 def painel_chamados_tecnicos():
-    if not st.session_state.get('logged_in') or not is_admin(st.session_state.get('username')):
+    if not st.session_state.get('logged_in') or not st.session_state.get('is_admin'):
         st.warning('Você precisa estar logado como administrador para acessar esta área.')
         logging.warning("Usuário sem privilégios tentou acessar o painel de chamados técnicos.")
         return
@@ -577,168 +651,147 @@ def painel_chamados_tecnicos():
             fig_setor.update_layout(yaxis=dict(tickmode='linear', tick0=1))
             st.plotly_chart(fig_setor)
 
-    def painel_relatorios():
-        if not st.session_state.get('logged_in') or not is_admin(st.session_state.get('username')):
-            st.warning('Você precisa estar logado como administrador para acessar esta área.')
-            logging.warning("Usuário sem privilégios tentou acessar os relatórios.")
+# Função para buscar protocolo
+def buscar_protocolo():
+    st.subheader('Buscar Chamado por Protocolo')
+    protocolo = st.text_input('Digite o número do protocolo:')
+
+    if st.button('Buscar'):
+        if not protocolo:
+            st.error('Por favor, insira um número de protocolo para buscar.')
+            logging.warning("Busca de protocolo realizada sem inserção de protocolo.")
             return
 
-        st.subheader('Relatórios')
-        report_option = st.selectbox(
-            'Selecione um tipo de relatório:',
-            ['Chamados Técnicos', 'Inventário']
-        )
+        try:
+            chamado = get_chamado_by_protocolo(protocolo)
+            if chamado:
+                st.success('Chamado encontrado:')
+                st.write(f'**ID:** {chamado.id}')
+                st.write(f'**Usuário:** {chamado.username}')
+                st.write(f'**UBS:** {chamado.ubs}')
+                st.write(f'**Setor:** {chamado.setor}')
+                st.write(f'**Tipo de Defeito:** {chamado.tipo_defeito}')
+                st.write(f'**Problema:** {chamado.problema}')
+                st.write(f'**Hora Abertura:** {chamado.hora_abertura}')
+                st.write(f'**Solução:** {chamado.solucao}')
+                st.write(f'**Hora Fechamento:** {chamado.hora_fechamento}')
+                st.write(f'**Protocolo:** {chamado.protocolo}')
+                st.write(f'**Máquina:** {chamado.machine}')
+                st.write(f'**Patrimônio:** {chamado.patrimonio}')
+                logging.info(f"Chamado encontrado pelo protocolo: {protocolo}")
+            else:
+                st.warning(f'Chamado com o protocolo {protocolo} não encontrado.')
+                logging.info(f"Chamado não encontrado pelo protocolo: {protocolo}")
+        except Exception as e:
+            st.error(f"Erro ao buscar chamado: {e}")
+            logging.error(f"Erro ao buscar chamado pelo protocolo {protocolo}: {e}")
 
-        if report_option == 'Chamados Técnicos':
-            st.subheader('Relatório de Chamados Técnicos')
-            try:
-                df, months_list = get_monthly_technical_data()
+# Função para configurações (alterar senha)
+def configuracoes():
+    if not st.session_state.get('logged_in') or not st.session_state.get('is_admin'):
+        st.warning('Você precisa estar logado como administrador para acessar esta área.')
+        logging.warning("Usuário sem privilégios tentou acessar as configurações.")
+        return
 
-                if not isinstance(df, pd.DataFrame):
-                    st.error("Erro: O retorno de dados não é um DataFrame.")
-                    logging.error("Esperava-se um DataFrame, mas o retorno foi de outro tipo.")
-                    return
+    st.subheader('Configurações de Usuários')
 
-                selected_month = st.selectbox('Selecione o Mês', months_list)
+    usuarios = list_users()
+    if not usuarios:
+        st.info("Nenhum usuário encontrado.")
+        return
 
-                if st.button('Gerar Relatório'):
-                    try:
-                        filtered_df = df[df['Mês'].astype(str) == selected_month]
+    usernames = [user[0] for user in usuarios]
 
-                        pdf_output = generate_monthly_report(filtered_df, selected_month, logo_path=logo_path)
+    selected_user = st.selectbox('Selecione um usuário para alterar a senha:', usernames)
 
-                        if pdf_output:
-                            st.download_button(
-                                label="Download Relatório PDF",
-                                data=pdf_output,
-                                file_name=f"Relatorio_Chamados_Mensal_{selected_month}.pdf",
-                                mime="application/pdf"
-                            )
-                            logging.info(f"Relatório mensal gerado para o mês: {selected_month}")
-                        else:
-                            st.error(f"Erro ao gerar o relatório para o mês: {selected_month}")
-                            logging.error(f"Erro ao gerar o relatório para o mês: {selected_month}")
+    nova_senha = st.text_input('Nova senha', type='password')
+    confirmar_senha = st.text_input('Confirme a nova senha', type='password')
 
-                    except Exception as e:
-                        st.error(f"Erro ao gerar relatório: {e}")
-                        logging.error(f"Erro ao gerar relatório mensal: {e}")
-            except Exception as e:
-                st.error(f"Erro ao preparar dados para relatório: {e}")
-                logging.error(f"Erro ao preparar dados para relatório: {e}")
-
-        elif report_option == 'Inventário':
-            st.subheader('Relatório de Inventário')
-            try:
-                inventory_items = get_machines_from_inventory()
-
-                pdf_output = create_inventory_report(inventory_items, logo_path=logo_path)
-
-                if pdf_output:
-                    st.download_button(
-                        label="Download Relatório de Inventário",
-                        data=pdf_output,
-                        file_name="Relatorio_Inventario.pdf",
-                        mime="application/pdf"
-                    )
-                    logging.info("Relatório de inventário gerado com sucesso.")
-                else:
-                    st.error("Erro ao gerar relatório de inventário.")
-                    logging.error("Erro ao gerar relatório de inventário.")
-            except Exception as e:
-                st.error(f"Erro ao gerar relatório de inventário: {e}")
-                logging.error(f"Erro ao gerar relatório de inventário: {e}")
-
-    def buscar_protocolo():
-        st.subheader('Buscar Chamado por Protocolo')
-        protocolo = st.text_input('Digite o número do protocolo:')
-
-        if st.button('Buscar'):
-            if not protocolo:
-                st.error('Por favor, insira um número de protocolo para buscar.')
-                logging.warning("Busca de protocolo realizada sem inserção de protocolo.")
-                return
-
-            try:
-                chamado = get_chamado_by_protocolo(protocolo)
-                if chamado:
-                    st.success('Chamado encontrado:')
-                    st.write(f'**ID:** {chamado.id}')
-                    st.write(f'**Usuário:** {chamado.username}')
-                    st.write(f'**UBS:** {chamado.ubs}')
-                    st.write(f'**Setor:** {chamado.setor}')
-                    st.write(f'**Tipo de Defeito:** {chamado.tipo_defeito}')
-                    st.write(f'**Problema:** {chamado.problema}')
-                    st.write(f'**Hora Abertura:** {chamado.hora_abertura}')
-                    st.write(f'**Solução:** {chamado.solucao}')
-                    st.write(f'**Hora Fechamento:** {chamado.hora_fechamento}')
-                    st.write(f'**Protocolo:** {chamado.protocolo}')
-                    st.write(f'**Máquina:** {chamado.machine}')
-                    st.write(f'**Patrimônio:** {chamado.patrimonio}')
-                    logging.info(f"Chamado encontrado pelo protocolo: {protocolo}")
-                else:
-                    st.warning(f'Chamado com o protocolo {protocolo} não encontrado.')
-                    logging.info(f"Chamado não encontrado pelo protocolo: {protocolo}")
-            except Exception as e:
-                st.error(f"Erro ao buscar chamado: {e}")
-                logging.error(f"Erro ao buscar chamado pelo protocolo {protocolo}: {e}")
-
-    def configuracoes():
-        if not st.session_state.get('logged_in') or not is_admin(st.session_state.get('username')):
-            st.warning('Você precisa estar logado como administrador para acessar esta área.')
-            logging.warning("Usuário sem privilégios tentou acessar as configurações.")
+    if st.button('Alterar Senha'):
+        if not nova_senha or not confirmar_senha:
+            st.error('Por favor, preencha ambos os campos de senha.')
             return
-
-        st.subheader('Configurações de Usuários')
-
-        usuarios = list_users()
-        if not usuarios:
-            st.info("Nenhum usuário encontrado.")
+        if nova_senha != confirmar_senha:
+            st.error('As senhas não coincidem.')
             return
-
-        usernames = [user[0] for user in usuarios]
-
-        selected_user = st.selectbox('Selecione um usuário para alterar a senha:', usernames)
-
-        nova_senha = st.text_input('Nova senha', type='password')
-        confirmar_senha = st.text_input('Confirme a nova senha', type='password')
-
-        if st.button('Alterar Senha'):
-            if not nova_senha or not confirmar_senha:
-                st.error('Por favor, preencha ambos os campos de senha.')
-                return
-            if nova_senha != confirmar_senha:
-                st.error('As senhas não coincidem.')
-                return
-            if len(nova_senha) < 6:
-                st.error('A senha deve ter pelo menos 6 caracteres.')
-                return
+        if len(nova_senha) < 6:
+            st.error('A senha deve ter pelo menos 6 caracteres.')
+            return
+        try:
             if change_password(selected_user, nova_senha):
                 st.success(f'Senha do usuário "{selected_user}" alterada com sucesso!')
                 logging.info(f"Senha do usuário '{selected_user}' alterada com sucesso pelo administrador.")
             else:
                 st.error('Erro ao alterar a senha.')
                 logging.error(f"Erro ao alterar a senha do usuário '{selected_user}'.")
+        except Exception as e:
+            st.error(f"Erro ao alterar a senha: {e}")
+            logging.error(f"Erro ao alterar a senha do usuário '{selected_user}': {e}")
 
-    # Páginas disponíveis no menu
-    if selected_option == 'Login':
-        login_form()
-    elif selected_option == 'Abrir Chamado':
-        abrir_chamado()
-    elif selected_option == 'Administração':
-        administracao()
-    elif selected_option == 'Relatórios':
-        painel_relatorios()
-    elif selected_option == 'Chamados Técnicos':
-        painel_chamados_tecnicos()
-    elif selected_option == 'Buscar Protocolo':
-        buscar_protocolo()
-    elif selected_option == 'Configurações':
-        configuracoes()
-    else:
-        st.error("Página selecionada não existe.")
-        logging.error(f"Página selecionada inválida: {selected_option}")
-
-    # Opção de logout
+# Criação do menu de navegação
+def criar_menu():
     if st.session_state.get('logged_in'):
-        if st.button('Logout'):
-            logout()
+        if st.session_state.get('is_admin'):
+            menu_options = ['Abrir Chamado', 'Administração', 'Relatórios', 'Chamados Técnicos', 'Buscar Protocolo', 'Configurações', 'Logout']
+            icons = ['plus-square', 'gear', 'bar-chart', 'tools', 'search', 'wrench', 'box-arrow-right']
+        else:
+            menu_options = ['Abrir Chamado', 'Buscar Protocolo', 'Logout']
+            icons = ['plus-square', 'search', 'box-arrow-right']
+    else:
+        menu_options = ['Login']
+        icons = ['box-arrow-in-right']
+
+    selected_option = option_menu(
+        menu_title=None,
+        options=menu_options,
+        icons=icons,
+        menu_icon="cast",
+        default_index=0,
+        orientation="horizontal",
+        styles={
+            "container": {"padding": "0!important", "background-color": "#00008B"},
+            "icon": {"color": "white", "font-size": "18px"},
+            "nav-link": {
+                "font-size": "16px",
+                "text-align": "center",
+                "margin": "0px",
+                "color": "white",
+                "--hover-color": "#1E90FF",
+            },
+            "nav-link-selected": {"background-color": "#1E90FF"},
+        }
+    )
+    return selected_option
+
+# Criação do menu
+selected_option = criar_menu()
+
+# Renderização do conteúdo com base na opção selecionada
+if selected_option == 'Login':
+    if not st.session_state.get('logged_in'):
+        login_form()
+    else:
+        st.info(f"Você já está logado como {st.session_state.get('username')}.")
+elif selected_option == 'Logout':
+    logout()
+elif selected_option == 'Abrir Chamado':
+    abrir_chamado()
+elif selected_option == 'Buscar Protocolo':
+    buscar_protocolo()
+elif selected_option == 'Administração':
+    administracao()
+elif selected_option == 'Relatórios':
+    painel_relatorios()
+elif selected_option == 'Chamados Técnicos':
+    painel_chamados_tecnicos()
+elif selected_option == 'Configurações':
+    configuracoes()
+else:
+    st.error("Página selecionada não existe.")
+    logging.error(f"Página selecionada inválida: {selected_option}")
+
+# Página padrão ou conteúdo adicional
+st.markdown("""
+---
+Desenvolvido por [Sua Empresa](https://www.suaempresa.com)
+""")
