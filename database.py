@@ -1,4 +1,5 @@
 import os
+import sys
 import bcrypt
 import logging
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, ForeignKey
