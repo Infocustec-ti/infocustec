@@ -138,6 +138,10 @@ def add_chamado(username, ubs, setor, tipo_defeito, problema, machine=None, patr
 def add_maquina(numero_patrimonio, tipo, marca, modelo, numero_serie, status, localizacao, propria_locada, setor):
     session = SessionLocal()
     try:
+        # Garantir que numero_serie não seja None ou vazio
+        if not numero_serie:
+            numero_serie = "N/A"  # Definindo um valor padrão para número de série
+
         nova_maquina = Inventario(
             numero_patrimonio=numero_patrimonio,
             tipo=tipo,
@@ -159,6 +163,7 @@ def add_maquina(numero_patrimonio, tipo, marca, modelo, numero_serie, status, lo
         st.error("Erro interno ao adicionar máquina ao inventário. Verifique os dados e tente novamente.")
     finally:
         session.close()
+
 
 # Função para finalizar um chamado
 def finalizar_chamado(id_chamado, solucao, pecas_usadas=None):
