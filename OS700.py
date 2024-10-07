@@ -106,7 +106,7 @@ selected_option = option_menu(
     icons=icons,
     menu_icon="cast",
     default_index=0,
-    orientation="wide",
+    orientation="horizontal",
     styles={
         "container": {"padding": "0!important", "background-color": "#00008B"},
         "icon": {"color": "white", "font-size": "18px"},
