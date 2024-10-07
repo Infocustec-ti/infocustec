@@ -152,7 +152,7 @@ def logout():
     st.session_state.is_admin = False
     st.success('Você saiu da sessão.')
     logging.info("Usuário deslogado com sucesso.")
-    st.experimental_rerun()  # Recarrega a página após logout
+    
 
 # Função para abrir chamado
 def abrir_chamado():
