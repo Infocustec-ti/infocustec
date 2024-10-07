@@ -238,8 +238,8 @@ def calculate_working_hours(start, end):
 
 def calculate_tempo_decorrido(chamado):
     try:
-        hora_abertura = chamado['hora_abertura']
-        hora_fechamento = chamado['hora_fechamento'] or datetime.now()
+        hora_abertura = chamado.hora_abertura
+        hora_fechamento = chamado.hora_fechamento or datetime.now()
 
         if isinstance(hora_abertura, str):
             hora_abertura = datetime.strptime(hora_abertura, '%d/%m/%Y %H:%M:%S')
@@ -273,9 +273,8 @@ def calculate_tempo_decorrido(chamado):
 
 def calculate_tempo_decorrido_em_segundos(chamado):
     try:
-        hora_abertura = chamado['hora_abertura']
-        hora_fechamento = chamado['hora_fechamento'] or datetime.now()
-
+        hora_abertura = chamado.hora_abertura
+        hora_fechamento = chamado.hora_fechamento or datetime.now()
         if isinstance(hora_abertura, str):
             hora_abertura = datetime.strptime(hora_abertura, '%d/%m/%Y %H:%M:%S')
 
