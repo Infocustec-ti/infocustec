@@ -11,6 +11,7 @@ streamlit-aggrid
 plotly
 sqlalchemy
 psycopg2-binary
+supabase
 
 
 
