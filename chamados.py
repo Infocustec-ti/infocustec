@@ -238,8 +238,8 @@ def calculate_working_hours(start, end):
 
 def calculate_tempo_decorrido(chamado):
     try:
-        hora_abertura = chamado.hora_abertura
-        hora_fechamento = chamado.hora_fechamento or datetime.now()
+        hora_abertura = chamado['hora_abertura']
+        hora_fechamento = chamado['hora_fechamento'] or datetime.now()
 
         if isinstance(hora_abertura, str):
             hora_abertura = datetime.strptime(hora_abertura, '%d/%m/%Y %H:%M:%S')
@@ -264,14 +264,17 @@ def calculate_tempo_decorrido(chamado):
         tempo_formatado += f'{seconds}s'
 
         return tempo_formatado
+    except KeyError as e:
+        logging.error(f"Erro ao calcular tempo decorrido: Coluna ausente {e}")
+        return "Erro no cálculo"
     except Exception as e:
         logging.error(f"Erro ao calcular tempo decorrido: {e}")
         return "Erro no cálculo"
 
 def calculate_tempo_decorrido_em_segundos(chamado):
     try:
-        hora_abertura = chamado.hora_abertura
-        hora_fechamento = chamado.hora_fechamento or datetime.now()
+        hora_abertura = chamado['hora_abertura']
+        hora_fechamento = chamado['hora_fechamento'] or datetime.now()
 
         if isinstance(hora_abertura, str):
             hora_abertura = datetime.strptime(hora_abertura, '%d/%m/%Y %H:%M:%S')
@@ -281,6 +284,9 @@ def calculate_tempo_decorrido_em_segundos(chamado):
 
         tempo_uteis = calculate_working_hours(hora_abertura, hora_fechamento)
         return tempo_uteis.total_seconds()
+    except KeyError as e:
+        logging.error(f"Erro ao calcular tempo decorrido em segundos: Coluna ausente {e}")
+        return None
     except Exception as e:
         logging.error(f"Erro ao calcular tempo decorrido em segundos: {e}")
         return None
@@ -305,6 +311,7 @@ def formatar_tempo(total_seconds):
     except Exception as e:
         logging.error(f"Erro ao formatar tempo: {e}")
         return "Erro no formato"
+
 
 def calculate_average_time(chamados):
     total_tempo = 0
