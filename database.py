@@ -53,12 +53,13 @@ class Setor(Base):
 
 class HistoricoManutencao(Base):
     __tablename__ = 'historico_manutencao'
-    __table_args__ = {'extend_existing': True}  # Adicione esta linha
+    __table_args__ = {'extend_existing': True}  # Evita redefinição
     id = Column(Integer, primary_key=True, index=True)
     numero_patrimonio = Column(String, ForeignKey('inventario.numero_patrimonio'), nullable=False)
     descricao = Column(String, nullable=False)
-    data_manutencao = Column(DateTime, nullable=False)  # Alterado para DateTime
+    data_manutencao = Column(DateTime, nullable=False)
     inventario = relationship("Inventario", back_populates="historico")
+
 
 class Chamado(Base):
     __tablename__ = 'chamados'
