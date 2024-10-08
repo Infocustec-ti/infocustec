@@ -11,7 +11,7 @@ from matplotlib.ticker import MaxNLocator
 import tempfile
 import logging
 from logging.handlers import RotatingFileHandler
-from database import SessionLocal, Chamado, Inventario, HistoricoManutencao, PecaUsada, Usuario
+from database import Chamado, SessionLocal
 from sqlalchemy import desc
 from autenticacao import is_admin
 import pytz
