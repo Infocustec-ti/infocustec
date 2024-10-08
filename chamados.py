@@ -312,25 +312,24 @@ def calculate_tempo_decorrido(chamado):
         logging.error(f"Erro ao calcular tempo decorrido: {e}")
         return "Erro no cálculo"
 
-# Função para calcular tempo decorrido em segundos
-def calculate_tempo_decorrido_em_segundos(chamado):
+def calculate_tempo_decorrido_em_segundos_row(row):
     try:
-        hora_abertura = chamado.hora_abertura
-        hora_fechamento = chamado.hora_fechamento or datetime.now()
-        if isinstance(hora_abertura, str):
-            hora_abertura = datetime.strptime(hora_abertura, '%d/%m/%Y %H:%M:%S')
+        # Debug: imprima os dados da linha para verificar
+        print(f"Row data: {row}")
+        
+        hora_abertura = row['Hora Abertura']
+        hora_fechamento = row['Hora Fechamento'] or datetime.now()
 
-        if isinstance(hora_fechamento, str):
-            hora_fechamento = datetime.strptime(hora_fechamento, '%d/%m/%Y %H:%M:%S')
-
+        # Calcular o tempo útil
         tempo_uteis = calculate_working_hours(hora_abertura, hora_fechamento)
         return tempo_uteis.total_seconds()
-    except AttributeError as e:
-        logging.error(f"Erro ao calcular tempo decorrido em segundos: {e}")
+    except KeyError as e:
+        logging.error(f"Erro ao acessar os dados: {e}")
         return None
     except Exception as e:
-        logging.error(f"Erro ao calcular tempo decorrido em segundos: {e}")
+        logging.error(f"Erro ao calcular tempo decorrido em segundos para a linha: {e}")
         return None
+
 
 # Função para formatar tempo
 def formatar_tempo(total_seconds):
