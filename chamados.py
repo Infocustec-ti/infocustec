@@ -13,6 +13,7 @@ import logging
 from database import SessionLocal, Chamado, Inventario, HistoricoManutencao, PecaUsada, Usuario
 from sqlalchemy import desc
 from autenticacao import is_admin
+import pytz
 
 # Configurações de autenticação do Twilio usando variáveis de ambiente
 account_sid = os.getenv('TWILIO_ACCOUNT_SID')
