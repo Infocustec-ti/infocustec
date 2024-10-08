@@ -52,7 +52,7 @@ def add_machine_to_inventory(tipo, marca, modelo, numero_serie, status, localiza
                 tipo=tipo,
                 marca=marca,
                 modelo=modelo,
-                numero_serie=numero_serie if numero_serie else None,
+                numero_serie=numero_serie if numero_serie else 'Não informado',
                 status=status,
                 localizacao=localizacao,
                 propria_locada=propria_locada,
