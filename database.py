@@ -77,14 +77,6 @@ class Chamado(Base):
     patrimonio = Column(String)
     pecas_usadas = relationship("PecaUsada", back_populates="chamado")
     
-class HistoricoManutencao(Base):
-    __tablename__ = 'historico_manutencao'
-    id = Column(Integer, primary_key=True, index=True)
-    numero_patrimonio = Column(String, ForeignKey('inventario.numero_patrimonio'), nullable=False)
-    descricao = Column(String, nullable=False)
-    data_manutencao = Column(DateTime, nullable=False)  # Alterado para DateTime
-    inventario = relationship("Inventario", back_populates="historico")
-
 class Usuario(Base):
     __tablename__ = 'usuarios'
     id = Column(Integer, primary_key=True, index=True)
