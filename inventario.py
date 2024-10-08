@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib.ticker import MaxNLocator
 import tempfile
+from ubs import get_ubs_list
 
 # Configuração do logging
 logging.basicConfig(
@@ -23,6 +24,7 @@ logging.basicConfig(
 )
 
 # Função para obter os setores a partir das tabelas 'chamados' e 'inventario'
+@st.cache_data(ttl=300)
 def get_setores_from_db():
     session: Session = SessionLocal()
     try:
@@ -39,7 +41,7 @@ def get_setores_from_db():
         session.close()
 
 # Função para cadastrar máquina no inventário
-def add_machine_to_inventory(tipo, marca, modelo, numero_serie, status, localizacao, propria_locada, patrimonio, setor):
+def add_machine_to_inventory(tipo: str, marca: str, modelo: str, numero_serie: str, status: str, localizacao: str, propria_locada: str, patrimonio: str, setor: str) -> None:
     session: Session = SessionLocal()
     try:
         existing_machine = session.query(Inventario).filter(Inventario.numero_patrimonio == patrimonio).first()
