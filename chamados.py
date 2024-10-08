@@ -86,14 +86,13 @@ def buscar_no_inventario_por_patrimonio(patrimonio):
             st.error("Erro interno ao buscar no inventário. Tente novamente mais tarde.")
             return None
 
-# Função para adicionar um chamado
 def add_chamado(username, ubs, setor, tipo_defeito, problema, machine=None, patrimonio=None):
     protocolo = gerar_protocolo_sequencial()
     if protocolo is None:
         st.error("Não foi possível gerar um protocolo para o chamado. Tente novamente mais tarde.")
         return
 
-    hora_abertura = datetime.now(tz=local_tz)
+    hora_abertura = datetime.now(tz=local_tz)  # Deve ser um objeto datetime
 
     with SessionLocal() as session:
         try:
@@ -103,7 +102,7 @@ def add_chamado(username, ubs, setor, tipo_defeito, problema, machine=None, patr
                 setor=setor,
                 tipo_defeito=tipo_defeito,
                 problema=problema,
-                hora_abertura=hora_abertura,
+                hora_abertura=hora_abertura,  # Agora DateTime
                 protocolo=protocolo,
                 machine=machine,
                 patrimonio=patrimonio
@@ -306,26 +305,10 @@ def calculate_tempo_decorrido_entre_chamados(chamado_anterior, chamado_atual):
         logger.error(f"Erro ao calcular tempo decorrido entre chamados consecutivos: {e}")
         return None
 
-# Função para calcular tempo decorrido em segundos para uma chamado ORM
 def calculate_tempo_decorrido_em_segundos(chamado):
     try:
         hora_abertura = chamado.hora_abertura
         hora_fechamento = chamado.hora_fechamento or datetime.now(tz=local_tz)
-
-        # Verificar se hora_abertura e hora_fechamento são strings e converter
-        if isinstance(hora_abertura, str):
-            try:
-                hora_abertura = parser.parse(hora_abertura).astimezone(local_tz)
-            except (ValueError, TypeError) as ve:
-                logger.error(f"Formato de 'hora_abertura' inválido: {hora_abertura} - {ve}")
-                return None
-
-        if isinstance(hora_fechamento, str):
-            try:
-                hora_fechamento = parser.parse(hora_fechamento).astimezone(local_tz)
-            except (ValueError, TypeError) as ve:
-                logger.error(f"Formato de 'hora_fechamento' inválido: {hora_fechamento} - {ve}")
-                return None
 
         tempo_uteis = calculate_working_hours(hora_abertura, hora_fechamento)
         return tempo_uteis.total_seconds()
@@ -336,7 +319,6 @@ def calculate_tempo_decorrido_em_segundos(chamado):
         logger.error(f"Erro ao calcular tempo decorrido: {e}")
         return None
 
-# Função para calcular tempo decorrido em segundos para uma linha do DataFrame
 def calculate_tempo_decorrido_em_segundos_row(row):
     try:
         if 'Hora Abertura' not in row or 'Hora Fechamento' not in row:
@@ -346,20 +328,15 @@ def calculate_tempo_decorrido_em_segundos_row(row):
         hora_abertura = row['Hora Abertura']
         hora_fechamento = row['Hora Fechamento'] or datetime.now(tz=local_tz)
 
-        # Verificar se hora_abertura e hora_fechamento são strings e converter
-        if isinstance(hora_abertura, str):
-            try:
-                hora_abertura = parser.parse(hora_abertura).astimezone(local_tz)
-            except (ValueError, TypeError) as ve:
-                logger.error(f"Formato de 'Hora Abertura' inválido: {hora_abertura} - {ve}")
-                return None
-
-        if isinstance(hora_fechamento, str):
-            try:
-                hora_fechamento = parser.parse(hora_fechamento).astimezone(local_tz)
-            except (ValueError, TypeError) as ve:
-                logger.error(f"Formato de 'Hora Fechamento' inválido: {hora_fechamento} - {ve}")
-                return None
+        # Já são objetos datetime
+        tempo_uteis = calculate_working_hours(hora_abertura, hora_fechamento)
+        return tempo_uteis.total_seconds()
+    except KeyError as e:
+        logger.error(f"Erro ao acessar os dados da linha: {e}")
+        return None
+    except Exception as e:
+        logger.error(f"Erro ao calcular tempo decorrido em segundos para a linha: {e}")
+        return None
 
         # Calcular o tempo útil
         tempo_uteis = calculate_working_hours(hora_abertura, hora_fechamento)
