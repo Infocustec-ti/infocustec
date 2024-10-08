@@ -674,14 +674,16 @@ def calculate_tempo_decorrido_entre_chamados(chamado_anterior, chamado_atual):
         logging.error(f"Erro ao calcular tempo decorrido entre chamados consecutivos: {e}")
         return None
 
-# Função para calcular tempo decorrido em segundos para DataFrame row
 def calculate_tempo_decorrido_em_segundos_row(row):
     try:
+        # Acessar os valores da linha do DataFrame como dicionário
         hora_abertura = row['Hora Abertura']
         hora_fechamento = row['Hora Fechamento'] or datetime.now()
 
+        # Calcular o tempo útil
         tempo_uteis = calculate_working_hours(hora_abertura, hora_fechamento)
         return tempo_uteis.total_seconds()
     except Exception as e:
         logging.error(f"Erro ao calcular tempo decorrido em segundos para a linha: {e}")
         return None
+
