@@ -66,21 +66,21 @@ class Chamado(Base):
     setor = Column(String, nullable=False)
     tipo_defeito = Column(String, nullable=False)
     problema = Column(String, nullable=False)
-    hora_abertura = Column(String, nullable=False)
+    hora_abertura = Column(DateTime, nullable=False)  # Alterado para DateTime
     solucao = Column(String)
-    hora_fechamento = Column(String)
+    hora_fechamento = Column(DateTime)  # Alterado para DateTime
     protocolo = Column(Integer, unique=True, nullable=False)
     machine = Column(String)
     patrimonio = Column(String)
     pecas_usadas = relationship("PecaUsada", back_populates="chamado")
-
-class PecaUsada(Base):
-    __tablename__ = 'pecas_usadas'
+    
+class HistoricoManutencao(Base):
+    __tablename__ = 'historico_manutencao'
     id = Column(Integer, primary_key=True, index=True)
-    chamado_id = Column(Integer, ForeignKey('chamados.id'), nullable=False)
-    peca_nome = Column(String, nullable=False)
-    data_uso = Column(String, nullable=False)
-    chamado = relationship("Chamado", back_populates="pecas_usadas")
+    numero_patrimonio = Column(String, ForeignKey('inventario.numero_patrimonio'), nullable=False)
+    descricao = Column(String, nullable=False)
+    data_manutencao = Column(DateTime, nullable=False)  # Alterado para DateTime
+    inventario = relationship("Inventario", back_populates="historico")
 
 class Usuario(Base):
     __tablename__ = 'usuarios'
