@@ -17,6 +17,7 @@ from autenticacao import is_admin
 import pytz
 from workalendar.america import Brazil
 from zoneinfo import ZoneInfo
+from dateutil import parser
 
 # Configurações de autenticação do Twilio usando variáveis de ambiente
 account_sid = os.getenv('TWILIO_ACCOUNT_SID')
@@ -39,12 +40,6 @@ logger.addHandler(handler_stream)
 
 # Definir o fuso horário local
 local_tz = ZoneInfo('America/Sao_Paulo')
-
-# Função para definir o fuso horário local
-def set_local_timezone(dt):
-    if dt is not None and dt.tzinfo is None:
-        return dt.replace(tzinfo=local_tz)
-    return dt
 
 # Função para gerar protocolo sequencial
 def gerar_protocolo_sequencial():
@@ -190,7 +185,7 @@ def finalizar_chamado(id_chamado, solucao, pecas_usadas=None):
                         )
                         session.add(peca_usada)
 
-                # Adicionar histórico de manutenção somente se patrimonio estiver presente
+                # Adicionar histórico de manutenção somente se patrimonio estiver presente e válido
                 if chamado.patrimonio:
                     # Verificar se o patrimonio existe no inventario
                     inventario = session.query(Inventario).filter(Inventario.numero_patrimonio == chamado.patrimonio).first()
@@ -205,6 +200,9 @@ def finalizar_chamado(id_chamado, solucao, pecas_usadas=None):
                     else:
                         logger.error(f"Patrimônio {chamado.patrimonio} não encontrado no inventário.")
                         st.error(f"Patrimônio {chamado.patrimonio} não encontrado no inventário. Histórico de manutenção não foi criado.")
+                else:
+                    logger.warning(f"Chamado ID {id_chamado} não possui 'patrimonio'. Histórico de manutenção não foi criado.")
+                    st.warning(f"Chamado não possui 'patrimonio'. Histórico de manutenção não foi criado.")
 
                 session.commit()
 
@@ -242,6 +240,7 @@ def list_chamados_em_aberto():
             st.error("Erro interno ao listar chamados em aberto. Tente novamente mais tarde.")
             return []
 
+# Função para calcular horas úteis entre duas datas
 def calculate_working_hours(start, end):
     cal = Brazil()
     total_seconds = 0
@@ -269,6 +268,7 @@ def calculate_working_hours(start, end):
                 interval_start = current
                 interval_end = min(end, end_of_day)
 
+                # Subtrair intervalo de almoço
                 if (interval_start.time() < (start_of_day + lunch_break_start).time()) and (interval_end.time() > (start_of_day + lunch_break_end).time()):
                     total_seconds += (start_of_day + lunch_break_start - interval_start).total_seconds()
                     total_seconds += (interval_end - (start_of_day + lunch_break_end)).total_seconds()
@@ -293,15 +293,16 @@ def calculate_tempo_decorrido(chamado):
         # Verificar se hora_abertura e hora_fechamento são strings e converter
         if isinstance(hora_abertura, str):
             try:
-                hora_abertura = datetime.strptime(hora_abertura, '%d/%m/%Y %H:%M:%S').replace(tzinfo=local_tz)
-            except ValueError as ve:
+                # Parsing flexível com dateutil
+                hora_abertura = parser.parse(hora_abertura).astimezone(local_tz)
+            except (ValueError, TypeError) as ve:
                 logger.error(f"Formato de 'hora_abertura' inválido: {hora_abertura} - {ve}")
                 return "Erro no cálculo"
 
         if isinstance(hora_fechamento, str):
             try:
-                hora_fechamento = datetime.strptime(hora_fechamento, '%d/%m/%Y %H:%M:%S').replace(tzinfo=local_tz)
-            except ValueError as ve:
+                hora_fechamento = parser.parse(hora_fechamento).astimezone(local_tz)
+            except (ValueError, TypeError) as ve:
                 logger.error(f"Formato de 'hora_fechamento' inválido: {hora_fechamento} - {ve}")
                 return "Erro no cálculo"
 
@@ -342,15 +343,15 @@ def calculate_tempo_decorrido_em_segundos_row(row):
         # Verificar se hora_abertura e hora_fechamento são strings e converter
         if isinstance(hora_abertura, str):
             try:
-                hora_abertura = datetime.strptime(hora_abertura, '%d/%m/%Y %H:%M:%S').replace(tzinfo=local_tz)
-            except ValueError as ve:
+                hora_abertura = parser.parse(hora_abertura).astimezone(local_tz)
+            except (ValueError, TypeError) as ve:
                 logger.error(f"Formato de 'Hora Abertura' inválido: {hora_abertura} - {ve}")
                 return None
 
         if isinstance(hora_fechamento, str):
             try:
-                hora_fechamento = datetime.strptime(hora_fechamento, '%d/%m/%Y %H:%M:%S').replace(tzinfo=local_tz)
-            except ValueError as ve:
+                hora_fechamento = parser.parse(hora_fechamento).astimezone(local_tz)
+            except (ValueError, TypeError) as ve:
                 logger.error(f"Formato de 'Hora Fechamento' inválido: {hora_fechamento} - {ve}")
                 return None
 
@@ -627,8 +628,10 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
             pdf.cell(col_widths[3], 8, str(row['Tipo de Defeito']), border=1, align='C')
             problema = str(row['Problema'])[:47] + '...' if len(str(row['Problema'])) > 50 else str(row['Problema'])
             pdf.cell(col_widths[4], 8, problema, border=1, align='L')
-            pdf.cell(col_widths[5], 8, row['Hora Abertura'].strftime('%d/%m/%Y %H:%M:%S') if pd.notnull(row['Hora Abertura']) else '-', border=1, align='C')
-            pdf.cell(col_widths[6], 8, row['Hora Fechamento'].strftime('%d/%m/%Y %H:%M:%S') if pd.notnull(row['Hora Fechamento']) else '-', border=1, align='C')
+            hora_abertura_formatada = row['Hora Abertura'].astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S') if pd.notnull(row['Hora Abertura']) else '-'
+            hora_fechamento_formatada = row['Hora Fechamento'].astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S') if pd.notnull(row['Hora Fechamento']) else '-'
+            pdf.cell(col_widths[5], 8, hora_abertura_formatada, border=1, align='C')
+            pdf.cell(col_widths[6], 8, hora_fechamento_formatada, border=1, align='C')
             tempo_formatado = formatar_tempo(row['Tempo Decorrido (s)'])
             pdf.cell(col_widths[7], 8, tempo_formatado, border=1, align='C')
             peca_nome = str(row['peca_nome'])[:37] + '...' if len(str(row['peca_nome'])) > 40 else str(row['peca_nome'])
@@ -697,15 +700,15 @@ def calculate_tempo_decorrido_entre_chamados(chamado_anterior, chamado_atual):
         # Verificar se hora_abertura_anterior e hora_abertura_atual são strings e converter
         if isinstance(hora_abertura_anterior, str):
             try:
-                hora_abertura_anterior = datetime.strptime(hora_abertura_anterior, '%d/%m/%Y %H:%M:%S').replace(tzinfo=local_tz)
-            except ValueError as ve:
+                hora_abertura_anterior = parser.parse(hora_abertura_anterior).astimezone(local_tz)
+            except (ValueError, TypeError) as ve:
                 logger.error(f"Formato de 'hora_abertura_anterior' inválido: {hora_abertura_anterior} - {ve}")
                 return None
 
         if isinstance(hora_abertura_atual, str):
             try:
-                hora_abertura_atual = datetime.strptime(hora_abertura_atual, '%d/%m/%Y %H:%M:%S').replace(tzinfo=local_tz)
-            except ValueError as ve:
+                hora_abertura_atual = parser.parse(hora_abertura_atual).astimezone(local_tz)
+            except (ValueError, TypeError) as ve:
                 logger.error(f"Formato de 'hora_abertura_atual' inválido: {hora_abertura_atual} - {ve}")
                 return None
 
@@ -723,15 +726,15 @@ def calculate_tempo_decorrido_em_segundos(chamado):
         # Verificar se hora_abertura e hora_fechamento são strings e converter
         if isinstance(hora_abertura, str):
             try:
-                hora_abertura = datetime.strptime(hora_abertura, '%d/%m/%Y %H:%M:%S').replace(tzinfo=local_tz)
-            except ValueError as ve:
+                hora_abertura = parser.parse(hora_abertura).astimezone(local_tz)
+            except (ValueError, TypeError) as ve:
                 logger.error(f"Formato de 'hora_abertura' inválido: {hora_abertura} - {ve}")
                 return None
 
         if isinstance(hora_fechamento, str):
             try:
-                hora_fechamento = datetime.strptime(hora_fechamento, '%d/%m/%Y %H:%M:%S').replace(tzinfo=local_tz)
-            except ValueError as ve:
+                hora_fechamento = parser.parse(hora_fechamento).astimezone(local_tz)
+            except (ValueError, TypeError) as ve:
                 logger.error(f"Formato de 'hora_fechamento' inválido: {hora_fechamento} - {ve}")
                 return None
 
@@ -743,3 +746,28 @@ def calculate_tempo_decorrido_em_segundos(chamado):
     except Exception as e:
         logger.error(f"Erro ao calcular tempo decorrido: {e}")
         return None
+
+# Função para exibir o relatório mensal
+def exibir_relatorio_mensal():
+    st.title("Gerar Relatório Mensal de Chamados Técnicos")
+
+    df, months_list = get_monthly_technical_data()
+    pecas_usadas_df = pd.read_sql(session.query(PecaUsada).statement, SessionLocal().bind)  # Ajuste conforme necessário
+
+    selected_month = st.selectbox("Selecione o mês para gerar o relatório:", months_list)
+
+    if st.button("Gerar Relatório"):
+        pdf_output = generate_monthly_report(df, selected_month, pecas_usadas_df, logo_path="caminho_para_seu_logo.png")
+        if pdf_output:
+            st.download_button(
+                label="Baixar Relatório em PDF",
+                data=pdf_output,
+                file_name=f'relatório_{selected_month}.pdf',
+                mime='application/pdf'
+            )
+
+    # Exibir Tempo Médio de Atendimento
+    chamados_finalizados = list_chamados()
+    chamados_finalizados = [chamado for chamado in chamados_finalizados if chamado.hora_fechamento is not None]
+    show_average_time(chamados_finalizados)
+
