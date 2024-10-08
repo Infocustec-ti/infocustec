@@ -334,7 +334,7 @@ def calculate_tempo_decorrido(chamado):
         return "Erro no cálculo"
 def calculate_tempo_decorrido_em_segundos_row(row):
     try:
-        # Acessar os valores da linha do DataFrame como dicionário
+        # Acessar os valores da linha do DataFrame diretamente pelos nomes das colunas
         hora_abertura = row['Hora Abertura']
         hora_fechamento = row['Hora Fechamento'] or datetime.now()
 
