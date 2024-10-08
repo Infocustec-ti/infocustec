@@ -243,7 +243,6 @@ def list_chamados_em_aberto():
             st.error("Erro interno ao listar chamados em aberto. Tente novamente mais tarde.")
             return []
 
-# Função para calcular horas úteis entre duas datas
 def calculate_working_hours(start, end):
     cal = Brazil()
     total_seconds = 0
@@ -267,21 +266,21 @@ def calculate_working_hours(start, end):
                 current = current.replace(hour=0, minute=0, second=0, microsecond=0)
                 continue
 
-            if current < end:
-                interval_start = current
-                interval_end = min(end, end_of_day)
+            interval_start = current
+            interval_end = min(end, end_of_day)
 
-                # Subtrair intervalo de almoço
-                if (interval_start.time() < (start_of_day + lunch_break_start).time()) and (interval_end.time() > (start_of_day + lunch_break_end).time()):
-                    total_seconds += (start_of_day + lunch_break_start - interval_start).total_seconds()
-                    total_seconds += (interval_end - (start_of_day + lunch_break_end)).total_seconds()
-                else:
-                    total_seconds += (interval_end - interval_start).total_seconds()
+            # Subtrair intervalo de almoço
+            if (interval_start.time() < (start_of_day + lunch_break_start).time()) and (interval_end.time() > (start_of_day + lunch_break_end).time()):
+                total_seconds += (start_of_day + lunch_break_start - interval_start).total_seconds()
+                total_seconds += (interval_end - (start_of_day + lunch_break_end)).total_seconds()
+            else:
+                total_seconds += (interval_end - interval_start).total_seconds()
 
         current += timedelta(days=1)
         current = current.replace(hour=0, minute=0, second=0, microsecond=0)
 
     return timedelta(seconds=total_seconds)
+
 
 # Função para calcular tempo decorrido entre chamados consecutivos
 def calculate_tempo_decorrido_entre_chamados(chamado_anterior, chamado_atual):
@@ -325,22 +324,24 @@ def calculate_tempo_decorrido_em_segundos(chamado):
 
 def calculate_tempo_decorrido_em_segundos_row(row):
     try:
-        # Verificar se 'Hora Abertura' e 'Hora Fechamento' estão na Series
-        if 'Hora Abertura' not in row or 'Hora Fechamento' not in row:
-            logger.error(f"Linha do DataFrame não possui as colunas necessárias: {row}")
+        # Certificar-se de que hora_abertura e hora_fechamento estão como datetime
+        hora_abertura = row['Hora Abertura']
+        hora_fechamento = row['Hora Fechamento'] or datetime.now(pytz.UTC)
+
+        if pd.isnull(hora_abertura) or pd.isnull(hora_fechamento):
             return None
 
-        hora_abertura = row['Hora Abertura']
-        hora_fechamento = row['Hora Fechamento'] or datetime.now(tz=local_tz)
+        # Garantir que ambos estejam no mesmo fuso horário (UTC)
+        if hora_abertura.tzinfo is None:
+            hora_abertura = hora_abertura.replace(tzinfo=pytz.UTC)
+        if hora_fechamento.tzinfo is None:
+            hora_fechamento = hora_fechamento.replace(tzinfo=pytz.UTC)
 
-        # Já são objetos datetime
+        # Calcular tempo útil (subtraindo intervalos de almoço e fora do expediente)
         tempo_uteis = calculate_working_hours(hora_abertura, hora_fechamento)
-        return tempo_uteis.total_seconds()
-    except KeyError as e:
-        logger.error(f"Erro ao acessar os dados da linha: {e}")
-        return None
+        return tempo_uteis.total_seconds() / 3600  # Retorna em horas
     except Exception as e:
-        logger.error(f"Erro ao calcular tempo decorrido em segundos para a linha: {e}")
+        logger.error(f"Erro ao calcular tempo decorrido em horas para a linha: {e}")
         return None
 
 # Função para formatar tempo
