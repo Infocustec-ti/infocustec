@@ -24,7 +24,7 @@ from database import (
 from autenticacao import (
     authenticate,
     add_user,
-    is_admin
+    is_admin,
     list_users,
     change_password
 )
