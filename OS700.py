@@ -133,7 +133,7 @@ def login_form():
                 else:
                     st.session_state.is_admin = False
                     st.info('Você está logado como usuário.')
-                st.experimental_rerun()  # Recarrega a página após login
+                
             else:
                 st.error('Nome de usuário ou senha incorretos.')
                 logging.warning(f"Falha no login para o usuário '{username}'.")
@@ -148,7 +148,7 @@ def logout():
     st.session_state.is_admin = False
     st.success('Você saiu da sessão.')
     logging.info("Usuário deslogado com sucesso.")
-    st.experimental_rerun()  # Recarrega a página após logout
+    
 
 # Função para abrir chamado
 def abrir_chamado():
