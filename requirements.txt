@@ -4,7 +4,7 @@ matplotlib
 pandas
 seaborn
 streamlit
-twilio==8.10.3
+twilio
 bcrypt
 streamlit-option-menu
 streamlit-aggrid
