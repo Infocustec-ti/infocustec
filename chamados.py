@@ -29,7 +29,15 @@ logging.basicConfig(
         logging.StreamHandler()
     ]
 )
+# Definir o fuso horário local (por exemplo, 'America/Sao_Paulo' para horário de Brasília)
+local_tz = pytz.timezone('America/Sao_Paulo')
 
+# Função para definir o fuso horário local
+def set_local_timezone(dt):
+    if dt is not None and dt.tzinfo is None:
+        # Atribuir explicitamente o fuso horário local ao timestamp que está no banco de dados
+        return local_tz.localize(dt)
+    return dt
 # Função para gerar protocolo sequencial
 def gerar_protocolo_sequencial():
     with SessionLocal() as session:
@@ -231,6 +239,8 @@ def list_chamados_em_aberto():
 from workalendar.america import Brazil  # Adicionando a importação do Workalendar
 
 # Função para calcular horas úteis com o Workalendar
+from workalendar.america import Brazil  # Adicionando a importação do Workalendar
+
 def calculate_working_hours(start, end):
     cal = Brazil()  # Escolha o calendário adequado para a sua região
     total_seconds = 0
@@ -279,33 +289,17 @@ def calculate_working_hours(start, end):
 # Função para calcular tempo decorrido
 def calculate_tempo_decorrido(chamado):
     try:
-        # Pegar hora_abertura e hora_fechamento
         hora_abertura = chamado.hora_abertura
         hora_fechamento = chamado.hora_fechamento or datetime.now()
 
-        # Debug: Imprima os valores de hora_abertura e hora_fechamento para verificar
-        logging.info(f"Chamado ID {chamado.id} - hora_abertura: {hora_abertura}, hora_fechamento: {hora_fechamento}")
-
-        # Verifique se 'hora_abertura' e 'hora_fechamento' são strings e converta para datetime
         if isinstance(hora_abertura, str):
-            try:
-                hora_abertura = datetime.strptime(hora_abertura, '%d/%m/%Y %H:%M:%S')
-            except ValueError as ve:
-                logging.error(f"Erro ao converter hora_abertura para datetime: {ve}")
-                return "Erro no cálculo"
-
+            hora_abertura = datetime.strptime(hora_abertura, '%d/%m/%Y %H:%M:%S')
         if isinstance(hora_fechamento, str):
-            try:
-                hora_fechamento = datetime.strptime(hora_fechamento, '%d/%m/%Y %H:%M:%S')
-            except ValueError as ve:
-                logging.error(f"Erro ao converter hora_fechamento para datetime: {ve}")
-                return "Erro no cálculo"
+            hora_fechamento = datetime.strptime(hora_fechamento, '%d/%m/%Y %H:%M:%S')
 
-        # Se não houver hora_abertura, lance uma exceção para debug
-        if hora_abertura is None:
-            raise ValueError(f"hora_abertura está faltando para o chamado ID: {chamado.id}")
+        hora_abertura = set_local_timezone(hora_abertura)
+        hora_fechamento = set_local_timezone(hora_fechamento)
 
-        # Calcular horas úteis usando a função calculate_working_hours
         tempo_uteis = calculate_working_hours(hora_abertura, hora_fechamento)
 
         total_seconds = int(tempo_uteis.total_seconds())
@@ -313,7 +307,6 @@ def calculate_tempo_decorrido(chamado):
         hours, remainder = divmod(remainder, 3600)
         minutes, seconds = divmod(remainder, 60)
 
-        # Formatação do tempo decorrido
         tempo_formatado = ''
         if days > 0:
             tempo_formatado += f'{days}d '
@@ -324,11 +317,9 @@ def calculate_tempo_decorrido(chamado):
         tempo_formatado += f'{seconds}s'
 
         return tempo_formatado
-
-    except ValueError as e:
-        logging.error(f"Erro ao calcular tempo decorrido - Valor inválido: {e}")
+    except AttributeError as e:
+        logging.error(f"Erro ao calcular tempo decorrido: {e}")
         return "Erro no cálculo"
-
     except Exception as e:
         logging.error(f"Erro ao calcular tempo decorrido: {e}")
         return "Erro no cálculo"
