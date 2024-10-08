@@ -85,7 +85,7 @@ def list_users():
         session.close()
 
 # Função para alterar a senha de um usuário
-def change_password(username: str, old_password: str, new_password: str) -> bool:
+def change_password(username: str, new_password: str) -> bool:
     session: Session = SessionLocal()
     try:
         user = session.query(Usuario).filter(Usuario.username == username).first()
