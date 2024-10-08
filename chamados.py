@@ -14,6 +14,7 @@ from database import SessionLocal, Chamado, Inventario, HistoricoManutencao, Pec
 from sqlalchemy import desc
 from autenticacao import is_admin
 import pytz
+from workalendar.america import Brazil
 
 # Configurações de autenticação do Twilio usando variáveis de ambiente
 account_sid = os.getenv('TWILIO_ACCOUNT_SID')
@@ -94,7 +95,7 @@ def add_chamado(username, ubs, setor, tipo_defeito, problema, machine=None, patr
         st.error("Não foi possível gerar um protocolo para o chamado. Tente novamente mais tarde.")
         return
 
-    hora_abertura = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+    hora_abertura = datetime.now().astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S')
 
     with SessionLocal() as session:
         try:
@@ -173,7 +174,7 @@ def add_maquina(numero_patrimonio, tipo, marca, modelo, numero_serie, status, lo
 
 # Função para finalizar um chamado
 def finalizar_chamado(id_chamado, solucao, pecas_usadas=None):
-    hora_fechamento = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
+    hora_fechamento = datetime.now().astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S')
     with SessionLocal() as session:
         try:
             chamado = session.query(Chamado).filter(Chamado.id == id_chamado).first()
@@ -240,11 +241,6 @@ def list_chamados_em_aberto():
     finally:
         session.close()
 
-from workalendar.america import Brazil  # Adicionando a importação do Workalendar
-
-# Função para calcular horas úteis com o Workalendar
-from workalendar.america import Brazil  # Adicionando a importação do Workalendar
-
 def calculate_working_hours(start, end):
     cal = Brazil()  # Escolha o calendário adequado para a sua região
     total_seconds = 0
@@ -291,8 +287,13 @@ def calculate_working_hours(start, end):
 
 
 # Função para calcular tempo decorrido
+# Função para calcular tempo decorrido
 def calculate_tempo_decorrido(chamado):
     try:
+        if not hasattr(chamado, 'hora_abertura'):
+            logging.error(f"Objeto chamado não possui o atributo 'hora_abertura': {chamado}")
+            return "Erro no cálculo"
+
         hora_abertura = chamado.hora_abertura
         hora_fechamento = chamado.hora_fechamento or datetime.now().astimezone(local_tz)
 
@@ -329,6 +330,10 @@ def calculate_tempo_decorrido(chamado):
 # Função para calcular tempo decorrido em segundos para uma linha do DataFrame
 def calculate_tempo_decorrido_em_segundos_row(row):
     try:
+        if 'Hora Abertura' not in row or 'Hora Fechamento' not in row:
+            logging.error(f"Linha do DataFrame não possui as colunas necessárias: {row}")
+            return None
+
         hora_abertura = row['Hora Abertura']
         hora_fechamento = row['Hora Fechamento'] or datetime.now().astimezone(local_tz)
 
