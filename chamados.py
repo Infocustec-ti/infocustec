@@ -116,12 +116,12 @@ def add_chamado(username, ubs, setor, tipo_defeito, problema, machine=None, patr
             numeros_destino = ['whatsapp:+558586981658', 'whatsapp:+558894000846']
             for numero in numeros_destino:
                 try:
-                    client.messages.create(
+                    message = client.messages.create(
                         from_='whatsapp:+14155238886',
                         body=f"Novo chamado técnico na UBS '{ubs}' no setor '{setor}': {problema}",
                         to=numero
                     )
-                    logger.info(f"Mensagem enviada para {numero} via WhatsApp.")
+                    logger.info(f"Mensagem enviada para {numero} via WhatsApp. SID: {message.sid}")
                 except Exception as e:
                     logger.error(f"Erro ao enviar mensagem para {numero} via WhatsApp: {e}")
                     st.error(f"Erro ao enviar mensagem para {numero} via WhatsApp: {e}")
@@ -280,55 +280,61 @@ def calculate_working_hours(start, end):
 
     return timedelta(seconds=total_seconds)
 
-# Função para calcular tempo decorrido
-def calculate_tempo_decorrido(chamado):
+# Função para calcular tempo decorrido entre chamados consecutivos
+def calculate_tempo_decorrido_entre_chamados(chamado_anterior, chamado_atual):
     try:
-        if not hasattr(chamado, 'hora_abertura') or not chamado.hora_abertura:
-            logger.error(f"Objeto chamado não possui o atributo 'hora_abertura' ou está vazio: {chamado}")
-            return "Erro no cálculo"
+        hora_abertura_anterior = chamado_anterior.hora_abertura
+        hora_abertura_atual = chamado_atual.hora_abertura
 
+        # Verificar se hora_abertura_anterior e hora_abertura_atual são strings e converter
+        if isinstance(hora_abertura_anterior, str):
+            try:
+                hora_abertura_anterior = parser.parse(hora_abertura_anterior).astimezone(local_tz)
+            except (ValueError, TypeError) as ve:
+                logger.error(f"Formato de 'hora_abertura_anterior' inválido: {hora_abertura_anterior} - {ve}")
+                return None
+
+        if isinstance(hora_abertura_atual, str):
+            try:
+                hora_abertura_atual = parser.parse(hora_abertura_atual).astimezone(local_tz)
+            except (ValueError, TypeError) as ve:
+                logger.error(f"Formato de 'hora_abertura_atual' inválido: {hora_abertura_atual} - {ve}")
+                return None
+
+        return hora_abertura_atual - hora_abertura_anterior
+    except Exception as e:
+        logger.error(f"Erro ao calcular tempo decorrido entre chamados consecutivos: {e}")
+        return None
+
+# Função para calcular tempo decorrido em segundos para uma chamado ORM
+def calculate_tempo_decorrido_em_segundos(chamado):
+    try:
         hora_abertura = chamado.hora_abertura
         hora_fechamento = chamado.hora_fechamento or datetime.now(tz=local_tz)
 
         # Verificar se hora_abertura e hora_fechamento são strings e converter
         if isinstance(hora_abertura, str):
             try:
-                # Parsing flexível com dateutil
                 hora_abertura = parser.parse(hora_abertura).astimezone(local_tz)
             except (ValueError, TypeError) as ve:
                 logger.error(f"Formato de 'hora_abertura' inválido: {hora_abertura} - {ve}")
-                return "Erro no cálculo"
+                return None
 
         if isinstance(hora_fechamento, str):
             try:
                 hora_fechamento = parser.parse(hora_fechamento).astimezone(local_tz)
             except (ValueError, TypeError) as ve:
                 logger.error(f"Formato de 'hora_fechamento' inválido: {hora_fechamento} - {ve}")
-                return "Erro no cálculo"
+                return None
 
         tempo_uteis = calculate_working_hours(hora_abertura, hora_fechamento)
-
-        total_seconds = int(tempo_uteis.total_seconds())
-        days, remainder = divmod(total_seconds, 86400)
-        hours, remainder = divmod(remainder, 3600)
-        minutes, seconds = divmod(remainder, 60)
-
-        tempo_formatado = ''
-        if days > 0:
-            tempo_formatado += f'{days}d '
-        if hours > 0 or days > 0:
-            tempo_formatado += f'{hours}h '
-        if minutes > 0 or hours > 0 or days > 0:
-            tempo_formatado += f'{minutes}m '
-        tempo_formatado += f'{seconds}s'
-
-        return tempo_formatado
+        return tempo_uteis.total_seconds()
     except AttributeError as e:
         logger.error(f"Erro ao calcular tempo decorrido: {e}")
-        return "Erro no cálculo"
+        return None
     except Exception as e:
         logger.error(f"Erro ao calcular tempo decorrido: {e}")
-        return "Erro no cálculo"
+        return None
 
 # Função para calcular tempo decorrido em segundos para uma linha do DataFrame
 def calculate_tempo_decorrido_em_segundos_row(row):
@@ -475,9 +481,7 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
             logger.warning("O argumento 'pecas_usadas_df' não é um DataFrame ou é None. Criando DataFrame vazio.")
             pecas_usadas_df = pd.DataFrame(columns=['chamado_id', 'peca_nome'])
         
-        df['Hora Abertura'] = pd.to_datetime(df['Hora Abertura'], errors='coerce')
-        df['Hora Fechamento'] = pd.to_datetime(df['Hora Fechamento'], errors='coerce')
-        
+        # Filtrar dados para o mês selecionado
         df = df.dropna(subset=['Hora Abertura'])
         
         selected_year_int = int(selected_month[:4])
@@ -493,6 +497,7 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
             logger.info(f"Relatório mensal: nenhum dado para {selected_month}.")
             return None
         
+        # Calcular Tempo Decorrido
         df_filtered['Tempo Decorrido (s)'] = df_filtered.apply(
             lambda row: calculate_tempo_decorrido_em_segundos_row(row), axis=1
         )
@@ -504,6 +509,7 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
             logger.info("Nenhum dado disponível após o cálculo do tempo decorrido.")
             return None
 
+        # Adicionar Peças Usadas
         if not pecas_usadas_df.empty:
             pecas_usadas_por_chamado = pecas_usadas_df.groupby('chamado_id')['peca_nome'].apply(', '.join).reset_index()
             df_filtered = pd.merge(df_filtered, pecas_usadas_por_chamado, left_on='ID', right_on='chamado_id', how='left')
@@ -511,6 +517,7 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
         else:
             df_filtered['peca_nome'] = 'Nenhuma'
 
+        # Estatísticas
         total_chamados = len(df_filtered)
         chamados_resolvidos = df_filtered['Hora Fechamento'].notnull().sum()
         chamados_nao_resolvidos = total_chamados - chamados_resolvidos
@@ -648,111 +655,20 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
         st.error("Erro ao gerar relatório. Tente novamente mais tarde.")
         return None
 
-# Função para gerar gráfico de tempo linear
-def generate_linear_time_chart(chamados):
-    try:
-        if chamados:
-            tempos_decorridos = []
-            chamados_sorted = sorted(chamados, key=lambda x: x.hora_abertura)
-
-            for i in range(1, len(chamados_sorted)):
-                tempo_decorrido = calculate_tempo_decorrido_entre_chamados(chamados_sorted[i - 1], chamados_sorted[i])
-                if tempo_decorrido:
-                    minutos = int(tempo_decorrido.total_seconds() / 60)
-                    tempos_decorridos.append(minutos)
-
-            if tempos_decorridos:
-                plt.figure(figsize=(10, 6))
-                plt.plot(range(1, len(tempos_decorridos) + 1), tempos_decorridos, marker='o', linestyle='-')
-                plt.title('Tempo Decorrido entre Chamados Consecutivos')
-                plt.xlabel('Chamados Consecutivos')
-                plt.ylabel('Tempo Decorrido (minutos)')
-                plt.gca().yaxis.set_major_locator(MaxNLocator(integer=True))
-                plt.tight_layout(pad=2.0)
-
-                linear_time_chart = save_plot_to_temp_file()
-                plt.close()
-
-                pdf = FPDF(orientation='L')
-                pdf.add_page()
-                pdf.set_font('Arial', 'B', 14)
-                pdf.cell(0, 10, 'Tempo Decorrido entre Chamados Consecutivos', ln=True, align='C')
-                pdf.image(linear_time_chart, x=10, y=30, w=270)
-
-                pdf_output = BytesIO()
-                pdf_output_bytes = pdf.output(dest='S').encode('latin1')
-                pdf_output.write(pdf_output_bytes)
-                pdf_output.seek(0)
-
-                logger.info("Gráfico de tempo linear gerado com sucesso.")
-                return pdf_output
-        return None
-    except Exception as e:
-        logger.error(f"Erro ao gerar gráfico de tempo linear: {e}")
-        return None
-
-# Função para calcular tempo decorrido entre chamados consecutivos
-def calculate_tempo_decorrido_entre_chamados(chamado_anterior, chamado_atual):
-    try:
-        hora_abertura_anterior = chamado_anterior.hora_abertura
-        hora_abertura_atual = chamado_atual.hora_abertura
-
-        # Verificar se hora_abertura_anterior e hora_abertura_atual são strings e converter
-        if isinstance(hora_abertura_anterior, str):
-            try:
-                hora_abertura_anterior = parser.parse(hora_abertura_anterior).astimezone(local_tz)
-            except (ValueError, TypeError) as ve:
-                logger.error(f"Formato de 'hora_abertura_anterior' inválido: {hora_abertura_anterior} - {ve}")
-                return None
-
-        if isinstance(hora_abertura_atual, str):
-            try:
-                hora_abertura_atual = parser.parse(hora_abertura_atual).astimezone(local_tz)
-            except (ValueError, TypeError) as ve:
-                logger.error(f"Formato de 'hora_abertura_atual' inválido: {hora_abertura_atual} - {ve}")
-                return None
-
-        return hora_abertura_atual - hora_abertura_anterior
-    except Exception as e:
-        logger.error(f"Erro ao calcular tempo decorrido entre chamados consecutivos: {e}")
-        return None
-
-# Função para calcular tempo decorrido em segundos para uma chamado ORM
-def calculate_tempo_decorrido_em_segundos(chamado):
-    try:
-        hora_abertura = chamado.hora_abertura
-        hora_fechamento = chamado.hora_fechamento or datetime.now(tz=local_tz)
-
-        # Verificar se hora_abertura e hora_fechamento são strings e converter
-        if isinstance(hora_abertura, str):
-            try:
-                hora_abertura = parser.parse(hora_abertura).astimezone(local_tz)
-            except (ValueError, TypeError) as ve:
-                logger.error(f"Formato de 'hora_abertura' inválido: {hora_abertura} - {ve}")
-                return None
-
-        if isinstance(hora_fechamento, str):
-            try:
-                hora_fechamento = parser.parse(hora_fechamento).astimezone(local_tz)
-            except (ValueError, TypeError) as ve:
-                logger.error(f"Formato de 'hora_fechamento' inválido: {hora_fechamento} - {ve}")
-                return None
-
-        tempo_uteis = calculate_working_hours(hora_abertura, hora_fechamento)
-        return tempo_uteis.total_seconds()
-    except AttributeError as e:
-        logger.error(f"Erro ao calcular tempo decorrido: {e}")
-        return None
-    except Exception as e:
-        logger.error(f"Erro ao calcular tempo decorrido: {e}")
-        return None
-
 # Função para exibir o relatório mensal
 def exibir_relatorio_mensal():
     st.title("Gerar Relatório Mensal de Chamados Técnicos")
 
     df, months_list = get_monthly_technical_data()
-    pecas_usadas_df = pd.read_sql(session.query(PecaUsada).statement, SessionLocal().bind)  # Ajuste conforme necessário
+    
+    # Correção: Definir 'session' dentro do contexto apropriado
+    with SessionLocal() as session:
+        try:
+            pecas_usadas_df = pd.read_sql(session.query(PecaUsada).statement, session.bind)
+        except Exception as e:
+            logger.error(f"Erro ao buscar peças usadas: {e}")
+            pecas_usadas_df = pd.DataFrame(columns=['chamado_id', 'peca_nome'])
+            st.error("Erro interno ao buscar peças usadas. Relatório pode estar incompleto.")
 
     selected_month = st.selectbox("Selecione o mês para gerar o relatório:", months_list)
 
