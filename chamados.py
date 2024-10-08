@@ -314,21 +314,26 @@ def calculate_tempo_decorrido(chamado):
 
 def calculate_tempo_decorrido_em_segundos_row(row):
     try:
-        # Debug: imprima os dados da linha para verificar
-        print(f"Row data: {row}")
-        
+        # Acessar os valores da linha do DataFrame como dicionário
         hora_abertura = row['Hora Abertura']
         hora_fechamento = row['Hora Fechamento'] or datetime.now()
+
+        # Verificar se hora_abertura e hora_fechamento são strings e converter
+        if isinstance(hora_abertura, str):
+            hora_abertura = datetime.strptime(hora_abertura, '%d/%m/%Y %H:%M:%S')
+        if isinstance(hora_fechamento, str):
+            hora_fechamento = datetime.strptime(hora_fechamento, '%d/%m/%Y %H:%M:%S')
 
         # Calcular o tempo útil
         tempo_uteis = calculate_working_hours(hora_abertura, hora_fechamento)
         return tempo_uteis.total_seconds()
     except KeyError as e:
-        logging.error(f"Erro ao acessar os dados: {e}")
+        logging.error(f"Erro ao acessar os dados da linha: {e}")
         return None
     except Exception as e:
         logging.error(f"Erro ao calcular tempo decorrido em segundos para a linha: {e}")
         return None
+
 
 
 # Função para formatar tempo
@@ -673,16 +678,25 @@ def calculate_tempo_decorrido_entre_chamados(chamado_anterior, chamado_atual):
         logging.error(f"Erro ao calcular tempo decorrido entre chamados consecutivos: {e}")
         return None
 
-def calculate_tempo_decorrido_em_segundos_row(row):
+def calculate_tempo_decorrido_em_segundos(chamado):
     try:
-        # Acessar os valores da linha do DataFrame como dicionário
-        hora_abertura = row['Hora Abertura']
-        hora_fechamento = row['Hora Fechamento'] or datetime.now()
+        hora_abertura = chamado.hora_abertura
+        hora_fechamento = chamado.hora_fechamento or datetime.now()
+
+        # Verificar se hora_abertura e hora_fechamento são strings e converter
+        if isinstance(hora_abertura, str):
+            hora_abertura = datetime.strptime(hora_abertura, '%d/%m/%Y %H:%M:%S')
+        if isinstance(hora_fechamento, str):
+            hora_fechamento = datetime.strptime(hora_fechamento, '%d/%m/%Y %H:%M:%S')
 
         # Calcular o tempo útil
         tempo_uteis = calculate_working_hours(hora_abertura, hora_fechamento)
         return tempo_uteis.total_seconds()
-    except Exception as e:
-        logging.error(f"Erro ao calcular tempo decorrido em segundos para a linha: {e}")
+    except AttributeError as e:
+        logging.error(f"Erro ao calcular tempo decorrido: {e}")
         return None
+    except Exception as e:
+        logging.error(f"Erro ao calcular tempo decorrido: {e}")
+        return None
+
 
