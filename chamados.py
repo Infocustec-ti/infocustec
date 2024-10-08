@@ -325,6 +325,7 @@ def calculate_tempo_decorrido_em_segundos(chamado):
 
 def calculate_tempo_decorrido_em_segundos_row(row):
     try:
+        # Verificar se 'Hora Abertura' e 'Hora Fechamento' estão na Series
         if 'Hora Abertura' not in row or 'Hora Fechamento' not in row:
             logger.error(f"Linha do DataFrame não possui as colunas necessárias: {row}")
             return None
@@ -333,16 +334,6 @@ def calculate_tempo_decorrido_em_segundos_row(row):
         hora_fechamento = row['Hora Fechamento'] or datetime.now(tz=local_tz)
 
         # Já são objetos datetime
-        tempo_uteis = calculate_working_hours(hora_abertura, hora_fechamento)
-        return tempo_uteis.total_seconds()
-    except KeyError as e:
-        logger.error(f"Erro ao acessar os dados da linha: {e}")
-        return None
-    except Exception as e:
-        logger.error(f"Erro ao calcular tempo decorrido em segundos para a linha: {e}")
-        return None
-
-        # Calcular o tempo útil
         tempo_uteis = calculate_working_hours(hora_abertura, hora_fechamento)
         return tempo_uteis.total_seconds()
     except KeyError as e:
