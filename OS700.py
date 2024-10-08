@@ -488,7 +488,7 @@ def painel_chamados_tecnicos():
             'Machine': chamado.machine
         } for chamado in chamados])
 
-        df_chamados['Tempo Decorrido'] = df_chamados.apply(lambda row: calculate_tempo_decorrido(row), axis=1)
+        df_chamados['Tempo Decorrido'] = df_chamados.apply(lambda row: calculate_tempo_decorrido_em_segundos(row), axis=1)
 
         tab1, tab2, tab3 = st.tabs(['Chamados em Aberto', 'Painel de Chamados', 'Análise de Chamados'])
 
