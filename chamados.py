@@ -32,7 +32,10 @@ logging.basicConfig(
 )
 # Definir o fuso horário local (por exemplo, 'America/Sao_Paulo' para horário de Brasília)
 local_tz = pytz.timezone('America/Sao_Paulo')
-
+# Código para mostrar o relógio na página do Streamlit
+st.sidebar.markdown("## Relógio Atual")
+current_time = datetime.now().astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S')
+st.sidebar.write(current_time)
 # Função para definir o fuso horário local
 def set_local_timezone(dt):
     if dt is not None and dt.tzinfo is None:
