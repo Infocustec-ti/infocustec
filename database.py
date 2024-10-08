@@ -1,7 +1,7 @@
 import os
 import sys
 import logging
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String, Boolean, ForeignKey, Datetime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 import streamlit as st
@@ -55,7 +55,7 @@ class HistoricoManutencao(Base):
     id = Column(Integer, primary_key=True, index=True)
     numero_patrimonio = Column(String, ForeignKey('inventario.numero_patrimonio'), nullable=False)
     descricao = Column(String, nullable=False)
-    data_manutencao = Column(String, nullable=False)
+    data_manutencao = Column(DateTime, nullable=False)  # Alterado para DateTime
     inventario = relationship("Inventario", back_populates="historico")
 
 class Chamado(Base):
