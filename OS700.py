@@ -19,7 +19,8 @@ from database import (
     check_or_create_admin_user,
     SessionLocal,
     UBS,
-    Setor
+    Setor,
+    Inventario
 )
 from autenticacao import (
     authenticate,
