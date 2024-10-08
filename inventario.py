@@ -1,7 +1,7 @@
 import os
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
-from database import SessionLocal, Inventario, Chamado, HistoricoManutencao, PecaUsada, UBS, Setor
+from database import Chamado, SessionLocal
 import streamlit as st
 import pandas as pd
 import logging
