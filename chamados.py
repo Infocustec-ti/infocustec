@@ -66,25 +66,27 @@ def get_chamado_by_protocolo(protocolo):
 
 # Função para buscar no inventário por número de patrimônio
 def buscar_no_inventario_por_patrimonio(patrimonio):
-    with SessionLocal() as session:
-        try:
-            inventario = session.query(Inventario).filter(Inventario.numero_patrimonio == patrimonio).first()
-            if inventario:
-                logger.info(f"Máquina encontrada no inventário: Patrimônio {patrimonio}")
-                return {
-                    'tipo': inventario.tipo,
-                    'marca': inventario.marca,
-                    'modelo': inventario.modelo,
-                    'patrimonio': inventario.numero_patrimonio,
-                    'localizacao': inventario.localizacao,
-                    'setor': inventario.setor
-                }
-            logger.info(f"Número de patrimônio {patrimonio} não encontrado no inventário.")
-            return None
-        except Exception as e:
-            logger.error(f"Erro ao buscar patrimônio {patrimonio} no inventário: {e}")
-            st.error("Erro interno ao buscar no inventário. Tente novamente mais tarde.")
-            return None
+    session = SessionLocal()
+    try:
+        inventario = session.query(Inventario).filter(Inventario.numero_patrimonio == patrimonio).first()
+        if inventario:
+            logging.info(f"Máquina encontrada no inventário: Patrimônio {patrimonio}")
+            return {
+                'tipo': inventario.tipo,
+                'marca': inventario.marca,
+                'modelo': inventario.modelo,
+                'patrimonio': inventario.numero_patrimonio,
+                'localizacao': inventario.localizacao,
+                'setor': inventario.setor
+            }
+        logging.info(f"Número de patrimônio {patrimonio} não encontrado no inventário.")
+        return None
+    except Exception as e:
+        logging.error(f"Erro ao buscar patrimônio {patrimonio} no inventário: {e}")
+        return None
+    finally:
+        session.close()
+
 
 def add_chamado(username, ubs, setor, tipo_defeito, problema, machine=None, patrimonio=None):
     protocolo = gerar_protocolo_sequencial()
