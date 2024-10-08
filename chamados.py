@@ -11,13 +11,15 @@ from matplotlib.ticker import MaxNLocator
 import tempfile
 import logging
 from logging.handlers import RotatingFileHandler
-from database import Chamado, SessionLocal
+from database import Chamado, SessionLocal, Inventario
 from sqlalchemy import desc
 from autenticacao import is_admin
 import pytz
 from workalendar.america import Brazil
 from zoneinfo import ZoneInfo
 from dateutil import parser
+
+
 
 # Configurações de autenticação do Twilio usando variáveis de ambiente
 account_sid = os.getenv('TWILIO_ACCOUNT_SID')
