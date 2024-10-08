@@ -17,7 +17,6 @@ from database import (
     create_tables,
     initialize_ubs_setores,
     check_or_create_admin_user,
-    is_admin,
     SessionLocal,
     UBS,
     Setor
