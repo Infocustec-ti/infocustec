@@ -17,6 +17,8 @@ from autenticacao import is_admin
 import pytz
 from workalendar.america import Brazil
 from zoneinfo import ZoneInfo
+import time
+import threading
 
 # Configurações de autenticação do Twilio usando variáveis de ambiente
 account_sid = os.getenv('TWILIO_ACCOUNT_SID')
@@ -40,6 +42,18 @@ logger.addHandler(handler_stream)
 # Definir o fuso horário local
 local_tz = ZoneInfo('America/Sao_Paulo')
 
+# Código para mostrar o relógio na página do Streamlit
+st.sidebar.markdown("## Relógio Atual")
+clock_placeholder = st.sidebar.empty()
+
+# Atualização do relógio usando Threading
+def update_clock():
+    while True:
+        current_time = datetime.now(tz=local_tz).strftime('%d/%m/%Y %H:%M:%S')
+        clock_placeholder.write(current_time)
+        time.sleep(1)
+
+threading.Thread(target=update_clock, daemon=True).start()
 
 # Função para definir o fuso horário local
 def set_local_timezone(dt):
@@ -170,7 +184,7 @@ def add_maquina(numero_patrimonio, tipo, marca, modelo, numero_serie, status, lo
             session.rollback()
             logger.error(f"Erro ao adicionar máquina ao inventário: {e}")
             st.error("Erro interno ao adicionar máquina ao inventário. Verifique os dados e tente novamente.")
-            
+
 # Função para finalizar um chamado
 def finalizar_chamado(id_chamado, solucao, pecas_usadas=None):
     hora_fechamento = datetime.now(tz=local_tz)
@@ -262,7 +276,7 @@ def calculate_working_hours(start, end):
                 interval_start = current
                 interval_end = min(end, end_of_day)
 
-                if interval_start < (start_of_day + lunch_break_start) and interval_end > (start_of_day + lunch_break_end):
+                if (interval_start.time() < (start_of_day + lunch_break_start).time()) and (interval_end.time() > (start_of_day + lunch_break_end).time()):
                     total_seconds += (start_of_day + lunch_break_start - interval_start).total_seconds()
                     total_seconds += (interval_end - (start_of_day + lunch_break_end)).total_seconds()
                 else:
