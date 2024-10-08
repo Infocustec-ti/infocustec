@@ -1,6 +1,5 @@
 import os
 import sys
-import bcrypt
 import logging
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
@@ -153,43 +152,6 @@ def initialize_ubs_setores():
 
     for setor in setores_iniciais:
         add_setor(setor)
-
-def is_admin(username):
-    session = SessionLocal()
-    try:
-        usuario = session.query(Usuario).filter(Usuario.username == username).first()
-        if usuario:
-            return usuario.role == 'admin'
-        else:
-            logging.warning(f"Usuário '{username}' não encontrado.")
-            return False
-    except Exception as e:
-        logging.error(f"Erro ao verificar função do usuário: {e}")
-        return False
-    finally:
-        session.close()
-
-# Função para criar um usuário
-def create_user(username, password, role='user'):
-    session = SessionLocal()
-    try:
-        usuario = session.query(Usuario).filter(Usuario.username == username).first()
-        if not usuario:
-            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-            novo_usuario = Usuario(username=username, password=hashed_password, role=role)
-            session.add(novo_usuario)
-            session.commit()
-            logging.info(f"Usuário '{username}' criado com sucesso.")
-            return True
-        else:
-            logging.warning(f"Falha ao criar usuário '{username}': já existe.")
-            return False
-    except Exception as e:
-        session.rollback()
-        logging.error(f"Erro ao criar usuário '{username}': {e}")
-        return False
-    finally:
-        session.close()
 
 # Função para verificar e criar o usuário admin
 def check_or_create_admin_user():
