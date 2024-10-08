@@ -97,7 +97,7 @@ class Usuario(Base):
 # Função para criar as tabelas no banco de dados
 def create_tables():
     try:
-        Base.metadata.create_all(bind=engine)
+        Base.metadata.create_all(bind=engine, checkfirst=True)
         logging.info("Tabelas criadas ou já existentes verificadas com sucesso.")
     except Exception as e:
         logging.error(f"Erro ao criar as tabelas: {e}")
