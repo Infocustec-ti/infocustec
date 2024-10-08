@@ -14,10 +14,11 @@ from database import SessionLocal, Chamado, Inventario, HistoricoManutencao, Pec
 from sqlalchemy import desc
 from autenticacao import is_admin
 
-# Configurações de autenticação do Twilio (caso necessário)
-account_sid = 'AC4eb3adf6ace24cc654d2823e9e9d2309'
-auth_token = '7f1ceaf4d179eb2d1fe9897860158571'
+# Configurações de autenticação do Twilio usando variáveis de ambiente
+account_sid = os.getenv('TWILIO_ACCOUNT_SID')
+auth_token = os.getenv('TWILIO_AUTH_TOKEN')
 client = Client(account_sid, auth_token)
+
 
 # Configuração do logging
 logging.basicConfig(
@@ -31,58 +32,49 @@ logging.basicConfig(
 
 # Função para gerar protocolo sequencial
 def gerar_protocolo_sequencial():
-    session = SessionLocal()
-    try:
-        max_protocolo = session.query(Chamado).order_by(desc(Chamado.protocolo)).first()
-        if max_protocolo:
-            protocolo = max_protocolo.protocolo + 1
-        else:
-            protocolo = 1
-        return protocolo
-    except Exception as e:
-        logging.error(f"Erro ao gerar protocolo sequencial: {e}")
-        return None
-    finally:
-        session.close()
-
+    with SessionLocal() as session:
+        try:
+            max_protocolo = session.query(Chamado).order_by(desc(Chamado.protocolo)).first()
+            protocolo = max_protocolo.protocolo + 1 if max_protocolo else 1
+            return protocolo
+        except Exception as e:
+            logging.error(f"Erro ao gerar protocolo sequencial: {e}")
+            return None
 # Função para buscar chamado por protocolo
 def get_chamado_by_protocolo(protocolo):
-    session = SessionLocal()
-    try:
-        chamado = session.query(Chamado).filter(Chamado.protocolo == protocolo).first()
-        logging.info(f"Chamado buscado pelo protocolo {protocolo}: {'Encontrado' if chamado else 'Não encontrado'}")
-        return chamado
-    except Exception as e:
-        logging.error(f"Erro ao buscar chamado por protocolo {protocolo}: {e}")
-        st.error("Erro interno ao buscar chamado. Tente novamente mais tarde.")
-        return None
-    finally:
-        session.close()
+    with SessionLocal() as session:
+        try:
+            chamado = session.query(Chamado).filter(Chamado.protocolo == protocolo).first()
+            logging.info(f"Chamado buscado pelo protocolo {protocolo}: {'Encontrado' if chamado else 'Não encontrado'}")
+            return chamado
+        except Exception as e:
+            logging.error(f"Erro ao buscar chamado por protocolo {protocolo}: {e}")
+            st.error("Erro interno ao buscar chamado. Tente novamente mais tarde.")
+            return None
 
 # Função para buscar no inventário por número de patrimônio
 def buscar_no_inventario_por_patrimonio(patrimonio):
-    session = SessionLocal()
-    try:
-        inventario = session.query(Inventario).filter(Inventario.numero_patrimonio == patrimonio).first()
-        if inventario:
-            logging.info(f"Máquina encontrada no inventário: Patrimônio {patrimonio}")
-            return {
-                'tipo': inventario.tipo, 
-                'marca': inventario.marca, 
-                'modelo': inventario.modelo,
-                'patrimonio': inventario.numero_patrimonio,
-                'localizacao': inventario.localizacao,
-                'setor': inventario.setor
-            }
-        logging.info(f"Número de patrimônio {patrimonio} não encontrado no inventário.")
-        return None
-    except Exception as e:
-        logging.error(f"Erro ao buscar patrimônio {patrimonio} no inventário: {e}")
-        st.error("Erro interno ao buscar no inventário. Tente novamente mais tarde.")
-        return None
-    finally:
-        session.close()
+    with SessionLocal() as session:
+        try:
+            inventario = session.query(Inventario).filter(Inventario.numero_patrimonio == patrimonio).first()
+            if inventario:
+                logging.info(f"Máquina encontrada no inventário: Patrimônio {patrimonio}")
+                return {
+                    'tipo': inventario.tipo,
+                    'marca': inventario.marca,
+                    'modelo': inventario.modelo,
+                    'patrimonio': inventario.numero_patrimonio,
+                    'localizacao': inventario.localizacao,
+                    'setor': inventario.setor
+                }
+            logging.info(f"Número de patrimônio {patrimonio} não encontrado no inventário.")
+            return None
+        except Exception as e:
+            logging.error(f"Erro ao buscar patrimônio {patrimonio} no inventário: {e}")
+            st.error("Erro interno ao buscar no inventário. Tente novamente mais tarde.")
+            return None
 
+# Função para adicionar um chamado
 # Função para adicionar um chamado
 def add_chamado(username, ubs, setor, tipo_defeito, problema, machine=None, patrimonio=None):
     protocolo = gerar_protocolo_sequencial()
@@ -92,29 +84,25 @@ def add_chamado(username, ubs, setor, tipo_defeito, problema, machine=None, patr
 
     hora_abertura = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
 
-    session = SessionLocal()
-    try:
-        novo_chamado = Chamado(
-            username=username,
-            ubs=ubs,
-            setor=setor,
-            tipo_defeito=tipo_defeito,
-            problema=problema,
-            hora_abertura=hora_abertura,
-            protocolo=protocolo,
-            machine=machine,
-            patrimonio=patrimonio
-        )
-        session.add(novo_chamado)
-        session.commit()
-        logging.info(f"Chamado aberto: Protocolo {protocolo} por usuário {username}")
+    with SessionLocal() as session:
+        try:
+            novo_chamado = Chamado(
+                username=username,
+                ubs=ubs,
+                setor=setor,
+                tipo_defeito=tipo_defeito,
+                problema=problema,
+                hora_abertura=hora_abertura,
+                protocolo=protocolo,
+                machine=machine,
+                patrimonio=patrimonio
+            )
+            session.add(novo_chamado)
+            session.commit()
+            logging.info(f"Chamado aberto: Protocolo {protocolo} por usuário {username}")
 
-        # Enviar mensagem via WhatsApp
-        numeros_destino = [
-            'whatsapp:+558586981658',
-            'whatsapp:+558894000846',
-        ]
-        if client and ubs and setor:
+            # Enviar mensagem via WhatsApp
+            numeros_destino = ['whatsapp:+558586981658', 'whatsapp:+558894000846']
             for numero in numeros_destino:
                 try:
                     client.messages.create(
@@ -127,13 +115,12 @@ def add_chamado(username, ubs, setor, tipo_defeito, problema, machine=None, patr
                     logging.error(f"Erro ao enviar mensagem para {numero} via WhatsApp: {e}")
                     st.error(f"Erro ao enviar mensagem para {numero} via WhatsApp: {e}")
 
-        st.success(f"Chamado aberto com sucesso! Protocolo: {protocolo}")
-    except Exception as e:
-        session.rollback()
-        logging.error(f"Erro ao adicionar chamado: {e}")
-        st.error("Erro interno ao abrir chamado. Tente novamente mais tarde.")
-    finally:
-        session.close()
+            st.success(f"Chamado aberto com sucesso! Protocolo: {protocolo}")
+        except Exception as e:
+            session.rollback()
+            logging.error(f"Erro ao adicionar chamado: {e}")
+            st.error("Erro interno ao abrir chamado. Tente novamente mais tarde.")
+
 
 # Função para adicionar uma máquina ao inventário
 def add_maquina(numero_patrimonio, tipo, marca, modelo, numero_serie, status, localizacao, propria_locada, setor):
@@ -175,44 +162,43 @@ def add_maquina(numero_patrimonio, tipo, marca, modelo, numero_serie, status, lo
 # Função para finalizar um chamado
 def finalizar_chamado(id_chamado, solucao, pecas_usadas=None):
     hora_fechamento = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
-    session = SessionLocal()
-    try:
-        chamado = session.query(Chamado).filter(Chamado.id == id_chamado).first()
-        if chamado:
-            chamado.solucao = solucao
-            chamado.hora_fechamento = hora_fechamento
-            session.commit()
+    with SessionLocal() as session:
+        try:
+            chamado = session.query(Chamado).filter(Chamado.id == id_chamado).first()
+            if chamado:
+                chamado.solucao = solucao
+                chamado.hora_fechamento = hora_fechamento
 
-            if pecas_usadas:
-                for peca in pecas_usadas:
-                    peca_usada = PecaUsada(
-                        chamado_id=id_chamado,
-                        peca_nome=peca,
-                        data_uso=hora_fechamento
-                    )
-                    session.add(peca_usada)
+                # Adicionar peças usadas, se houver
+                if pecas_usadas:
+                    for peca in pecas_usadas:
+                        peca_usada = PecaUsada(
+                            chamado_id=id_chamado,
+                            peca_nome=peca,
+                            data_uso=hora_fechamento
+                        )
+                        session.add(peca_usada)
+
+                # Adicionar histórico de manutenção
+                descricao_manutencao = f"Manutenção realizada: {solucao}. Peças usadas: {', '.join(pecas_usadas) if pecas_usadas else 'Nenhuma'}."
+                historico = HistoricoManutencao(
+                    numero_patrimonio=chamado.patrimonio,
+                    descricao=descricao_manutencao,
+                    data_manutencao=hora_fechamento
+                )
+                session.add(historico)
                 session.commit()
 
-            descricao_manutencao = f"Manutenção realizada: {solucao}. Peças usadas: {', '.join(pecas_usadas) if pecas_usadas else 'Nenhuma'}."
-            historico = HistoricoManutencao(
-                numero_patrimonio=chamado.patrimonio,
-                descricao=descricao_manutencao,
-                data_manutencao=hora_fechamento
-            )
-            session.add(historico)
-            session.commit()
+                st.success(f'Chamado ID: {id_chamado} finalizado com sucesso e histórico de manutenção criado!')
+                logging.info(f"Chamado ID: {id_chamado} finalizado e histórico de manutenção criado para patrimônio {chamado.patrimonio}.")
+            else:
+                st.error("Chamado não encontrado.")
+                logging.warning(f"Chamado ID {id_chamado} não encontrado.")
+        except Exception as e:
+            session.rollback()
+            logging.error(f"Erro ao finalizar chamado ID {id_chamado}: {e}")
+            st.error(f"Erro interno ao finalizar chamado e registrar manutenção. Tente novamente mais tarde. Detalhes: {e}")
 
-            st.success(f'Chamado ID: {id_chamado} finalizado com sucesso e histórico de manutenção criado!')
-            logging.info(f"Chamado ID: {id_chamado} finalizado e histórico de manutenção criado para patrimônio {chamado.patrimonio}.")
-        else:
-            st.error("Chamado não encontrado.")
-            logging.warning(f"Chamado ID {id_chamado} não encontrado.")
-    except Exception as e:
-        session.rollback()
-        logging.error(f"Erro ao finalizar chamado ID {id_chamado}: {e}")
-        st.error(f"Erro interno ao finalizar chamado e registrar manutenção. Tente novamente mais tarde. Detalhes: {e}")
-    finally:
-        session.close()
 
 # Função para listar todos os chamados
 def list_chamados():
@@ -242,42 +228,53 @@ def list_chamados_em_aberto():
     finally:
         session.close()
 
-# Função otimizada para calcular horas úteis entre duas datas
+from workalendar.america import Brazil  # Adicionando a importação do Workalendar
+
+# Função para calcular horas úteis com o Workalendar
 def calculate_working_hours(start, end):
+    cal = Brazil()  # Escolha o calendário adequado para a sua região
     total_seconds = 0
     current = start
 
+    # Definir o intervalo de trabalho
+    work_start_time = timedelta(hours=8)   # Início do expediente às 08:00
+    work_end_time = timedelta(hours=17)    # Fim do expediente às 17:00
+    lunch_break_start = timedelta(hours=12) # Intervalo de almoço das 12:00 às 13:00
+    lunch_break_end = timedelta(hours=13)
+
     while current < end:
-        if current.weekday() >= 5:
-            # Pular finais de semana
-            next_day = current + timedelta(days=1)
-            current = next_day.replace(hour=0, minute=0, second=0, microsecond=0)
-            continue
+        # Verificar se o dia atual é um feriado ou final de semana
+        if cal.is_working_day(current):
+            # Início do dia de trabalho
+            start_of_day = current.replace(hour=8, minute=0, second=0, microsecond=0)
+            end_of_day = current.replace(hour=17, minute=0, second=0, microsecond=0)
 
-        # Definir os intervalos de trabalho
-        start_morning = current.replace(hour=8, minute=0, second=0, microsecond=0)
-        end_morning = current.replace(hour=12, minute=0, second=0, microsecond=0)
-        start_afternoon = current.replace(hour=13, minute=0, second=0, microsecond=0)
-        end_afternoon = current.replace(hour=17, minute=0, second=0, microsecond=0)
+            # Verificar se o tempo atual está dentro do horário útil
+            if current < start_of_day:
+                current = start_of_day
 
-        # Calcular horas da manhã
-        if start <= end_morning and end > start_morning:
-            interval_start = max(start, start_morning)
-            interval_end = min(end, end_morning)
-            if interval_end > interval_start:
-                total_seconds += (interval_end - interval_start).total_seconds()
+            # Se já passou do horário de trabalho, vá para o próximo dia
+            if current >= end_of_day:
+                current += timedelta(days=1)
+                continue
 
-        # Calcular horas da tarde
-        if start <= end_afternoon and end > start_afternoon:
-            interval_start = max(start, start_afternoon)
-            interval_end = min(end, end_afternoon)
-            if interval_end > interval_start:
-                total_seconds += (interval_end - interval_start).total_seconds()
+            # Se estamos dentro do horário de trabalho, calcular as horas trabalhadas
+            if current < end:
+                interval_start = current
+                interval_end = min(end, end_of_day)
 
-        # Avançar para o próximo dia
+                # Excluir o intervalo de almoço
+                if interval_start < lunch_break_start and interval_end > lunch_break_end:
+                    total_seconds += (lunch_break_start - interval_start).total_seconds()
+                    total_seconds += (interval_end - lunch_break_end).total_seconds()
+                else:
+                    total_seconds += (interval_end - interval_start).total_seconds()
+
+        # Passar para o próximo dia
         current = (current + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
 
     return timedelta(seconds=total_seconds)
+
 
 # Função para calcular tempo decorrido
 def calculate_tempo_decorrido(chamado):
