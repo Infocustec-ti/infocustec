@@ -291,15 +291,13 @@ def calculate_working_hours(start, end):
 def calculate_tempo_decorrido(chamado):
     try:
         hora_abertura = chamado.hora_abertura
-        hora_fechamento = chamado.hora_fechamento or datetime.now()
+        hora_fechamento = chamado.hora_fechamento or datetime.now().astimezone(local_tz)
 
         if isinstance(hora_abertura, str):
-            hora_abertura = datetime.strptime(hora_abertura, '%d/%m/%Y %H:%M:%S')
-        if isinstance(hora_fechamento, str):
-            hora_fechamento = datetime.strptime(hora_fechamento, '%d/%m/%Y %H:%M:%S')
+            hora_abertura = datetime.strptime(hora_abertura, '%d/%m/%Y %H:%M:%S').astimezone(local_tz)
 
-        hora_abertura = set_local_timezone(hora_abertura)
-        hora_fechamento = set_local_timezone(hora_fechamento)
+        if isinstance(hora_fechamento, str):
+            hora_fechamento = datetime.strptime(hora_fechamento, '%d/%m/%Y %H:%M:%S').astimezone(local_tz)
 
         tempo_uteis = calculate_working_hours(hora_abertura, hora_fechamento)
 
@@ -324,17 +322,18 @@ def calculate_tempo_decorrido(chamado):
     except Exception as e:
         logging.error(f"Erro ao calcular tempo decorrido: {e}")
         return "Erro no cálculo"
+
+# Função para calcular tempo decorrido em segundos para uma linha do DataFrame
 def calculate_tempo_decorrido_em_segundos_row(row):
     try:
-        # Acessar os valores da linha do DataFrame diretamente pelos nomes das colunas
         hora_abertura = row['Hora Abertura']
-        hora_fechamento = row['Hora Fechamento'] or datetime.now()
+        hora_fechamento = row['Hora Fechamento'] or datetime.now().astimezone(local_tz)
 
         # Verificar se hora_abertura e hora_fechamento são strings e converter
         if isinstance(hora_abertura, str):
-            hora_abertura = datetime.strptime(hora_abertura, '%d/%m/%Y %H:%M:%S')
+            hora_abertura = datetime.strptime(hora_abertura, '%d/%m/%Y %H:%M:%S').astimezone(local_tz)
         if isinstance(hora_fechamento, str):
-            hora_fechamento = datetime.strptime(hora_fechamento, '%d/%m/%Y %H:%M:%S')
+            hora_fechamento = datetime.strptime(hora_fechamento, '%d/%m/%Y %H:%M:%S').astimezone(local_tz)
 
         # Calcular o tempo útil
         tempo_uteis = calculate_working_hours(hora_abertura, hora_fechamento)
