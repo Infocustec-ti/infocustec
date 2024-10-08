@@ -2,10 +2,10 @@ import os
 import sys
 import logging
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, ForeignKey, DateTime
-
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 import streamlit as st
+import bcrypt  # Importação necessária para hashing de senhas
 
 # Configuração do logging
 logging.basicConfig(
@@ -27,6 +27,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 # Definição dos modelos ORM
+
 class Inventario(Base):
     __tablename__ = 'inventario'
     id = Column(Integer, primary_key=True, index=True)
@@ -60,7 +61,6 @@ class HistoricoManutencao(Base):
     data_manutencao = Column(DateTime, nullable=False)
     inventario = relationship("Inventario", back_populates="historico")
 
-
 class Chamado(Base):
     __tablename__ = 'chamados'
     id = Column(Integer, primary_key=True, index=True)
@@ -76,7 +76,17 @@ class Chamado(Base):
     machine = Column(String)
     patrimonio = Column(String)
     pecas_usadas = relationship("PecaUsada", back_populates="chamado")
+
+class PecaUsada(Base):
+    __tablename__ = 'peca_usada'
+    id = Column(Integer, primary_key=True, index=True)
+    chamado_id = Column(Integer, ForeignKey('chamados.id'), nullable=False)
+    peca_nome = Column(String, nullable=False)
+    data_uso = Column(DateTime, nullable=False)
     
+    # Relação com Chamado
+    chamado = relationship("Chamado", back_populates="pecas_usadas")
+
 class Usuario(Base):
     __tablename__ = 'usuarios'
     id = Column(Integer, primary_key=True, index=True)
@@ -84,7 +94,6 @@ class Usuario(Base):
     password = Column(String(128), nullable=False)  # Definindo tamanho máximo para senha criptografada
     role = Column(String(10), default='user', nullable=False)
 
-# Função para criar as tabelas no banco de dados
 # Função para criar as tabelas no banco de dados
 def create_tables():
     try:
@@ -94,7 +103,7 @@ def create_tables():
         logging.error(f"Erro ao criar as tabelas: {e}")
         print(f"Erro ao criar as tabelas: {e}")
         raise  # Relevanta o erro para parar a execução do sistema caso falhe
-# Função para adicionar uma UBS ao banco de dados
+
 # Função para adicionar uma UBS ao banco de dados
 def add_ubs(nome_ubs):
     session = SessionLocal()
@@ -134,12 +143,15 @@ def add_setor(nome_setor):
 # Função para inicializar UBSs e setores no banco de dados
 def initialize_ubs_setores():
     ubs_iniciais = [
-        "UBS Baleia"
-        # ... adicione mais UBSs
+        "UBS Baleia",
+        "UBS Arapari/Cabeceiras",
+        # ... adicione mais UBSs conforme necessário
     ]
 
     setores_iniciais = [
-        "Recepção"
+        "Recepção",
+        "TI",
+        # ... adicione mais setores conforme necessário
     ]
 
     for ubs in ubs_iniciais:
@@ -147,6 +159,21 @@ def initialize_ubs_setores():
 
     for setor in setores_iniciais:
         add_setor(setor)
+
+# Função para criar um novo usuário
+def create_user(username, password, role='user'):
+    session = SessionLocal()
+    try:
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        novo_usuario = Usuario(username=username, password=hashed_password, role=role)
+        session.add(novo_usuario)
+        session.commit()
+        logging.info(f"Usuário '{username}' criado com sucesso com o papel '{role}'.")
+    except Exception as e:
+        session.rollback()
+        logging.error(f"Erro ao criar usuário '{username}': {e}")
+    finally:
+        session.close()
 
 # Função para verificar e criar o usuário admin
 def check_or_create_admin_user():
@@ -175,5 +202,3 @@ def check_or_create_admin_user():
         logging.error(f"Erro ao verificar/criar usuário admin: {e}")
     finally:
         session.close()
-
-
