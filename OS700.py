@@ -455,6 +455,7 @@ def painel_relatorios():
             logging.error(f"Erro ao gerar relatório de inventário: {e}")
 
 def painel_chamados_tecnicos():
+    from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
     if not st.session_state.get('logged_in') or not st.session_state.get('is_admin'):
         st.warning('Você precisa estar logado como administrador para acessar esta área.')
         logging.warning("Usuário sem privilégios tentou acessar o painel de chamados técnicos.")
@@ -546,7 +547,7 @@ def painel_chamados_tecnicos():
 
                 selected_rows = grid_response.get('selected_rows', [])
 
-                if selected_rows:
+                if isinstance(selected_rows, list) and len(selected_rows) > 0:
                     chamado_selecionado = selected_rows[0]
                 else:
                     chamado_selecionado = None
@@ -587,6 +588,7 @@ def painel_chamados_tecnicos():
                 st.info("Não há chamados em aberto no momento.")
                 logging.info("Nenhum chamado em aberto para exibir.")
 
+        
         with tab2:
             st.subheader('Painel de Chamados')
 
