@@ -468,18 +468,18 @@ def painel_chamados_tecnicos():
 
     def chamado_to_dict(chamado):
         return {
-            'id': chamado.id,
-            'username': chamado.username,
-            'ubs': chamado.ubs,
-            'setor': chamado.setor,
-            'tipo_defeito': chamado.tipo_defeito,
-            'problema': chamado.problema,
-            'hora_abertura': chamado.hora_abertura,
-            'solucao': chamado.solucao,
-            'hora_fechamento': chamado.hora_fechamento,
-            'protocolo': chamado.protocolo,
-            'patrimonio': chamado.patrimonio,
-            'machine': chamado.machine
+            'ID': chamado.id,
+            'Usuário': chamado.username,
+            'UBS': chamado.ubs,
+            'Setor': chamado.setor,
+            'Tipo de Defeito': chamado.tipo_defeito,
+            'Problema': chamado.problema,
+            'Hora Abertura': chamado.hora_abertura,
+            'Solução': chamado.solucao,
+            'Hora Fechamento': chamado.hora_fechamento,
+            'Protocolo': chamado.protocolo,
+            'Patrimônio': chamado.patrimonio,
+            'Machine': chamado.machine
         }
 
     if chamados:
@@ -490,24 +490,14 @@ def painel_chamados_tecnicos():
             logging.error(f"Erro ao criar DataFrame: {e}")
             return
 
-        df_chamados.columns = [col.lower() for col in df_chamados.columns]
+        df_chamados['Hora Abertura'] = pd.to_datetime(df_chamados['Hora Abertura'], errors='coerce')
+        df_chamados['Hora Fechamento'] = pd.to_datetime(df_chamados['Hora Fechamento'], errors='coerce')
 
-        colunas_esperadas = ['id', 'username', 'ubs', 'setor', 'tipo_defeito', 'problema',
-                             'hora_abertura', 'solucao', 'hora_fechamento', 'protocolo',
-                             'patrimonio', 'machine']
-
-        for col in colunas_esperadas:
-            if col not in df_chamados.columns:
-                df_chamados[col] = pd.NaT if 'hora' in col else ''
-
-        df_chamados['hora_abertura'] = pd.to_datetime(df_chamados['hora_abertura'], errors='coerce')
-        df_chamados['hora_fechamento'] = pd.to_datetime(df_chamados['hora_fechamento'], errors='coerce')
-
-        df_chamados['tempo_decorrido_segundos'] = df_chamados.apply(
-            lambda row: calcular_tempo_decorrido(row['hora_abertura'], row['hora_fechamento']), axis=1
+        df_chamados['Tempo Decorrido Segundos'] = df_chamados.apply(
+            lambda row: calcular_tempo_decorrido(row['Hora Abertura'], row['Hora Fechamento']), axis=1
         )
 
-        df_chamados['tempo_decorrido'] = df_chamados['tempo_decorrido_segundos'].apply(formatar_tempo)
+        df_chamados['Tempo Decorrido'] = df_chamados['Tempo Decorrido Segundos'].apply(formatar_tempo)
 
         tab1, tab2, tab3 = st.tabs(['Chamados em Aberto', 'Painel de Chamados', 'Análise de Chamados'])
 
@@ -522,14 +512,8 @@ def painel_chamados_tecnicos():
                     logging.error(f"Erro ao criar DataFrame para chamados abertos: {e}")
                     return
 
-                df_abertos.columns = [col.lower() for col in df_abertos.columns]
-
-                for col in colunas_esperadas:
-                    if col not in df_abertos.columns:
-                        df_abertos[col] = pd.NaT if 'hora' in col else ''
-
-                df_abertos['hora_abertura'] = pd.to_datetime(df_abertos['hora_abertura'], errors='coerce')
-                df_abertos['hora_fechamento'] = pd.to_datetime(df_abertos['hora_fechamento'], errors='coerce')
+                df_abertos['Hora Abertura'] = pd.to_datetime(df_abertos['Hora Abertura'], errors='coerce')
+                df_abertos['Hora Fechamento'] = pd.to_datetime(df_abertos['Hora Fechamento'], errors='coerce')
 
                 gb = GridOptionsBuilder.from_dataframe(df_abertos)
                 gb.configure_pagination()
@@ -549,13 +533,15 @@ def painel_chamados_tecnicos():
 
                 if isinstance(selected_rows, list) and len(selected_rows) > 0:
                     chamado_selecionado = selected_rows[0]
+                elif isinstance(selected_rows, pd.DataFrame) and not selected_rows.empty:
+                    chamado_selecionado = selected_rows.iloc[0].to_dict()
                 else:
                     chamado_selecionado = None
 
                 if chamado_selecionado is not None:
                     st.write('### Finalizar Chamado Selecionado')
-                    st.write(f"ID do Chamado: {chamado_selecionado.get('id', 'N/A')}")
-                    st.write(f"Problema: {chamado_selecionado.get('problema', 'N/A')}")
+                    st.write(f"ID do Chamado: {chamado_selecionado.get('ID', 'N/A')}")
+                    st.write(f"Problema: {chamado_selecionado.get('Problema', 'N/A')}")
 
                     solucao = st.text_area('Insira a solução para o chamado')
 
@@ -573,13 +559,13 @@ def painel_chamados_tecnicos():
                     if st.button('Finalizar Chamado'):
                         if solucao:
                             try:
-                                finalizar_chamado(chamado_selecionado.get('id'), solucao, pecas_selecionadas)
-                                st.success(f'Chamado ID: {chamado_selecionado["id"]} finalizado com sucesso!')
-                                logging.info(f"Chamado ID: {chamado_selecionado['id']} finalizado por {st.session_state.username}.")
+                                finalizar_chamado(chamado_selecionado.get('ID'), solucao, pecas_selecionadas)
+                                st.success(f'Chamado ID: {chamado_selecionado["ID"]} finalizado com sucesso!')
+                                logging.info(f"Chamado ID: {chamado_selecionado['ID']} finalizado por {st.session_state.username}.")
                                 st.experimental_rerun()
                             except Exception as e:
                                 st.error(f"Erro ao finalizar o chamado: {e}")
-                                logging.error(f"Erro ao finalizar o chamado ID {chamado_selecionado.get('id')}: {e}")
+                                logging.error(f"Erro ao finalizar o chamado ID {chamado_selecionado.get('ID')}: {e}")
                         else:
                             st.error('Por favor, insira a solução antes de finalizar o chamado.')
                 else:
@@ -588,26 +574,25 @@ def painel_chamados_tecnicos():
                 st.info("Não há chamados em aberto no momento.")
                 logging.info("Nenhum chamado em aberto para exibir.")
 
-        
         with tab2:
             st.subheader('Painel de Chamados')
 
             status_options = ['Todos', 'Em Aberto', 'Finalizado']
             status = st.selectbox('Filtrar por Status', status_options)
 
-            ubs_list = ['Todas'] + df_chamados['ubs'].dropna().unique().tolist()
+            ubs_list = ['Todas'] + df_chamados['UBS'].dropna().unique().tolist()
             ubs_selecionada = st.selectbox('Filtrar por UBS', ubs_list)
 
             df_filtrado = df_chamados.copy()
 
             if status != 'Todos':
                 if status == 'Em Aberto':
-                    df_filtrado = df_filtrado[df_filtrado['hora_fechamento'].isnull()]
+                    df_filtrado = df_filtrado[df_filtrado['Hora Fechamento'].isnull()]
                 else:
-                    df_filtrado = df_filtrado[df_filtrado['hora_fechamento'].notnull()]
+                    df_filtrado = df_filtrado[df_filtrado['Hora Fechamento'].notnull()]
 
             if ubs_selecionada != 'Todas':
-                df_filtrado = df_filtrado[df_filtrado['ubs'] == ubs_selecionada]
+                df_filtrado = df_filtrado[df_filtrado['UBS'] == ubs_selecionada]
 
             gb = GridOptionsBuilder.from_dataframe(df_filtrado)
             gb.configure_pagination()
@@ -633,28 +618,28 @@ def painel_chamados_tecnicos():
 
             fig = px.bar(
                 df_chamados,
-                x='ubs',
+                x='UBS',
                 title='Quantidade de Chamados por UBS',
-                labels={'ubs': 'UBS', 'id': 'Quantidade'},
-                color='ubs'
+                labels={'UBS': 'UBS', 'count': 'Quantidade'},
+                color='UBS'
             )
             st.plotly_chart(fig)
 
             fig_defeitos = px.bar(
                 df_chamados,
-                x='tipo_defeito',
+                x='Tipo de Defeito',
                 title='Quantidade de Chamados por Tipo de Defeito',
-                labels={'tipo_defeito': 'Tipo de Defeito', 'id': 'Quantidade'},
-                color='tipo_defeito'
+                labels={'Tipo de Defeito': 'Tipo de Defeito', 'count': 'Quantidade'},
+                color='Tipo de Defeito'
             )
             st.plotly_chart(fig_defeitos)
 
             fig_setor = px.bar(
                 df_chamados,
-                x='setor',
+                x='Setor',
                 title='Quantidade de Chamados por Setor',
-                labels={'setor': 'Setor', 'id': 'Quantidade'},
-                color='setor'
+                labels={'Setor': 'Setor', 'count': 'Quantidade'},
+                color='Setor'
             )
             st.plotly_chart(fig_setor)
 
