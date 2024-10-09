@@ -541,7 +541,8 @@ def painel_chamados_tecnicos():
                 selected_rows = grid_response.get('selected_rows', [])
                 chamado_selecionado = selected_rows[0] if selected_rows else None
 
-                if chamado_selecionado:
+                if chamado_selecionado is not None and not isinstance(chamado_selecionado, pd.DataFrame):
+
                     st.write('### Finalizar Chamado Selecionado')
                     st.write(f"ID do Chamado: {chamado_selecionado.get('ID', 'N/A')}")
                     st.write(f"Problema: {chamado_selecionado.get('Problema', 'N/A')}")
