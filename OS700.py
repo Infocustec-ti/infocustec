@@ -479,30 +479,46 @@ def painel_chamados_tecnicos():
     chamados_abertos = list_chamados_em_aberto()
     chamados = list_chamados()
 
+    # Definir função para converter objeto Chamado em dicionário com atributos necessários
+    def chamado_to_dict(chamado):
+        return {
+            'id': chamado.id,
+            'username': chamado.username,
+            'ubs': chamado.ubs,
+            'setor': chamado.setor,
+            'tipo_defeito': chamado.tipo_defeito,
+            'problema': chamado.problema,
+            'hora_abertura': chamado.hora_abertura,
+            'solucao': chamado.solucao,
+            'hora_fechamento': chamado.hora_fechamento,
+            'protocolo': chamado.protocolo,
+            'patrimonio': chamado.patrimonio,
+            'machine': chamado.machine
+        }
+
     if chamados:
         try:
-            # Criar DataFrame sem especificar as colunas para permitir que o Pandas infira as colunas
-            df_chamados = pd.DataFrame([chamado.__dict__ for chamado in chamados])
+            # Usar chamado_to_dict para criar DataFrame sem atributos internos
+            df_chamados = pd.DataFrame([chamado_to_dict(chamado) for chamado in chamados])
         except Exception as e:
             st.error(f"Erro ao criar DataFrame: {e}")
             logger.error(f"Erro ao criar DataFrame: {e}")
             return
+
+        # Resto do código permanece o mesmo, com ajustes nos nomes das colunas
+        df_chamados.columns = [col.lower() for col in df_chamados.columns]
 
         # Lista de colunas esperadas
         colunas_esperadas = ['id', 'username', 'ubs', 'setor', 'tipo_defeito', 'problema',
                              'hora_abertura', 'solucao', 'hora_fechamento', 'protocolo',
                              'patrimonio', 'machine']
 
-        # Renomear colunas do DataFrame para corresponder às colunas esperadas
-        df_chamados.columns = [col.lower() for col in df_chamados.columns]
-
         # Adicionar colunas ausentes com valores padrão
         for col in colunas_esperadas:
             if col not in df_chamados.columns:
-                # Para colunas datetime, usamos pd.NaT; para as demais, strings vazias
                 df_chamados[col] = pd.NaT if 'hora' in col else ''
 
-        # Converter colunas datetime, lidando com valores nulos
+        # Converter colunas datetime
         df_chamados['hora_abertura'] = pd.to_datetime(df_chamados['hora_abertura'], errors='coerce')
         df_chamados['hora_fechamento'] = pd.to_datetime(df_chamados['hora_fechamento'], errors='coerce')
 
@@ -523,7 +539,8 @@ def painel_chamados_tecnicos():
 
             if chamados_abertos:
                 try:
-                    df_abertos = pd.DataFrame([chamado.__dict__ for chamado in chamados_abertos])
+                    # Usar chamado_to_dict para criar DataFrame sem atributos internos
+                    df_abertos = pd.DataFrame([chamado_to_dict(chamado) for chamado in chamados_abertos])
                 except Exception as e:
                     st.error(f"Erro ao criar DataFrame para chamados abertos: {e}")
                     logger.error(f"Erro ao criar DataFrame para chamados abertos: {e}")
