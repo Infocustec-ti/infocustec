@@ -1,3 +1,4 @@
+# chamados.py
 import os
 from datetime import datetime, timedelta
 from twilio.rest import Client
@@ -7,44 +8,40 @@ from fpdf import FPDF
 from io import BytesIO
 import matplotlib.pyplot as plt
 import seaborn as sns
-from matplotlib.ticker import MaxNLocator
 import tempfile
 import logging
 from logging.handlers import RotatingFileHandler
 from database import Chamado, SessionLocal, Inventario, PecaUsada, HistoricoManutencao
 from sqlalchemy import desc
-from autenticacao import is_admin
 from workalendar.america import Brazil
 from zoneinfo import ZoneInfo
 from dateutil import parser
-
-# Configurações de autenticação do Twilio usando variáveis de ambiente
-account_sid = os.getenv('TWILIO_ACCOUNT_SID')
-auth_token = os.getenv('TWILIO_AUTH_TOKEN')
-if account_sid and auth_token:
-    client = Client(account_sid, auth_token)
-else:
-    client = None
-    logging.warning("Credenciais do Twilio não configuradas. Mensagens não serão enviadas.")
 
 # Configuração do logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-
 handler_file = RotatingFileHandler("chamados.log", maxBytes=5*1024*1024, backupCount=5)
 handler_file.setFormatter(formatter)
-
 handler_stream = logging.StreamHandler()
 handler_stream.setFormatter(formatter)
-
 logger.addHandler(handler_file)
 logger.addHandler(handler_stream)
 
 # Definir o fuso horário local
 local_tz = ZoneInfo('America/Sao_Paulo')
 
-# Função para gerar protocolo sequencial
+# Configurações de autenticação do Twilio usando variáveis de ambiente
+account_sid = os.getenv('TWILIO_ACCOUNT_SID')
+auth_token = os.getenv('TWILIO_AUTH_TOKEN')
+if account_sid and auth_token:
+    client = Client(account_sid, auth_token)
+    twilio_from = os.getenv('TWILIO_FROM')
+    twilio_to_numbers = os.getenv('TWILIO_TO_NUMBERS', '').split(',')
+else:
+    client = None
+    logger.warning("Credenciais do Twilio não configuradas. Mensagens não serão enviadas.")
+
 def gerar_protocolo_sequencial():
     with SessionLocal() as session:
         try:
@@ -55,7 +52,6 @@ def gerar_protocolo_sequencial():
             logger.error(f"Erro ao gerar protocolo sequencial: {e}")
             return None
 
-# Função para buscar chamado por protocolo
 def get_chamado_by_protocolo(protocolo):
     with SessionLocal() as session:
         try:
@@ -64,10 +60,8 @@ def get_chamado_by_protocolo(protocolo):
             return chamado
         except Exception as e:
             logger.error(f"Erro ao buscar chamado por protocolo {protocolo}: {e}")
-            st.error("Erro interno ao buscar chamado. Tente novamente mais tarde.")
             return None
 
-# Função para buscar no inventário por número de patrimônio
 def buscar_no_inventario_por_patrimonio(patrimonio):
     with SessionLocal() as session:
         try:
@@ -88,7 +82,6 @@ def buscar_no_inventario_por_patrimonio(patrimonio):
             logger.error(f"Erro ao buscar patrimônio {patrimonio} no inventário: {e}")
             return None
 
-# Função para adicionar um chamado
 def add_chamado(username, ubs, setor, tipo_defeito, problema, machine=None, patrimonio=None):
     protocolo = gerar_protocolo_sequencial()
     if protocolo is None:
@@ -114,22 +107,21 @@ def add_chamado(username, ubs, setor, tipo_defeito, problema, machine=None, patr
             session.commit()
             logger.info(f"Chamado aberto: Protocolo {protocolo} por usuário {username}")
 
-            # Enviar mensagem via WhatsApp
-            if client:
-                numeros_destino = ['whatsapp:+558586981658', 'whatsapp:+558894000846']
-                for numero in numeros_destino:
-                    try:
-                        message = client.messages.create(
-                            from_='whatsapp:+14155238886',
-                            body=f"Novo chamado técnico na UBS '{ubs}' no setor '{setor}': {problema}",
-                            to=numero
-                        )
-                        logger.info(f"Mensagem enviada para {numero} via WhatsApp. SID: {message.sid}")
-                    except Exception as e:
-                        logger.error(f"Erro ao enviar mensagem para {numero} via WhatsApp: {e}")
-                        st.error(f"Erro ao enviar mensagem para {numero} via WhatsApp.")
+            if client and twilio_from and twilio_to_numbers:
+                for numero in twilio_to_numbers:
+                    numero = numero.strip()
+                    if numero:
+                        try:
+                            message = client.messages.create(
+                                from_=twilio_from,
+                                body=f"Novo chamado técnico na UBS '{ubs}' no setor '{setor}': {problema}",
+                                to=numero
+                            )
+                            logger.info(f"Mensagem enviada para {numero} via WhatsApp. SID: {message.sid}")
+                        except Exception as e:
+                            logger.error(f"Erro ao enviar mensagem para {numero} via WhatsApp: {e}")
             else:
-                logger.warning("Cliente Twilio não configurado. Mensagens não foram enviadas.")
+                logger.warning("Cliente Twilio não configurado ou números de destino não fornecidos.")
 
             st.success(f"Chamado aberto com sucesso! Protocolo: {protocolo}")
         except Exception as e:
@@ -137,60 +129,19 @@ def add_chamado(username, ubs, setor, tipo_defeito, problema, machine=None, patr
             logger.error(f"Erro ao adicionar chamado: {e}")
             st.error("Erro interno ao abrir chamado. Tente novamente mais tarde.")
 
-# Função para adicionar uma máquina ao inventário
-def add_maquina(numero_patrimonio, tipo, marca, modelo, numero_serie, status, localizacao, propria_locada, setor):
-    with SessionLocal() as session:
-        try:
-            if not numero_serie:
-                numero_serie = "N/A"
-
-            existing_machine = session.query(Inventario).filter(Inventario.numero_patrimonio == numero_patrimonio).first()
-            if existing_machine:
-                st.error(f"Máquina com o número de patrimônio {numero_patrimonio} já existe no inventário.")
-                logger.warning(f"Tentativa de duplicação de patrimônio: {numero_patrimonio}")
-                return
-
-            nova_maquina = Inventario(
-                numero_patrimonio=numero_patrimonio,
-                tipo=tipo,
-                marca=marca,
-                modelo=modelo,
-                numero_serie=numero_serie,
-                status=status,
-                localizacao=localizacao,
-                propria_locada=propria_locada,
-                setor=setor
-            )
-            session.add(nova_maquina)
-            session.commit()
-            logger.info(f"Máquina {numero_patrimonio} adicionada ao inventário por admin.")
-            st.success(f"Máquina {numero_patrimonio} adicionada ao inventário com sucesso!")
-        except Exception as e:
-            session.rollback()
-            logger.error(f"Erro ao adicionar máquina ao inventário: {e}")
-            st.error("Erro interno ao adicionar máquina ao inventário. Verifique os dados e tente novamente.")
-
-# Função unificada para calcular o tempo decorrido
 def calcular_tempo_decorrido(hora_abertura, hora_fechamento):
     try:
         cal = Brazil()
         total_seconds = 0
 
-        work_start_time = timedelta(hours=8)
-        work_end_time = timedelta(hours=17)
-        lunch_start = timedelta(hours=12)
-        lunch_end = timedelta(hours=13)
-
         if hora_fechamento is None or pd.isnull(hora_fechamento):
             hora_fechamento = datetime.now(tz=local_tz)
 
-        # Converter strings para datetime, se necessário
         if isinstance(hora_abertura, str):
             hora_abertura = parser.parse(hora_abertura)
         if isinstance(hora_fechamento, str):
             hora_fechamento = parser.parse(hora_fechamento)
 
-        # Ajustar o fuso horário, se necessário
         if hora_abertura.tzinfo is None:
             hora_abertura = hora_abertura.replace(tzinfo=local_tz)
         if hora_fechamento.tzinfo is None:
@@ -215,7 +166,6 @@ def calcular_tempo_decorrido(hora_abertura, hora_fechamento):
                 interval_start = current
                 interval_end = min(hora_fechamento, end_of_day)
 
-                # Ajustar para intervalo de almoço
                 if interval_start < lunch_start_time < interval_end:
                     total_seconds += (lunch_start_time - interval_start).total_seconds()
                     interval_start = lunch_end_time
@@ -236,7 +186,6 @@ def calcular_tempo_decorrido(hora_abertura, hora_fechamento):
         logger.error(f"Erro ao calcular tempo decorrido: {e}")
         return None
 
-# Função para formatar tempo
 def formatar_tempo(total_seconds):
     try:
         total_seconds = int(total_seconds)
@@ -258,7 +207,6 @@ def formatar_tempo(total_seconds):
         logger.error(f"Erro ao formatar tempo: {e}")
         return "Erro no formato"
 
-# Função para calcular tempo médio
 def calculate_average_time(chamados):
     total_tempo = 0
     total_chamados_finalizados = 0
@@ -276,7 +224,6 @@ def calculate_average_time(chamados):
         logger.info("Nenhum chamado finalizado para calcular tempo médio de atendimento.")
     return media_tempo
 
-# Função para mostrar tempo médio
 def show_average_time(chamados):
     if chamados:
         media_tempo_segundos = calculate_average_time(chamados)
@@ -285,7 +232,6 @@ def show_average_time(chamados):
     else:
         st.write('Nenhum chamado finalizado para calcular o tempo médio.')
 
-# Função para finalizar um chamado
 def finalizar_chamado(id_chamado, solucao, pecas_usadas=None):
     hora_fechamento = datetime.now(tz=local_tz)
     with SessionLocal() as session:
@@ -295,7 +241,6 @@ def finalizar_chamado(id_chamado, solucao, pecas_usadas=None):
                 chamado.solucao = solucao
                 chamado.hora_fechamento = hora_fechamento
 
-                # Adicionar peças usadas, se houver
                 if pecas_usadas:
                     for peca in pecas_usadas:
                         peca_usada = PecaUsada(
@@ -305,7 +250,6 @@ def finalizar_chamado(id_chamado, solucao, pecas_usadas=None):
                         )
                         session.add(peca_usada)
 
-                # Adicionar histórico de manutenção se o patrimônio estiver presente
                 if chamado.patrimonio:
                     inventario = session.query(Inventario).filter(Inventario.numero_patrimonio == chamado.patrimonio).first()
                     if inventario:
@@ -321,7 +265,6 @@ def finalizar_chamado(id_chamado, solucao, pecas_usadas=None):
                         st.error(f"Patrimônio {chamado.patrimonio} não encontrado no inventário. Histórico de manutenção não foi criado.")
                 else:
                     logger.warning(f"Chamado ID {id_chamado} não possui 'patrimonio'. Histórico de manutenção não foi criado.")
-                    st.warning(f"Chamado não possui 'patrimonio'. Histórico de manutenção não foi criado.")
 
                 session.commit()
 
@@ -333,9 +276,8 @@ def finalizar_chamado(id_chamado, solucao, pecas_usadas=None):
         except Exception as e:
             session.rollback()
             logger.error(f"Erro ao finalizar chamado ID {id_chamado}: {e}")
-            st.error("Erro interno ao finalizar chamado e registrar manutenção. Tente novamente mais tarde.")
+            st.error("Erro interno ao finalizar chamado. Tente novamente mais tarde.")
 
-# Função para listar todos os chamados
 def list_chamados():
     with SessionLocal() as session:
         try:
@@ -344,10 +286,8 @@ def list_chamados():
             return chamados
         except Exception as e:
             logger.error(f"Erro ao listar chamados: {e}")
-            st.error("Erro interno ao listar chamados. Tente novamente mais tarde.")
             return []
 
-# Função para listar chamados em aberto
 def list_chamados_em_aberto():
     with SessionLocal() as session:
         try:
@@ -356,10 +296,8 @@ def list_chamados_em_aberto():
             return chamados
         except Exception as e:
             logger.error(f"Erro ao listar chamados em aberto: {e}")
-            st.error("Erro interno ao listar chamados em aberto. Tente novamente mais tarde.")
             return []
 
-# Função para obter dados mensais técnicos
 def get_monthly_technical_data():
     chamados = list_chamados()
     data = []
@@ -386,7 +324,6 @@ def get_monthly_technical_data():
     logger.info("Dados mensais dos chamados técnicos preparados.")
     return df, months_list
 
-# Função para salvar gráfico em arquivo temporário
 def save_plot_to_temp_file():
     try:
         with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmpfile:
@@ -398,7 +335,6 @@ def save_plot_to_temp_file():
         logger.error(f"Erro ao salvar gráfico temporariamente: {e}")
         return None
 
-# Função para adicionar imagem ao PDF
 def add_image_to_pdf(pdf, image_path, title):
     try:
         pdf.set_font('Arial', 'B', 12)
@@ -410,17 +346,15 @@ def add_image_to_pdf(pdf, image_path, title):
     except Exception as e:
         logger.error(f"Erro ao adicionar imagem {title} ao PDF: {e}")
 
-# Função para gerar relatório mensal
 def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=None):
     try:
         if not isinstance(df, pd.DataFrame):
             raise ValueError("O argumento 'df' não é um DataFrame")
 
         if pecas_usadas_df is None or not isinstance(pecas_usadas_df, pd.DataFrame):
-            logger.warning("O argumento 'pecas_usadas_df' não é um DataFrame ou é None. Criando DataFrame vazio.")
+            logger.warning("O argumento 'pecas_usadas_df' não é um DataFrame ou é None.")
             pecas_usadas_df = pd.DataFrame(columns=['chamado_id', 'peca_nome'])
 
-        # Filtrar dados para o mês selecionado
         df = df.dropna(subset=['Hora Abertura'])
 
         selected_year_int = int(selected_month[:4])
@@ -436,7 +370,6 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
             logger.info(f"Relatório mensal: nenhum dado para {selected_month}.")
             return None
 
-        # Calcular Tempo Decorrido
         df_filtered['Tempo Decorrido (s)'] = df_filtered.apply(
             lambda row: calcular_tempo_decorrido(row['Hora Abertura'], row['Hora Fechamento']), axis=1
         )
@@ -448,7 +381,6 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
             logger.info("Nenhum dado disponível após o cálculo do tempo decorrido.")
             return None
 
-        # Adicionar Peças Usadas
         if not pecas_usadas_df.empty:
             pecas_usadas_por_chamado = pecas_usadas_df.groupby('chamado_id')['peca_nome'].apply(', '.join).reset_index()
             df_filtered = pd.merge(df_filtered, pecas_usadas_por_chamado, left_on='ID', right_on='chamado_id', how='left')
@@ -456,7 +388,6 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
         else:
             df_filtered['peca_nome'] = 'Nenhuma'
 
-        # Estatísticas
         total_chamados = len(df_filtered)
         chamados_resolvidos = df_filtered['Hora Fechamento'].notnull().sum()
         chamados_nao_resolvidos = total_chamados - chamados_resolvidos
@@ -469,7 +400,6 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
         total_pecas_usadas = pecas_usadas_df['peca_nome'].count() if not pecas_usadas_df.empty else 0
         pecas_mais_usadas = pecas_usadas_df['peca_nome'].value_counts().head(5) if not pecas_usadas_df.empty else pd.Series([], dtype="int64")
 
-        # Gráfico: Número de Chamados por UBS
         fig, ax = plt.subplots(figsize=(10, 6))
         sns.countplot(data=df_filtered, x='UBS', order=df_filtered['UBS'].value_counts().index, ax=ax)
         ax.set_title('Número de Chamados por UBS')
@@ -478,7 +408,6 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
         chamados_por_ubs_chart = save_plot_to_temp_file()
         plt.close(fig)
 
-        # Gráfico: Número de Chamados por Tipo de Defeito
         fig, ax = plt.subplots(figsize=(10, 6))
         sns.countplot(data=df_filtered, x='Tipo de Defeito', order=df_filtered['Tipo de Defeito'].value_counts().index, ax=ax)
         ax.set_title('Número de Chamados por Tipo de Defeito')
@@ -487,7 +416,6 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
         chamados_por_defeito_chart = save_plot_to_temp_file()
         plt.close(fig)
 
-        # Gráfico: Tempo Médio de Resolução por UBS
         fig, ax = plt.subplots(figsize=(10, 6))
         tempo_medio_por_ubs = df_filtered.groupby('UBS')['Tempo Decorrido (s)'].mean().reset_index()
         sns.barplot(data=tempo_medio_por_ubs, x='UBS', y='Tempo Decorrido (s)', ax=ax)
@@ -498,7 +426,6 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
         tempo_medio_por_ubs_chart = save_plot_to_temp_file()
         plt.close(fig)
 
-        # Gráfico: Peças Mais Usadas
         if not pecas_mais_usadas.empty:
             fig, ax = plt.subplots(figsize=(10, 6))
             sns.barplot(x=pecas_mais_usadas.index, y=pecas_mais_usadas.values, ax=ax)
@@ -508,14 +435,12 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
             pecas_mais_usadas_chart = save_plot_to_temp_file()
             plt.close(fig)
 
-        # Criação do PDF
         pdf = FPDF(orientation='L')
         pdf.add_page()
 
         if logo_path and os.path.exists(logo_path):
             pdf.image(logo_path, x=10, y=8, w=30)
         elif logo_path:
-            st.warning("Logotipo não encontrado. Verifique o caminho configurado.")
             logger.warning("Logotipo não encontrado para inserção no relatório.")
 
         pdf.set_font('Arial', 'B', 16)
@@ -536,7 +461,6 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
         pdf.set_font('Arial', 'B', 12)
         pdf.cell(0, 10, 'Dashboard', ln=True, align='C')
 
-        # Adicionar gráficos ao PDF
         pdf.add_page()
         add_image_to_pdf(pdf, chamados_por_ubs_chart, 'Chamados por UBS')
 
@@ -593,33 +517,3 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
         logger.error(f"Erro ao gerar relatório mensal: {e}")
         st.error("Erro ao gerar relatório. Tente novamente mais tarde.")
         return None
-
-# Função para exibir o relatório mensal
-def exibir_relatorio_mensal():
-    st.title("Gerar Relatório Mensal de Chamados Técnicos")
-
-    df, months_list = get_monthly_technical_data()
-
-    with SessionLocal() as session:
-        try:
-            pecas_usadas_df = pd.read_sql(session.query(PecaUsada).statement, session.bind)
-        except Exception as e:
-            logger.error(f"Erro ao buscar peças usadas: {e}")
-            pecas_usadas_df = pd.DataFrame(columns=['chamado_id', 'peca_nome'])
-            st.error("Erro interno ao buscar peças usadas. Relatório pode estar incompleto.")
-
-    selected_month = st.selectbox("Selecione o mês para gerar o relatório:", months_list)
-
-    if st.button("Gerar Relatório"):
-        pdf_output = generate_monthly_report(df, selected_month, pecas_usadas_df, logo_path="caminho_para_seu_logo.png")
-        if pdf_output:
-            st.download_button(
-                label="Baixar Relatório em PDF",
-                data=pdf_output,
-                file_name=f'relatorio_{selected_month}.pdf',
-                mime='application/pdf'
-            )
-
-    # Exibir Tempo Médio de Atendimento
-    chamados_finalizados = [chamado for chamado in list_chamados() if chamado.hora_fechamento is not None]
-    show_average_time(chamados_finalizados)
