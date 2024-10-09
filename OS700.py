@@ -546,12 +546,13 @@ def painel_chamados_tecnicos():
             # Adicione logs detalhados para verificar o grid_response
             logging.info(f"grid_response: {grid_response}")
 
-            selected = grid_response.get('selected_rows', [])
-            logging.info(f"Tipo de selected: {type(selected)}")
-            logging.info(f"Selected rows: {selected}")
-            if not isinstance(selected, list):
+            if 'selected_rows' in grid_response:
+                selected = grid_response['selected_rows']
+                logging.info(f"Tipo de selected: {type(selected)}")
+                logging.info(f"Selected rows: {selected}")
+            else:
                 selected = []
-                logging.info("Selected não é uma lista, redefinido para lista vazia.")
+                logging.warning("selected_rows não encontrado em grid_response.")
 
             if len(selected) > 0 and isinstance(selected[0], dict):
                 chamado_selecionado = selected[0]
