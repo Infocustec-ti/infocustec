@@ -543,6 +543,8 @@ def painel_chamados_tecnicos():
                 height=350,
                 reload_data=True
             )
+            # Adicione logs detalhados para verificar o grid_response
+            logging.info(f"grid_response: {grid_response}")
 
             selected = grid_response.get('selected_rows', [])
             logging.info(f"Tipo de selected: {type(selected)}")
