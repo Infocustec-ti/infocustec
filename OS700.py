@@ -538,12 +538,11 @@ def painel_chamados_tecnicos():
                     reload_data=True
                 )
 
-                # Verificar se selected_rows retorna uma lista válida e se contém elementos
-                selected = grid_response['selected_rows']
+                selected_rows = grid_response['selected_rows']
 
                 # Corrigir a captura da linha selecionada e garantir que seja tratada corretamente
-                if selected:
-                    chamado_selecionado = selected[0] if len(selected) > 0 else None
+                if len(selected_rows) > 0:
+                    chamado_selecionado = selected_rows[0]
                 else:
                     chamado_selecionado = None
 
@@ -582,6 +581,8 @@ def painel_chamados_tecnicos():
             else:
                 st.info("Não há chamados em aberto no momento.")
                 logging.info("Nenhum chamado em aberto para exibir.")
+       
+        
         # Aba de Painel de Chamados
         with tab2:
             st.subheader('Painel de Chamados')
