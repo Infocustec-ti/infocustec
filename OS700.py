@@ -498,14 +498,14 @@ def painel_chamados_tecnicos():
 
     if chamados:
         try:
-            # Usar chamado_to_dict para criar DataFrame sem atributos internos
+            # Criar DataFrame a partir dos chamados
             df_chamados = pd.DataFrame([chamado_to_dict(chamado) for chamado in chamados])
         except Exception as e:
             st.error(f"Erro ao criar DataFrame: {e}")
             logger.error(f"Erro ao criar DataFrame: {e}")
             return
 
-        # Resto do código permanece o mesmo, com ajustes nos nomes das colunas
+        # Renomear colunas para minúsculas
         df_chamados.columns = [col.lower() for col in df_chamados.columns]
 
         # Lista de colunas esperadas
@@ -522,13 +522,13 @@ def painel_chamados_tecnicos():
         df_chamados['hora_abertura'] = pd.to_datetime(df_chamados['hora_abertura'], errors='coerce')
         df_chamados['hora_fechamento'] = pd.to_datetime(df_chamados['hora_fechamento'], errors='coerce')
 
-        # Calcular 'Tempo Decorrido (s)' usando a função unificada
-        df_chamados['Tempo Decorrido (s)'] = df_chamados.apply(
+        # Calcular 'Tempo Decorrido (s)'
+        df_chamados['tempo_decorrido_segundos'] = df_chamados.apply(
             lambda row: calcular_tempo_decorrido(row['hora_abertura'], row['hora_fechamento']), axis=1
         )
 
         # Formatar 'Tempo Decorrido' para exibição
-        df_chamados['Tempo Decorrido'] = df_chamados['Tempo Decorrido (s)'].apply(formatar_tempo)
+        df_chamados['tempo_decorrido'] = df_chamados['tempo_decorrido_segundos'].apply(formatar_tempo)
 
         # Configurar as abas
         tab1, tab2, tab3 = st.tabs(['Chamados em Aberto', 'Painel de Chamados', 'Análise de Chamados'])
@@ -539,7 +539,6 @@ def painel_chamados_tecnicos():
 
             if chamados_abertos:
                 try:
-                    # Usar chamado_to_dict para criar DataFrame sem atributos internos
                     df_abertos = pd.DataFrame([chamado_to_dict(chamado) for chamado in chamados_abertos])
                 except Exception as e:
                     st.error(f"Erro ao criar DataFrame para chamados abertos: {e}")
@@ -581,7 +580,7 @@ def painel_chamados_tecnicos():
                 if selected_rows and len(selected_rows) > 0:
                     chamado_selecionado = selected_rows[0]
 
-                if chamado_selecionado:
+                if chamado_selecionado is not None:
                     st.write('### Finalizar Chamado Selecionado')
                     st.write(f"ID do Chamado: {chamado_selecionado.get('id', 'N/A')}")
                     st.write(f"Problema: {chamado_selecionado.get('problema', 'N/A')}")
@@ -604,7 +603,7 @@ def painel_chamados_tecnicos():
                             try:
                                 # Finalizar o chamado e atualizar o banco de dados
                                 finalizar_chamado(chamado_selecionado.get('id'), solucao, pecas_selecionadas)
-                                st.success(f'Chamado ID: {chamado_selecionado["id"]} finalizado com sucesso!')
+                                st.success(f'Chamado ID: {chamado_selecionado['id']} finalizado com sucesso!')
                                 logger.info(f"Chamado ID: {chamado_selecionado['id']} finalizado por {st.session_state.username}.")
                                 st.experimental_rerun()
                             except Exception as e:
