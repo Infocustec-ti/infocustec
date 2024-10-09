@@ -652,12 +652,6 @@ def painel_chamados_tecnicos():
         )
         st.plotly_chart(fig_setor)
 
-
-
-
-
-
-
 # Função para buscar protocolo
 def buscar_protocolo():
     st.subheader('Buscar Chamado por Protocolo')
