@@ -60,12 +60,13 @@ from zoneinfo import ZoneInfo
 # Definir o fuso horário local
 local_tz = ZoneInfo('America/Sao_Paulo')
 
-
 # Inicialização do estado da sessão
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 if 'username' not in st.session_state:
     st.session_state.username = ''
+if 'is_admin' not in st.session_state:
+    st.session_state.is_admin = False
 
 # Configuração da página
 st.set_page_config(
@@ -79,9 +80,10 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.StreamHandler(sys.stdout),  # Logs para stdout (visíveis no Streamlit Cloud)
+        logging.StreamHandler(sys.stdout),
     ]
 )
+logger = logging.getLogger(__name__)
 
 # Inicializar o banco de dados e tabelas
 try:
@@ -97,8 +99,8 @@ except Exception as e:
 
 # Carregar o logotipo
 def carregar_logotipo():
-    logo_path = st.secrets.get('LOGO_PATH', 'infocustec.png')  # Utilize st.secrets para o caminho
-    logo_url = st.secrets.get('LOGO_URL', None)  # Alternativa via URL
+    logo_path = st.secrets.get('LOGO_PATH', 'infocustec.png')
+    logo_url = st.secrets.get('LOGO_URL', None)
     if logo_path and os.path.exists(logo_path):
         st.image(logo_path, width=300)
         logging.info("Logotipo carregado com sucesso do caminho local.")
@@ -131,15 +133,13 @@ def login_form():
                 st.success(f'Login bem-sucedido! Bem-vindo, {username}.')
                 st.session_state.logged_in = True
                 st.session_state.username = username
+                st.session_state.is_admin = is_admin(username)
                 logging.info(f"Usuário '{username}' fez login.")
-                if is_admin(username):  # Verifica se o usuário é admin
-                    st.session_state.is_admin = True
+                if st.session_state.is_admin:
                     st.info('Você está logado como administrador.')
                     logging.info(f"Usuário '{username}' tem privilégios de administrador.")
                 else:
-                    st.session_state.is_admin = False
                     st.info('Você está logado como usuário.')
-                
             else:
                 st.error('Nome de usuário ou senha incorretos.')
                 logging.warning(f"Falha no login para o usuário '{username}'.")
@@ -154,7 +154,6 @@ def logout():
     st.session_state.is_admin = False
     st.success('Você saiu da sessão.')
     logging.info("Usuário deslogado com sucesso.")
-    
 
 # Função para abrir chamado
 def abrir_chamado():
@@ -162,21 +161,19 @@ def abrir_chamado():
 
     patrimonio = st.text_input('Número de Patrimônio')
     machine_info = None
-    machine_type = None  # Garantir que a variável seja sempre inicializada
+    machine_type = None
 
     # Verifica se foi inserido o patrimônio e busca no inventário
     if patrimonio:
         machine_info = buscar_no_inventario_por_patrimonio(patrimonio)
         if machine_info:
-            # Preenche as informações automaticamente com os dados do inventário
             st.write(f'**Máquina encontrada:** {machine_info["tipo"]} - {machine_info["marca"]} {machine_info["modelo"]}')
             st.write(f'**UBS:** {machine_info["localizacao"]} | **Setor:** {machine_info["setor"]}')
             ubs_selecionada = machine_info['localizacao']
             setor = machine_info['setor']
             selected_machine = machine_info['patrimonio']
-            machine_type = machine_info['tipo']  # Atribuir o tipo da máquina encontrado no inventário
+            machine_type = machine_info['tipo']
         else:
-            # Se o patrimônio não for encontrado no inventário, o usuário deve preencher as informações manualmente
             st.error('Número de patrimônio não encontrado no inventário.')
             ubs_list = get_ubs_list()
             setores_list = get_setores_list()
@@ -184,15 +181,14 @@ def abrir_chamado():
             ubs_selecionada = st.selectbox('Unidade Básica de Saúde (UBS)', ubs_list)
             setor = st.selectbox('Setor', setores_list)
             selected_machine = None
-            machine_type = st.selectbox('Tipo de Máquina', ['Computador', 'Impressora', 'Outro'])  # Define o tipo manualmente
+            machine_type = st.selectbox('Tipo de Máquina', ['Computador', 'Impressora', 'Outro'])
     else:
-        # Caso o patrimônio não seja inserido, o usuário preenche manualmente as informações
         ubs_list = get_ubs_list()
         setores_list = get_setores_list()
 
         ubs_selecionada = st.selectbox('Unidade Básica de Saúde (UBS)', ubs_list)
         setor = st.selectbox('Setor', setores_list)
-        machine_type = st.selectbox('Tipo de Máquina', ['Computador', 'Impressora', 'Outro'])  # Define o tipo manualmente
+        machine_type = st.selectbox('Tipo de Máquina', ['Computador', 'Impressora', 'Outro'])
         selected_machine = None
 
     # Verificação do tipo de máquina selecionado
@@ -224,7 +220,7 @@ def abrir_chamado():
             st.error('Por favor, descreva o problema ou solicitação.')
             return
         try:
-            protocolo = add_chamado(
+            add_chamado(
                 st.session_state.username,
                 ubs_selecionada,
                 setor,
@@ -233,12 +229,6 @@ def abrir_chamado():
                 machine=selected_machine,
                 patrimonio=patrimonio
             )
-            if protocolo:
-                st.success(f'Chamado aberto com sucesso! Seu protocolo é: {protocolo}')
-                logging.info(f"Chamado '{protocolo}' aberto por '{st.session_state.username}'.")
-            else:
-                st.error('Erro ao abrir chamado.')
-                logging.error(f"Erro ao abrir chamado por '{st.session_state.username}'.")
         except Exception as e:
             st.error('Erro ao abrir chamado. Verifique os logs para mais detalhes.')
             logging.error(f"Erro ao abrir chamado: {e}")
@@ -420,9 +410,7 @@ def painel_relatorios():
 
             if st.button('Gerar Relatório'):
                 try:
-                    filtered_df = df[df['Mês'].astype(str) == selected_month]
-
-                    pdf_output = generate_monthly_report(filtered_df, selected_month, logo_path=st.secrets.get('LOGO_PATH', 'infocustec.png'))
+                    pdf_output = generate_monthly_report(df, selected_month, logo_path=st.secrets.get('LOGO_PATH', 'infocustec.png'))
 
                     if pdf_output:
                         st.download_button(
@@ -466,15 +454,11 @@ def painel_relatorios():
             st.error(f"Erro ao gerar relatório de inventário: {e}")
             logging.error(f"Erro ao gerar relatório de inventário: {e}")
 
-import pandas as pd
-import plotly.express as px
-from st_aggrid import AgGrid, GridOptionsBuilder
-
 def painel_chamados_tecnicos():
     # Verificar se o usuário está logado e é administrador
-    if not st.session_state.get('logged_in') or not is_admin(st.session_state.get('username')):
+    if not st.session_state.get('logged_in') or not st.session_state.get('is_admin'):
         st.warning('Você precisa estar logado como administrador para acessar esta área.')
-        logger.warning("Usuário sem privilégios tentou acessar o painel de chamados técnicos.")
+        logging.warning("Usuário sem privilégios tentou acessar o painel de chamados técnicos.")
         return
 
     st.subheader('Painel de Chamados Técnicos')
@@ -505,7 +489,7 @@ def painel_chamados_tecnicos():
             df_chamados = pd.DataFrame([chamado_to_dict(chamado) for chamado in chamados])
         except Exception as e:
             st.error(f"Erro ao criar DataFrame: {e}")
-            logger.error(f"Erro ao criar DataFrame: {e}")
+            logging.error(f"Erro ao criar DataFrame: {e}")
             return
 
         # Renomear colunas para minúsculas
@@ -545,7 +529,7 @@ def painel_chamados_tecnicos():
                     df_abertos = pd.DataFrame([chamado_to_dict(chamado) for chamado in chamados_abertos])
                 except Exception as e:
                     st.error(f"Erro ao criar DataFrame para chamados abertos: {e}")
-                    logger.error(f"Erro ao criar DataFrame para chamados abertos: {e}")
+                    logging.error(f"Erro ao criar DataFrame para chamados abertos: {e}")
                     return
 
                 # Renomear colunas
@@ -577,14 +561,8 @@ def painel_chamados_tecnicos():
 
                 selected_rows = grid_response.get('selected_rows', None)
 
-                # Debugging
-                st.write('Tipo de selected_rows:', type(selected_rows))
-                st.write('Conteúdo de selected_rows:', selected_rows)
-
                 if isinstance(selected_rows, list) and len(selected_rows) > 0:
                     chamado_selecionado = selected_rows[0]
-                elif isinstance(selected_rows, pd.DataFrame) and not selected_rows.empty:
-                    chamado_selecionado = selected_rows.iloc[0].to_dict()
                 else:
                     chamado_selecionado = None
 
@@ -609,21 +587,20 @@ def painel_chamados_tecnicos():
                     if st.button('Finalizar Chamado'):
                         if solucao:
                             try:
-                                # Finalizar o chamado e atualizar o banco de dados
                                 finalizar_chamado(chamado_selecionado.get('id'), solucao, pecas_selecionadas)
                                 st.success(f'Chamado ID: {chamado_selecionado["id"]} finalizado com sucesso!')
-                                logger.info(f"Chamado ID: {chamado_selecionado['id']} finalizado por {st.session_state.username}.")
+                                logging.info(f"Chamado ID: {chamado_selecionado['id']} finalizado por {st.session_state.username}.")
                                 st.experimental_rerun()
                             except Exception as e:
                                 st.error(f"Erro ao finalizar o chamado: {e}")
-                                logger.error(f"Erro ao finalizar o chamado ID {chamado_selecionado.get('id')}: {e}")
+                                logging.error(f"Erro ao finalizar o chamado ID {chamado_selecionado.get('id')}: {e}")
                         else:
                             st.error('Por favor, insira a solução antes de finalizar o chamado.')
                 else:
                     st.info('Nenhum chamado selecionado.')
             else:
                 st.info("Não há chamados em aberto no momento.")
-                logger.info("Nenhum chamado em aberto para exibir.")
+                logging.info("Nenhum chamado em aberto para exibir.")
 
         # Aba 2: Painel de Chamados
         with tab2:
@@ -657,7 +634,7 @@ def painel_chamados_tecnicos():
             AgGrid(
                 df_filtrado,
                 gridOptions=gridOptions,
-                enable_enterprise_modules=False  # Defina como False ou remova se causar problemas
+                enable_enterprise_modules=False
             )
 
         # Aba 3: Análise de Chamados
@@ -671,7 +648,7 @@ def painel_chamados_tecnicos():
                 show_average_time(chamados_finalizados)
             except Exception as e:
                 st.error(f"Erro ao exibir tempo médio de atendimento: {e}")
-                logger.error(f"Erro ao exibir tempo médio de atendimento: {e}")
+                logging.error(f"Erro ao exibir tempo médio de atendimento: {e}")
 
             # Gráfico: Quantidade de Chamados por UBS
             fig = px.bar(
@@ -705,7 +682,7 @@ def painel_chamados_tecnicos():
 
     else:
         st.warning("Nenhum chamado foi encontrado no banco de dados.")
-        logger.warning("Nenhum chamado encontrado no banco de dados.")
+        logging.warning("Nenhum chamado encontrado no banco de dados.")
 
 # Função para buscar protocolo
 def buscar_protocolo():
