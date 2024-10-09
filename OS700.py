@@ -535,9 +535,14 @@ def painel_chamados_tecnicos():
 
             selected = grid_response['selected_rows']
 
-            if selected:
+            # Corrigindo o erro ao verificar se 'selected' não está vazio
+            if len(selected) > 0:
                 chamado_selecionado = selected[0]
+            else:
+                chamado_selecionado = None
 
+            # Verificando se 'chamado_selecionado' não é None
+            if chamado_selecionado is not None:
                 st.write('### Finalizar Chamado Selecionado')
                 st.write(f"ID do Chamado: {chamado_selecionado.get('ID', 'N/A')}")
                 st.write(f"Problema: {chamado_selecionado.get('Problema', 'N/A')}")
@@ -570,7 +575,7 @@ def painel_chamados_tecnicos():
         else:
             st.info("Não há chamados em aberto no momento.")
 
-    # As outras abas permanecem inalteradas
+    # O restante da função permanece inalterado
     with tab2:
         st.subheader('Painel de Chamados')
 
