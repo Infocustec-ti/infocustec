@@ -322,26 +322,36 @@ def calculate_tempo_decorrido_em_segundos(chamado):
         logger.error(f"Erro ao calcular tempo decorrido: {e}")
         return None
 
+from dateutil import parser
+
 def calculate_tempo_decorrido_em_segundos_row(row):
     try:
-        # Certificar-se de que hora_abertura e hora_fechamento estão como datetime
+        # Verificar se a 'Hora Abertura' e 'Hora Fechamento' estão como string e convertê-las
         hora_abertura = row['Hora Abertura']
-        hora_fechamento = row['Hora Fechamento'] or datetime.now(pytz.UTC)
+        hora_fechamento = row['Hora Fechamento'] or datetime.now(tz=local_tz)
+        
+        # Se estiverem em formato string, fazer a conversão para datetime
+        if isinstance(hora_abertura, str):
+            hora_abertura = parser.parse(hora_abertura)
 
-        if pd.isnull(hora_abertura) or pd.isnull(hora_fechamento):
-            return None
-
-        # Garantir que ambos estejam no mesmo fuso horário (UTC)
+        if isinstance(hora_fechamento, str):
+            hora_fechamento = parser.parse(hora_fechamento)
+        
+        # Se o fuso horário não estiver definido, ajustar para o timezone local
         if hora_abertura.tzinfo is None:
-            hora_abertura = hora_abertura.replace(tzinfo=pytz.UTC)
+            hora_abertura = hora_abertura.replace(tzinfo=local_tz)
+        
         if hora_fechamento.tzinfo is None:
-            hora_fechamento = hora_fechamento.replace(tzinfo=pytz.UTC)
+            hora_fechamento = hora_fechamento.replace(tzinfo=local_tz)
 
-        # Calcular tempo útil (subtraindo intervalos de almoço e fora do expediente)
+        # Calcular as horas úteis
         tempo_uteis = calculate_working_hours(hora_abertura, hora_fechamento)
-        return tempo_uteis.total_seconds() / 3600  # Retorna em horas
+        return tempo_uteis.total_seconds()
+    except KeyError as e:
+        logger.error(f"Erro ao acessar os dados da linha: {e}")
+        return None
     except Exception as e:
-        logger.error(f"Erro ao calcular tempo decorrido em horas para a linha: {e}")
+        logger.error(f"Erro ao calcular tempo decorrido em segundos para a linha: {e}")
         return None
 
 # Função para formatar tempo
