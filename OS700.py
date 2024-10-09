@@ -494,9 +494,10 @@ def painel_chamados_tecnicos():
         } for chamado in chamados])
 
         # Aplica a formatação correta do fuso horário e a conversão para o formato desejado
-        df_chamados['Hora Abertura'] = df_chamados['Hora Abertura'].apply(lambda x: x.astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S') if pd.notnull(x) else '')
-        df_chamados['Hora Fechamento'] = df_chamados['Hora Fechamento'].apply(lambda x: x.astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S') if pd.notnull(x) else '')
+        df_chamados['Hora Abertura'] = df_chamados['Hora Abertura'].apply(lambda x: x.tz_convert(local_tz).strftime('%d/%m/%Y %H:%M:%S') if pd.notnull(x) else '')
+        df_chamados['Hora Fechamento'] = df_chamados['Hora Fechamento'].apply(lambda x: x.tz_convert(local_tz).strftime('%d/%m/%Y %H:%M:%S') if pd.notnull(x) else '')
 
+        # Cálculo do tempo decorrido
         df_chamados['Tempo Decorrido'] = df_chamados.apply(calculate_tempo_decorrido_em_segundos_row, axis=1)
 
         tab1, tab2, tab3 = st.tabs(['Chamados em Aberto', 'Painel de Chamados', 'Análise de Chamados'])
@@ -520,8 +521,8 @@ def painel_chamados_tecnicos():
                     'Machine': chamado.machine
                 } for chamado in chamados_abertos])
 
-                df_abertos['Hora Abertura'] = df_abertos['Hora Abertura'].apply(lambda x: x.astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S') if pd.notnull(x) else '')
-                df_abertos['Hora Fechamento'] = df_abertos['Hora Fechamento'].apply(lambda x: x.astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S') if pd.notnull(x) else '')
+                df_abertos['Hora Abertura'] = df_abertos['Hora Abertura'].apply(lambda x: x.tz_convert(local_tz).strftime('%d/%m/%Y %H:%M:%S') if pd.notnull(x) else '')
+                df_abertos['Hora Fechamento'] = df_abertos['Hora Fechamento'].apply(lambda x: x.tz_convert(local_tz).strftime('%d/%m/%Y %H:%M:%S') if pd.notnull(x) else '')
 
                 gb = GridOptionsBuilder.from_dataframe(df_abertos)
                 gb.configure_pagination()
@@ -541,8 +542,7 @@ def painel_chamados_tecnicos():
                 selected_rows = grid_response.get('selected_rows', [])
                 chamado_selecionado = selected_rows[0] if selected_rows else None
 
-                if chamado_selecionado is not None and not isinstance(chamado_selecionado, pd.DataFrame):
-
+                if chamado_selecionado:
                     st.write('### Finalizar Chamado Selecionado')
                     st.write(f"ID do Chamado: {chamado_selecionado.get('ID', 'N/A')}")
                     st.write(f"Problema: {chamado_selecionado.get('Problema', 'N/A')}")
