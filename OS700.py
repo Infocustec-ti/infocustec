@@ -544,7 +544,6 @@ def painel_chamados_tecnicos():
                 reload_data=True
             )
 
-            # Garantir que 'selected_rows' seja uma lista, mesmo que vazia
             selected = grid_response.get('selected_rows', [])
             if not isinstance(selected, list):
                 selected = []
@@ -654,8 +653,7 @@ def painel_chamados_tecnicos():
             labels={'Setor': 'Setor', 'count': 'Quantidade'},
             color='Setor'
         )
-        st.plotly_chart(fig_setor)
-# Função para buscar protocolo
+        st.plotly_chart(fig_setor)# Função para buscar protocolo
 def buscar_protocolo():
     st.subheader('Buscar Chamado por Protocolo')
     protocolo = st.text_input('Digite o número do protocolo:')
