@@ -1,33 +1,29 @@
+# os700.py
 import os
 import sys
 import logging
 from datetime import datetime
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 import plotly.express as px
 from streamlit_option_menu import option_menu
 from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
-from fpdf import FPDF
-from io import BytesIO
+from zoneinfo import ZoneInfo
 
 # Importações dos módulos personalizados
 from database import (
     create_tables,
     initialize_ubs_setores,
     check_or_create_admin_user,
-    SessionLocal,
     UBS,
     Setor,
-    Inventario
 )
 from autenticacao import (
     authenticate,
     add_user,
     is_admin,
     list_users,
-    change_password
+    change_password,
 )
 from chamados import (
     add_chamado,
@@ -40,7 +36,7 @@ from chamados import (
     generate_monthly_report,
     calcular_tempo_decorrido,
     formatar_tempo,
-    buscar_no_inventario_por_patrimonio
+    buscar_no_inventario_por_patrimonio,
 )
 from inventario import (
     get_machines_from_inventory,
@@ -51,22 +47,21 @@ from inventario import (
     update_inventory_status,
     delete_inventory_item,
     edit_inventory_item,
-    create_inventory_report
+    create_inventory_report,
 )
 from ubs import initialize_ubs, manage_ubs, get_ubs_list
 from setores import initialize_setores, manage_setores, get_setores_list
-from zoneinfo import ZoneInfo
 
 # Definir o fuso horário local
 local_tz = ZoneInfo('America/Sao_Paulo')
 
 # Inicialização do estado da sessão
 if 'logged_in' not in st.session_state:
-    st.session_state.logged_in = False
+    st.session_state['logged_in'] = False
 if 'username' not in st.session_state:
-    st.session_state.username = ''
+    st.session_state['username'] = ''
 if 'is_admin' not in st.session_state:
-    st.session_state.is_admin = False
+    st.session_state['is_admin'] = False
 
 # Configuração da página
 st.set_page_config(
@@ -99,8 +94,8 @@ except Exception as e:
 
 # Carregar o logotipo
 def carregar_logotipo():
-    logo_path = st.secrets.get('LOGO_PATH', 'infocustec.png')
-    logo_url = st.secrets.get('LOGO_URL', None)
+    logo_path = os.getenv('LOGO_PATH', 'infocustec.png')
+    logo_url = os.getenv('LOGO_URL', None)
     if logo_path and os.path.exists(logo_path):
         st.image(logo_path, width=300)
         logging.info("Logotipo carregado com sucesso do caminho local.")
@@ -131,11 +126,11 @@ def login_form():
         try:
             if authenticate(username, password):
                 st.success(f'Login bem-sucedido! Bem-vindo, {username}.')
-                st.session_state.logged_in = True
-                st.session_state.username = username
-                st.session_state.is_admin = is_admin(username)
+                st.session_state['logged_in'] = True
+                st.session_state['username'] = username
+                st.session_state['is_admin'] = is_admin(username)
                 logging.info(f"Usuário '{username}' fez login.")
-                if st.session_state.is_admin:
+                if st.session_state['is_admin']:
                     st.info('Você está logado como administrador.')
                     logging.info(f"Usuário '{username}' tem privilégios de administrador.")
                 else:
@@ -149,9 +144,9 @@ def login_form():
 
 # Função de logout
 def logout():
-    st.session_state.logged_in = False
-    st.session_state.username = ''
-    st.session_state.is_admin = False
+    st.session_state['logged_in'] = False
+    st.session_state['username'] = ''
+    st.session_state['is_admin'] = False
     st.success('Você saiu da sessão.')
     logging.info("Usuário deslogado com sucesso.")
 
@@ -163,7 +158,6 @@ def abrir_chamado():
     machine_info = None
     machine_type = None
 
-    # Verifica se foi inserido o patrimônio e busca no inventário
     if patrimonio:
         machine_info = buscar_no_inventario_por_patrimonio(patrimonio)
         if machine_info:
@@ -191,11 +185,9 @@ def abrir_chamado():
         machine_type = st.selectbox('Tipo de Máquina', ['Computador', 'Impressora', 'Outro'])
         selected_machine = None
 
-    # Verificação do tipo de máquina selecionado
     if machine_type:
         st.write(f'Tipo de Máquina selecionado: {machine_type}')
 
-    # Definir tipos de defeito com base no tipo de máquina selecionado
     if machine_type == 'Computador':
         tipo_defeito = st.selectbox('Tipo de Defeito/Solicitação', [
             'Computador não liga', 'Computador lento', 'Tela azul',
@@ -221,7 +213,7 @@ def abrir_chamado():
             return
         try:
             add_chamado(
-                st.session_state.username,
+                st.session_state['username'],
                 ubs_selecionada,
                 setor,
                 tipo_defeito,
@@ -233,7 +225,7 @@ def abrir_chamado():
             st.error('Erro ao abrir chamado. Verifique os logs para mais detalhes.')
             logging.error(f"Erro ao abrir chamado: {e}")
 
-# Função de administração (apenas para admins)
+# Função de administração
 def administracao():
     if not st.session_state.get('logged_in') or not st.session_state.get('is_admin'):
         st.warning('Você precisa estar logado como administrador para acessar esta área.')
@@ -293,7 +285,7 @@ def administracao():
                             setor=setor
                         )
                         st.success('Máquina adicionada ao inventário com sucesso!')
-                        logging.info(f"Máquina {patrimonio} adicionada ao inventário por {st.session_state.username}.")
+                        logging.info(f"Máquina {patrimonio} adicionada ao inventário por {st.session_state['username']}.")
                     except Exception as e:
                         st.error(f"Erro ao adicionar máquina: {e}")
                         logging.error(f"Erro ao adicionar máquina: {e}")
@@ -410,7 +402,7 @@ def painel_relatorios():
 
             if st.button('Gerar Relatório'):
                 try:
-                    pdf_output = generate_monthly_report(df, selected_month, logo_path=st.secrets.get('LOGO_PATH', 'infocustec.png'))
+                    pdf_output = generate_monthly_report(df, selected_month, logo_path=os.getenv('LOGO_PATH', 'infocustec.png'))
 
                     if pdf_output:
                         st.download_button(
@@ -437,7 +429,7 @@ def painel_relatorios():
         try:
             inventory_items = get_machines_from_inventory()
 
-            pdf_output = create_inventory_report(inventory_items, logo_path=st.secrets.get('LOGO_PATH', 'infocustec.png'))
+            pdf_output = create_inventory_report(inventory_items, logo_path=os.getenv('LOGO_PATH', 'infocustec.png'))
 
             if pdf_output:
                 st.download_button(
@@ -454,8 +446,9 @@ def painel_relatorios():
             st.error(f"Erro ao gerar relatório de inventário: {e}")
             logging.error(f"Erro ao gerar relatório de inventário: {e}")
 
+# Função para o painel de chamados técnicos
 def painel_chamados_tecnicos():
-    if not st.session_state.get('logged_in') or not is_admin(st.session_state.get('username')):
+    if not st.session_state.get('logged_in') or not st.session_state.get('is_admin'):
         st.warning('Você precisa estar logado como administrador para acessar esta área.')
         return
 
@@ -464,7 +457,6 @@ def painel_chamados_tecnicos():
     chamados_abertos = list_chamados_em_aberto()
     chamados = list_chamados()
 
-    # Definir a função chamado_to_dict
     def chamado_to_dict(chamado):
         return {
             'ID': chamado.id,
@@ -481,17 +473,9 @@ def painel_chamados_tecnicos():
             'Machine': chamado.machine
         }
 
-    # Criar DataFrame dos chamados
     def criar_dataframe_chamados(chamados_lista):
         if chamados_lista:
-            if isinstance(chamados_lista[0], tuple):
-                df = pd.DataFrame(chamados_lista, columns=[
-                    'ID', 'Usuário', 'UBS', 'Setor', 'Tipo de Defeito', 'Problema',
-                    'Hora Abertura', 'Solução', 'Hora Fechamento',
-                    'Protocolo', 'Patrimônio', 'Machine'
-                ])
-            else:
-                df = pd.DataFrame([chamado_to_dict(chamado) for chamado in chamados_lista])
+            df = pd.DataFrame([chamado_to_dict(chamado) for chamado in chamados_lista])
             return df
         else:
             return pd.DataFrame(columns=[
@@ -503,11 +487,9 @@ def painel_chamados_tecnicos():
     df_chamados = criar_dataframe_chamados(chamados)
     df_abertos = criar_dataframe_chamados(chamados_abertos)
 
-    # Converter colunas de datas para o tipo datetime
     df_chamados['Hora Abertura'] = pd.to_datetime(df_chamados['Hora Abertura'], errors='coerce')
     df_chamados['Hora Fechamento'] = pd.to_datetime(df_chamados['Hora Fechamento'], errors='coerce')
 
-    # Calcular o tempo decorrido
     df_chamados['Tempo Decorrido Segundos'] = df_chamados.apply(
         lambda row: calcular_tempo_decorrido(row['Hora Abertura'], row['Hora Fechamento']), axis=1
     )
@@ -535,13 +517,11 @@ def painel_chamados_tecnicos():
 
             selected = grid_response['selected_rows']
 
-            # Corrigindo o erro ao verificar se 'selected' não está vazio
             if len(selected) > 0:
                 chamado_selecionado = selected[0]
             else:
                 chamado_selecionado = None
 
-            # Verificando se 'chamado_selecionado' não é None
             if chamado_selecionado is not None:
                 st.write('### Finalizar Chamado Selecionado')
                 st.write(f"ID do Chamado: {chamado_selecionado.get('ID', 'N/A')}")
@@ -575,7 +555,6 @@ def painel_chamados_tecnicos():
         else:
             st.info("Não há chamados em aberto no momento.")
 
-    # O restante da função permanece inalterado
     with tab2:
         st.subheader('Painel de Chamados')
 
@@ -643,6 +622,7 @@ def painel_chamados_tecnicos():
             color='Setor'
         )
         st.plotly_chart(fig_setor)
+
 # Função para buscar protocolo
 def buscar_protocolo():
     st.subheader('Buscar Chamado por Protocolo')
@@ -678,7 +658,7 @@ def buscar_protocolo():
             st.error(f"Erro ao buscar chamado: {e}")
             logging.error(f"Erro ao buscar chamado pelo protocolo {protocolo}: {e}")
 
-# Função para configurações (alterar senha)
+# Função para configurações
 def configuracoes():
     if not st.session_state.get('logged_in') or not st.session_state.get('is_admin'):
         st.warning('Você precisa estar logado como administrador para acessar esta área.')
@@ -782,7 +762,7 @@ else:
     st.error("Página selecionada não existe.")
     logging.error(f"Página selecionada inválida: {selected_option}")
 
-# Página padrão ou conteúdo adicional
+# Rodapé
 st.markdown("""
 ---
 Desenvolvido por Infocustec (Email: atendimento@infocustec.com.br)
