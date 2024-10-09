@@ -11,15 +11,12 @@ from matplotlib.ticker import MaxNLocator
 import tempfile
 import logging
 from logging.handlers import RotatingFileHandler
-from database import Chamado, SessionLocal, Inventario
+from database import Chamado, SessionLocal, Inventario, PecaUsada, HistoricoManutencao
 from sqlalchemy import desc
 from autenticacao import is_admin
-import pytz
 from workalendar.america import Brazil
 from zoneinfo import ZoneInfo
 from dateutil import parser
-
-
 
 # Configurações de autenticação do Twilio usando variáveis de ambiente
 account_sid = os.getenv('TWILIO_ACCOUNT_SID')
@@ -68,35 +65,33 @@ def get_chamado_by_protocolo(protocolo):
 
 # Função para buscar no inventário por número de patrimônio
 def buscar_no_inventario_por_patrimonio(patrimonio):
-    session = SessionLocal()
-    try:
-        inventario = session.query(Inventario).filter(Inventario.numero_patrimonio == patrimonio).first()
-        if inventario:
-            logging.info(f"Máquina encontrada no inventário: Patrimônio {patrimonio}")
-            return {
-                'tipo': inventario.tipo,
-                'marca': inventario.marca,
-                'modelo': inventario.modelo,
-                'patrimonio': inventario.numero_patrimonio,
-                'localizacao': inventario.localizacao,
-                'setor': inventario.setor
-            }
-        logging.info(f"Número de patrimônio {patrimonio} não encontrado no inventário.")
-        return None
-    except Exception as e:
-        logging.error(f"Erro ao buscar patrimônio {patrimonio} no inventário: {e}")
-        return None
-    finally:
-        session.close()
+    with SessionLocal() as session:
+        try:
+            inventario = session.query(Inventario).filter(Inventario.numero_patrimonio == patrimonio).first()
+            if inventario:
+                logger.info(f"Máquina encontrada no inventário: Patrimônio {patrimonio}")
+                return {
+                    'tipo': inventario.tipo,
+                    'marca': inventario.marca,
+                    'modelo': inventario.modelo,
+                    'patrimonio': inventario.numero_patrimonio,
+                    'localizacao': inventario.localizacao,
+                    'setor': inventario.setor
+                }
+            logger.info(f"Número de patrimônio {patrimonio} não encontrado no inventário.")
+            return None
+        except Exception as e:
+            logger.error(f"Erro ao buscar patrimônio {patrimonio} no inventário: {e}")
+            return None
 
-
+# Função para adicionar um chamado
 def add_chamado(username, ubs, setor, tipo_defeito, problema, machine=None, patrimonio=None):
     protocolo = gerar_protocolo_sequencial()
     if protocolo is None:
         st.error("Não foi possível gerar um protocolo para o chamado. Tente novamente mais tarde.")
         return
 
-    hora_abertura = datetime.now(tz=local_tz)  # Deve ser um objeto datetime
+    hora_abertura = datetime.now(tz=local_tz)
 
     with SessionLocal() as session:
         try:
@@ -106,7 +101,7 @@ def add_chamado(username, ubs, setor, tipo_defeito, problema, machine=None, patr
                 setor=setor,
                 tipo_defeito=tipo_defeito,
                 problema=problema,
-                hora_abertura=hora_abertura,  # Agora DateTime
+                hora_abertura=hora_abertura,
                 protocolo=protocolo,
                 machine=machine,
                 patrimonio=patrimonio
@@ -168,6 +163,120 @@ def add_maquina(numero_patrimonio, tipo, marca, modelo, numero_serie, status, lo
             logger.error(f"Erro ao adicionar máquina ao inventário: {e}")
             st.error("Erro interno ao adicionar máquina ao inventário. Verifique os dados e tente novamente.")
 
+# Função unificada para calcular o tempo decorrido
+def calcular_tempo_decorrido(hora_abertura, hora_fechamento):
+    try:
+        cal = Brazil()
+        total_seconds = 0
+        work_start_time = timedelta(hours=8)
+        work_end_time = timedelta(hours=17)
+        lunch_start = timedelta(hours=12)
+        lunch_end = timedelta(hours=13)
+
+        if hora_fechamento is None or pd.isnull(hora_fechamento):
+            hora_fechamento = datetime.now(tz=local_tz)
+
+        # Converter strings para datetime, se necessário
+        if isinstance(hora_abertura, str):
+            hora_abertura = parser.parse(hora_abertura)
+        if isinstance(hora_fechamento, str):
+            hora_fechamento = parser.parse(hora_fechamento)
+
+        # Ajustar o fuso horário, se necessário
+        if hora_abertura.tzinfo is None:
+            hora_abertura = hora_abertura.replace(tzinfo=local_tz)
+        if hora_fechamento.tzinfo is None:
+            hora_fechamento = hora_fechamento.replace(tzinfo=local_tz)
+
+        current = hora_abertura
+
+        while current < hora_fechamento:
+            if cal.is_working_day(current.date()):
+                start_of_day = current.replace(hour=8, minute=0, second=0, microsecond=0)
+                end_of_day = current.replace(hour=17, minute=0, second=0, microsecond=0)
+                lunch_start_time = current.replace(hour=12, minute=0, second=0, microsecond=0)
+                lunch_end_time = current.replace(hour=13, minute=0, second=0, microsecond=0)
+
+                if current < start_of_day:
+                    current = start_of_day
+
+                if current >= end_of_day:
+                    current += timedelta(days=1)
+                    continue
+
+                interval_start = current
+                interval_end = min(hora_fechamento, end_of_day)
+
+                # Ajustar para intervalo de almoço
+                if interval_start < lunch_start_time < interval_end:
+                    total_seconds += (lunch_start_time - interval_start).total_seconds()
+                    interval_start = lunch_end_time
+
+                if interval_start < lunch_end_time < interval_end:
+                    interval_start = lunch_end_time
+
+                if interval_start >= interval_end:
+                    current += timedelta(days=1)
+                    continue
+
+                total_seconds += (interval_end - interval_start).total_seconds()
+
+            current = current.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)
+
+        return total_seconds
+    except Exception as e:
+        logger.error(f"Erro ao calcular tempo decorrido: {e}")
+        return None
+
+# Função para formatar tempo
+def formatar_tempo(total_seconds):
+    try:
+        total_seconds = int(total_seconds)
+        days, remainder = divmod(total_seconds, 86400)
+        hours, remainder = divmod(remainder, 3600)
+        minutes, seconds = divmod(remainder, 60)
+
+        tempo_formatado = ''
+        if days > 0:
+            tempo_formatado += f'{days}d '
+        if hours > 0 or days > 0:
+            tempo_formatado += f'{hours}h '
+        if minutes > 0 or hours > 0 or days > 0:
+            tempo_formatado += f'{minutes}m '
+        tempo_formatado += f'{seconds}s'
+
+        return tempo_formatado.strip()
+    except Exception as e:
+        logger.error(f"Erro ao formatar tempo: {e}")
+        return "Erro no formato"
+
+# Função para calcular tempo médio
+def calculate_average_time(chamados):
+    total_tempo = 0
+    total_chamados_finalizados = 0
+    for chamado in chamados:
+        if chamado.hora_abertura and chamado.hora_fechamento:
+            tempo_segundos = calcular_tempo_decorrido(chamado.hora_abertura, chamado.hora_fechamento)
+            if tempo_segundos is not None:
+                total_tempo += tempo_segundos
+                total_chamados_finalizados += 1
+    if total_chamados_finalizados > 0:
+        media_tempo = total_tempo / total_chamados_finalizados
+        logger.info(f"Tempo médio de atendimento calculado: {media_tempo} segundos")
+    else:
+        media_tempo = 0
+        logger.info("Nenhum chamado finalizado para calcular tempo médio de atendimento.")
+    return media_tempo
+
+# Função para mostrar tempo médio
+def show_average_time(chamados):
+    if chamados:
+        media_tempo_segundos = calculate_average_time(chamados)
+        tempo_formatado = formatar_tempo(media_tempo_segundos)
+        st.write(f'Tempo médio de atendimento: {tempo_formatado}')
+    else:
+        st.write('Nenhum chamado finalizado para calcular o tempo médio.')
+
 # Função para finalizar um chamado
 def finalizar_chamado(id_chamado, solucao, pecas_usadas=None):
     hora_fechamento = datetime.now(tz=local_tz)
@@ -188,9 +297,8 @@ def finalizar_chamado(id_chamado, solucao, pecas_usadas=None):
                         )
                         session.add(peca_usada)
 
-                # Adicionar histórico de manutenção somente se patrimonio estiver presente e válido
+                # Adicionar histórico de manutenção se o patrimônio estiver presente
                 if chamado.patrimonio:
-                    # Verificar se o patrimonio existe no inventario
                     inventario = session.query(Inventario).filter(Inventario.numero_patrimonio == chamado.patrimonio).first()
                     if inventario:
                         descricao_manutencao = f"Manutenção realizada: {solucao}. Peças usadas: {', '.join(pecas_usadas) if pecas_usadas else 'Nenhuma'}."
@@ -242,166 +350,6 @@ def list_chamados_em_aberto():
             logger.error(f"Erro ao listar chamados em aberto: {e}")
             st.error("Erro interno ao listar chamados em aberto. Tente novamente mais tarde.")
             return []
-
-def calculate_working_hours(start, end):
-    cal = Brazil()
-    total_seconds = 0
-    current = start
-
-    work_start_time = timedelta(hours=8)
-    work_end_time = timedelta(hours=17)
-    lunch_break_start = timedelta(hours=12)
-    lunch_break_end = timedelta(hours=13)
-
-    while current < end:
-        if cal.is_working_day(current):
-            start_of_day = current.replace(hour=8, minute=0, second=0, microsecond=0)
-            end_of_day = current.replace(hour=17, minute=0, second=0, microsecond=0)
-
-            if current < start_of_day:
-                current = start_of_day
-
-            if current >= end_of_day:
-                current += timedelta(days=1)
-                current = current.replace(hour=0, minute=0, second=0, microsecond=0)
-                continue
-
-            interval_start = current
-            interval_end = min(end, end_of_day)
-
-            # Subtrair intervalo de almoço
-            if (interval_start.time() < (start_of_day + lunch_break_start).time()) and (interval_end.time() > (start_of_day + lunch_break_end).time()):
-                total_seconds += (start_of_day + lunch_break_start - interval_start).total_seconds()
-                total_seconds += (interval_end - (start_of_day + lunch_break_end)).total_seconds()
-            else:
-                total_seconds += (interval_end - interval_start).total_seconds()
-
-        current += timedelta(days=1)
-        current = current.replace(hour=0, minute=0, second=0, microsecond=0)
-
-    return timedelta(seconds=total_seconds)
-
-
-# Função para calcular tempo decorrido entre chamados consecutivos
-def calculate_tempo_decorrido_entre_chamados(chamado_anterior, chamado_atual):
-    try:
-        hora_abertura_anterior = chamado_anterior.hora_abertura
-        hora_abertura_atual = chamado_atual.hora_abertura
-
-        # Verificar se hora_abertura_anterior e hora_abertura_atual são strings e converter
-        if isinstance(hora_abertura_anterior, str):
-            try:
-                hora_abertura_anterior = parser.parse(hora_abertura_anterior).astimezone(local_tz)
-            except (ValueError, TypeError) as ve:
-                logger.error(f"Formato de 'hora_abertura_anterior' inválido: {hora_abertura_anterior} - {ve}")
-                return None
-
-        if isinstance(hora_abertura_atual, str):
-            try:
-                hora_abertura_atual = parser.parse(hora_abertura_atual).astimezone(local_tz)
-            except (ValueError, TypeError) as ve:
-                logger.error(f"Formato de 'hora_abertura_atual' inválido: {hora_abertura_atual} - {ve}")
-                return None
-
-        return hora_abertura_atual - hora_abertura_anterior
-    except Exception as e:
-        logger.error(f"Erro ao calcular tempo decorrido entre chamados consecutivos: {e}")
-        return None
-
-def calculate_tempo_decorrido_em_segundos(chamado):
-    try:
-        hora_abertura = chamado.hora_abertura
-        hora_fechamento = chamado.hora_fechamento or datetime.now(tz=local_tz)
-
-        tempo_uteis = calculate_working_hours(hora_abertura, hora_fechamento)
-        return tempo_uteis.total_seconds()
-    except AttributeError as e:
-        logger.error(f"Erro ao calcular tempo decorrido: {e}")
-        return None
-    except Exception as e:
-        logger.error(f"Erro ao calcular tempo decorrido: {e}")
-        return None
-
-from dateutil import parser
-
-def calculate_tempo_decorrido_em_segundos_row(row):
-    try:
-        # Verificar se a 'Hora Abertura' e 'Hora Fechamento' estão como string e convertê-las
-        hora_abertura = row['Hora Abertura']
-        hora_fechamento = row['Hora Fechamento'] or datetime.now(tz=local_tz)
-        
-        # Se estiverem em formato string, fazer a conversão para datetime
-        if isinstance(hora_abertura, str):
-            hora_abertura = parser.parse(hora_abertura)
-
-        if isinstance(hora_fechamento, str):
-            hora_fechamento = parser.parse(hora_fechamento)
-        
-        # Se o fuso horário não estiver definido, ajustar para o timezone local
-        if hora_abertura.tzinfo is None:
-            hora_abertura = hora_abertura.replace(tzinfo=local_tz)
-        
-        if hora_fechamento.tzinfo is None:
-            hora_fechamento = hora_fechamento.replace(tzinfo=local_tz)
-
-        # Calcular as horas úteis
-        tempo_uteis = calculate_working_hours(hora_abertura, hora_fechamento)
-        return tempo_uteis.total_seconds()
-    except KeyError as e:
-        logger.error(f"Erro ao acessar os dados da linha: {e}")
-        return None
-    except Exception as e:
-        logger.error(f"Erro ao calcular tempo decorrido em segundos para a linha: {e}")
-        return None
-
-# Função para formatar tempo
-def formatar_tempo(total_seconds):
-    try:
-        total_seconds = int(total_seconds)
-        days, remainder = divmod(total_seconds, 86400)
-        hours, remainder = divmod(remainder, 3600)
-        minutes, seconds = divmod(remainder, 60)
-
-        tempo_formatado = ''
-        if days > 0:
-            tempo_formatado += f'{days}d '
-        if hours > 0 or days > 0:
-            tempo_formatado += f'{hours}h '
-        if minutes > 0 or hours > 0 or days > 0:
-            tempo_formatado += f'{minutes}m '
-        tempo_formatado += f'{seconds}s'
-
-        return tempo_formatado
-    except Exception as e:
-        logger.error(f"Erro ao formatar tempo: {e}")
-        return "Erro no formato"
-
-# Função para calcular tempo médio
-def calculate_average_time(chamados):
-    total_tempo = 0
-    total_chamados_finalizados = 0
-    for chamado in chamados:
-        if chamado.hora_abertura and chamado.hora_fechamento:
-            tempo_segundos = calculate_tempo_decorrido_em_segundos(chamado)
-            if tempo_segundos is not None:
-                total_tempo += tempo_segundos
-                total_chamados_finalizados += 1
-    if total_chamados_finalizados > 0:
-        media_tempo = total_tempo / total_chamados_finalizados
-        logger.info(f"Tempo médio de atendimento calculado: {media_tempo} segundos")
-    else:
-        media_tempo = 0
-        logger.info("Nenhum chamado finalizado para calcular tempo médio de atendimento.")
-    return media_tempo
-
-# Função para mostrar tempo médio
-def show_average_time(chamados):
-    if chamados:
-        media_tempo_segundos = calculate_average_time(chamados)
-        tempo_formatado = formatar_tempo(media_tempo_segundos)
-        st.write(f'Tempo médio de atendimento: {tempo_formatado}')
-    else:
-        st.write('Nenhum chamado finalizado para calcular o tempo médio.')
 
 # Função para obter dados mensais técnicos
 def get_monthly_technical_data():
@@ -482,7 +430,7 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
         
         # Calcular Tempo Decorrido
         df_filtered['Tempo Decorrido (s)'] = df_filtered.apply(
-            lambda row: calculate_tempo_decorrido_em_segundos_row(row), axis=1
+            lambda row: calcular_tempo_decorrido(row['Hora Abertura'], row['Hora Fechamento']), axis=1
         )
         
         df_filtered = df_filtered.dropna(subset=['Tempo Decorrido (s)'])
@@ -644,7 +592,6 @@ def exibir_relatorio_mensal():
 
     df, months_list = get_monthly_technical_data()
     
-    # Correção: Definir 'session' dentro do contexto apropriado
     with SessionLocal() as session:
         try:
             pecas_usadas_df = pd.read_sql(session.query(PecaUsada).statement, session.bind)
@@ -661,12 +608,10 @@ def exibir_relatorio_mensal():
             st.download_button(
                 label="Baixar Relatório em PDF",
                 data=pdf_output,
-                file_name=f'relatório_{selected_month}.pdf',
+                file_name=f'relatorio_{selected_month}.pdf',
                 mime='application/pdf'
             )
 
     # Exibir Tempo Médio de Atendimento
-    chamados_finalizados = list_chamados()
-    chamados_finalizados = [chamado for chamado in chamados_finalizados if chamado.hora_fechamento is not None]
+    chamados_finalizados = [chamado for chamado in list_chamados() if chamado.hora_fechamento is not None]
     show_average_time(chamados_finalizados)
-
