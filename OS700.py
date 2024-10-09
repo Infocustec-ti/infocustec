@@ -39,6 +39,7 @@ from chamados import (
     get_monthly_technical_data,
     generate_monthly_report,
     calcular_tempo_decorrido,
+    formatar_tempo,
     buscar_no_inventario_por_patrimonio
 )
 from inventario import (
