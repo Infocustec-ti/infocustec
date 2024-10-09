@@ -538,10 +538,10 @@ def painel_chamados_tecnicos():
                     reload_data=True
                 )
 
+                # Verificar se selected_rows retorna uma lista válida e se contém elementos
                 selected_rows = grid_response.get('selected_rows', [])
 
-                # Corrigido para verificar corretamente se há algo selecionado
-                if len(selected_rows) > 0:
+                if isinstance(selected_rows, list) and len(selected_rows) > 0:
                     chamado_selecionado = selected_rows[0]  # Pega o primeiro selecionado
                 else:
                     chamado_selecionado = None
@@ -570,7 +570,7 @@ def painel_chamados_tecnicos():
                                 finalizar_chamado(chamado_selecionado.get('ID'), solucao, pecas_selecionadas)
                                 st.success(f'Chamado ID: {chamado_selecionado["ID"]} finalizado com sucesso!')
                                 logging.info(f"Chamado ID: {chamado_selecionado['ID']} finalizado.")
-                                st.experimental_rerun()
+                                
                             except Exception as e:
                                 st.error(f"Erro ao finalizar o chamado: {e}")
                                 logging.error(f"Erro ao finalizar o chamado ID {chamado_selecionado.get('ID')}: {e}")
