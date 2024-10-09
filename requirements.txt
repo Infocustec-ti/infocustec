@@ -7,7 +7,7 @@ streamlit
 twilio
 bcrypt
 streamlit-option-menu
-st-aggrid==0.3.6
+streamlit-aggrid==31.3.0
 plotly
 sqlalchemy
 psycopg2-binary
