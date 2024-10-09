@@ -548,13 +548,14 @@ def painel_chamados_tecnicos():
 
             selected = grid_response.get('selected_rows', [])
             logging.info(f"Tipo de selected: {type(selected)}")
+            logging.info(f"Selected rows: {selected}")
             if not isinstance(selected, list):
                 selected = []
-            logging.info(f"Selected rows: {selected}")
+                logging.info("Selected não é uma lista, redefinido para lista vazia.")
 
             if len(selected) > 0 and isinstance(selected[0], dict):
-                logging.info(f"Chamado selecionado: {chamado_selecionado}")
                 chamado_selecionado = selected[0]
+                logging.info(f"Chamado selecionado: {chamado_selecionado}")
             else:
                 chamado_selecionado = None
                 logging.info("Nenhum chamado selecionado")
