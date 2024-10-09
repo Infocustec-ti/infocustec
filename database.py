@@ -2,9 +2,7 @@ import os
 import sys
 import logging
 from sqlalchemy import create_engine, Column, Integer, String, Boolean, ForeignKey, DateTime
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship
-import streamlit as st
+from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 import bcrypt  # Importação necessária para hashing de senhas
 
 # Configuração do logging
@@ -16,7 +14,7 @@ logging.basicConfig(
     ]
 )
 
-# Configuração do banco de dados PostgreSQL (Supabase) usando secrets no Streamlit ou variáveis de ambiente
+# Configuração do banco de dados PostgreSQL (Supabase) usando variáveis de ambiente
 DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     logging.error("DATABASE_URL não está definido nas variáveis de ambiente.")
@@ -54,7 +52,6 @@ class Setor(Base):
 
 class HistoricoManutencao(Base):
     __tablename__ = 'historico_manutencao'
-    __table_args__ = {'extend_existing': True}  # Evita redefinição
     id = Column(Integer, primary_key=True, index=True)
     numero_patrimonio = Column(String, ForeignKey('inventario.numero_patrimonio'), nullable=False)
     descricao = Column(String, nullable=False)
@@ -69,9 +66,9 @@ class Chamado(Base):
     setor = Column(String, nullable=False)
     tipo_defeito = Column(String, nullable=False)
     problema = Column(String, nullable=False)
-    hora_abertura = Column(DateTime, nullable=False)  # Alterado para DateTime
+    hora_abertura = Column(DateTime, nullable=False)
     solucao = Column(String)
-    hora_fechamento = Column(DateTime)  # Alterado para DateTime
+    hora_fechamento = Column(DateTime)
     protocolo = Column(Integer, unique=True, nullable=False)
     machine = Column(String)
     patrimonio = Column(String)
@@ -83,15 +80,13 @@ class PecaUsada(Base):
     chamado_id = Column(Integer, ForeignKey('chamados.id'), nullable=False)
     peca_nome = Column(String, nullable=False)
     data_uso = Column(DateTime, nullable=False)
-    
-    # Relação com Chamado
     chamado = relationship("Chamado", back_populates="pecas_usadas")
 
 class Usuario(Base):
     __tablename__ = 'usuarios'
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String(50), unique=True, nullable=False)  # Definindo tamanho máximo
-    password = Column(String(128), nullable=False)  # Definindo tamanho máximo para senha criptografada
+    username = Column(String(50), unique=True, nullable=False)
+    password = Column(String(128), nullable=False)
     role = Column(String(10), default='user', nullable=False)
 
 # Função para criar as tabelas no banco de dados
@@ -102,7 +97,7 @@ def create_tables():
     except Exception as e:
         logging.error(f"Erro ao criar as tabelas: {e}")
         print(f"Erro ao criar as tabelas: {e}")
-        raise  # Relevanta o erro para parar a execução do sistema caso falhe
+        raise
 
 # Função para adicionar uma UBS ao banco de dados
 def add_ubs(nome_ubs):
