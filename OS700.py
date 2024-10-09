@@ -536,9 +536,9 @@ def painel_chamados_tecnicos():
                 elif isinstance(selected_rows, pd.DataFrame) and not selected_rows.empty:
                     chamado_selecionado = selected_rows.iloc[0].to_dict()
                 else:
-                    chamado_selecionado = None
+                    chamado_selecionado =
 
-                if chamado_selecionado is not None:
+                if chamado_selecionado:
                     st.write('### Finalizar Chamado Selecionado')
                     st.write(f"ID do Chamado: {chamado_selecionado.get('ID', 'N/A')}")
                     st.write(f"Problema: {chamado_selecionado.get('Problema', 'N/A')}")
@@ -562,7 +562,7 @@ def painel_chamados_tecnicos():
                                 finalizar_chamado(chamado_selecionado.get('ID'), solucao, pecas_selecionadas)
                                 st.success(f'Chamado ID: {chamado_selecionado["ID"]} finalizado com sucesso!')
                                 logging.info(f"Chamado ID: {chamado_selecionado['ID']} finalizado por {st.session_state.username}.")
-                                st.experimental_rerun()
+                                
                             except Exception as e:
                                 st.error(f"Erro ao finalizar o chamado: {e}")
                                 logging.error(f"Erro ao finalizar o chamado ID {chamado_selecionado.get('ID')}: {e}")
