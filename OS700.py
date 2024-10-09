@@ -499,18 +499,18 @@ def painel_chamados_tecnicos():
     df_chamados['Hora Fechamento'] = df_chamados['Hora Fechamento'].dt.tz_convert(local_tz)
 
     # Formatar as datas diretamente nas colunas existentes
-    df_chamados['Hora Abertura'] = df_chamados['Hora Abertura'].apply(lambda x: x.strftime('%d/%m/%Y - %H:%M:%S') if pd.notnull(x) else '')
-    df_chamados['Hora Fechamento'] = df_chamados['Hora Fechamento'].apply(lambda x: x.strftime('%d/%m/%Y - %H:%M:%S') if pd.notnull(x) else '')
+    df_chamados['Hora Abertura'] = df_chamados['Hora Abertura'].dt.strftime('%d/%m/%Y - %H:%M:%S')
+    df_chamados['Hora Fechamento'] = df_chamados['Hora Fechamento'].dt.strftime('%d/%m/%Y - %H:%M:%S')
 
     # Repetir para df_abertos
     df_abertos['Hora Abertura'] = pd.to_datetime(df_abertos['Hora Abertura'], errors='coerce', utc=True)
     df_abertos['Hora Abertura'] = df_abertos['Hora Abertura'].dt.tz_convert(local_tz)
-    df_abertos['Hora Abertura'] = df_abertos['Hora Abertura'].apply(lambda x: x.strftime('%d/%m/%Y - %H:%M:%S') if pd.notnull(x) else '')
+    df_abertos['Hora Abertura'] = df_abertos['Hora Abertura'].dt.strftime('%d/%m/%Y - %H:%M:%S')
 
-    # Calcular o tempo decorrido
-    # Manter as colunas datetime originais para cálculo
-    df_chamados['Hora Abertura Datetime'] = pd.to_datetime(df_chamados['Hora Abertura'], format='%d/%m/%Y - %H:%M:%S', errors='coerce', utc=True).dt.tz_convert(local_tz)
-    df_chamados['Hora Fechamento Datetime'] = pd.to_datetime(df_chamados['Hora Fechamento'], format='%d/%m/%Y - %H:%M:%S', errors='coerce', utc=True).dt.tz_convert(local_tz)
+    # Calcular o tempo decorrido usando as datas originais antes da formatação
+    # Para isso, precisamos reconverter as strings para datetime
+    df_chamados['Hora Abertura Datetime'] = pd.to_datetime(df_chamados['Hora Abertura'], format='%d/%m/%Y - %H:%M:%S', errors='coerce')
+    df_chamados['Hora Fechamento Datetime'] = pd.to_datetime(df_chamados['Hora Fechamento'], format='%d/%m/%Y - %H:%M:%S', errors='coerce')
 
     df_chamados['Tempo Decorrido Segundos'] = df_chamados.apply(
         lambda row: calcular_tempo_decorrido(row['Hora Abertura Datetime'], row['Hora Fechamento Datetime']), axis=1
@@ -537,9 +537,9 @@ def painel_chamados_tecnicos():
                 reload_data=True
             )
 
-            selected = grid_response.get('selected_rows', []) if grid_response else []
-
-            if len(selected) > 0:
+            # Ensure 'selected_rows' is retrieved correctly
+            selected = grid_response.get('selected_rows', [])
+            if isinstance(selected, list) and len(selected) > 0:
                 chamado_selecionado = selected[0]
             else:
                 chamado_selecionado = None
@@ -590,9 +590,9 @@ def painel_chamados_tecnicos():
 
         if status != 'Todos':
             if status == 'Em Aberto':
-                df_filtrado = df_filtrado[df_filtrado['Hora Fechamento'] == '']
+                df_filtrado = df_filtrado[df_filtrado['Hora Fechamento'] == 'NaT']
             else:
-                df_filtrado = df_filtrado[df_filtrado['Hora Fechamento'] != '']
+                df_filtrado = df_filtrado[df_filtrado['Hora Fechamento'] != 'NaT']
 
         if ubs_selecionada != 'Todas':
             df_filtrado = df_filtrado[df_filtrado['UBS'] == ubs_selecionada]
@@ -612,7 +612,7 @@ def painel_chamados_tecnicos():
         st.subheader('Análise de Chamados')
 
         st.subheader('Tempo Médio de Atendimento')
-        chamados_finalizados = df_chamados[df_chamados['Hora Fechamento'] != '']
+        chamados_finalizados = df_chamados[df_chamados['Hora Fechamento'] != 'NaT']
         try:
             show_average_time(chamados_finalizados)
         except Exception as e:
