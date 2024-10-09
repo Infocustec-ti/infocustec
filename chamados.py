@@ -21,7 +21,11 @@ from dateutil import parser
 # Configurações de autenticação do Twilio usando variáveis de ambiente
 account_sid = os.getenv('TWILIO_ACCOUNT_SID')
 auth_token = os.getenv('TWILIO_AUTH_TOKEN')
-client = Client(account_sid, auth_token)
+if account_sid and auth_token:
+    client = Client(account_sid, auth_token)
+else:
+    client = None
+    logging.warning("Credenciais do Twilio não configuradas. Mensagens não serão enviadas.")
 
 # Configuração do logging
 logger = logging.getLogger(__name__)
@@ -111,18 +115,21 @@ def add_chamado(username, ubs, setor, tipo_defeito, problema, machine=None, patr
             logger.info(f"Chamado aberto: Protocolo {protocolo} por usuário {username}")
 
             # Enviar mensagem via WhatsApp
-            numeros_destino = ['whatsapp:+558586981658', 'whatsapp:+558894000846']
-            for numero in numeros_destino:
-                try:
-                    message = client.messages.create(
-                        from_='whatsapp:+14155238886',
-                        body=f"Novo chamado técnico na UBS '{ubs}' no setor '{setor}': {problema}",
-                        to=numero
-                    )
-                    logger.info(f"Mensagem enviada para {numero} via WhatsApp. SID: {message.sid}")
-                except Exception as e:
-                    logger.error(f"Erro ao enviar mensagem para {numero} via WhatsApp: {e}")
-                    st.error(f"Erro ao enviar mensagem para {numero} via WhatsApp: {e}")
+            if client:
+                numeros_destino = ['whatsapp:+558586981658', 'whatsapp:+558894000846']
+                for numero in numeros_destino:
+                    try:
+                        message = client.messages.create(
+                            from_='whatsapp:+14155238886',
+                            body=f"Novo chamado técnico na UBS '{ubs}' no setor '{setor}': {problema}",
+                            to=numero
+                        )
+                        logger.info(f"Mensagem enviada para {numero} via WhatsApp. SID: {message.sid}")
+                    except Exception as e:
+                        logger.error(f"Erro ao enviar mensagem para {numero} via WhatsApp: {e}")
+                        st.error(f"Erro ao enviar mensagem para {numero} via WhatsApp.")
+            else:
+                logger.warning("Cliente Twilio não configurado. Mensagens não foram enviadas.")
 
             st.success(f"Chamado aberto com sucesso! Protocolo: {protocolo}")
         except Exception as e:
@@ -168,6 +175,7 @@ def calcular_tempo_decorrido(hora_abertura, hora_fechamento):
     try:
         cal = Brazil()
         total_seconds = 0
+
         work_start_time = timedelta(hours=8)
         work_end_time = timedelta(hours=17)
         lunch_start = timedelta(hours=12)
@@ -318,7 +326,7 @@ def finalizar_chamado(id_chamado, solucao, pecas_usadas=None):
                 session.commit()
 
                 st.success(f'Chamado ID: {id_chamado} finalizado com sucesso!')
-                logger.info(f"Chamado ID: {id_chamado} finalizado por {chamado.username}.")
+                logger.info(f"Chamado ID: {id_chamado} finalizado.")
             else:
                 st.error("Chamado não encontrado.")
                 logger.warning(f"Chamado ID {id_chamado} não encontrado.")
@@ -407,34 +415,34 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
     try:
         if not isinstance(df, pd.DataFrame):
             raise ValueError("O argumento 'df' não é um DataFrame")
-        
+
         if pecas_usadas_df is None or not isinstance(pecas_usadas_df, pd.DataFrame):
             logger.warning("O argumento 'pecas_usadas_df' não é um DataFrame ou é None. Criando DataFrame vazio.")
             pecas_usadas_df = pd.DataFrame(columns=['chamado_id', 'peca_nome'])
-        
+
         # Filtrar dados para o mês selecionado
         df = df.dropna(subset=['Hora Abertura'])
-        
+
         selected_year_int = int(selected_month[:4])
         selected_month_int = int(selected_month[5:7])
-        
+
         df_filtered = df[
-            (df['Hora Abertura'].dt.year == selected_year_int) & 
+            (df['Hora Abertura'].dt.year == selected_year_int) &
             (df['Hora Abertura'].dt.month == selected_month_int)
         ]
-        
+
         if df_filtered.empty:
             st.warning(f"Não há dados para o mês selecionado: {selected_month}.")
             logger.info(f"Relatório mensal: nenhum dado para {selected_month}.")
             return None
-        
+
         # Calcular Tempo Decorrido
         df_filtered['Tempo Decorrido (s)'] = df_filtered.apply(
             lambda row: calcular_tempo_decorrido(row['Hora Abertura'], row['Hora Fechamento']), axis=1
         )
-        
+
         df_filtered = df_filtered.dropna(subset=['Tempo Decorrido (s)'])
-        
+
         if df_filtered.empty:
             st.warning("Nenhum dado disponível após o cálculo do tempo decorrido.")
             logger.info("Nenhum dado disponível após o cálculo do tempo decorrido.")
@@ -457,7 +465,7 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
         tipo_defeito_mais_comum = df_filtered['Tipo de Defeito'].mode()[0] if not df_filtered['Tipo de Defeito'].mode().empty else 'N/A'
         setor_mais_ativo = df_filtered['Setor'].mode()[0] if not df_filtered['Setor'].mode().empty else 'N/A'
         ubs_mais_ativa = df_filtered['UBS'].mode()[0] if not df_filtered['UBS'].mode().empty else 'N/A'
-        
+
         total_pecas_usadas = pecas_usadas_df['peca_nome'].count() if not pecas_usadas_df.empty else 0
         pecas_mais_usadas = pecas_usadas_df['peca_nome'].value_counts().head(5) if not pecas_usadas_df.empty else pd.Series([], dtype="int64")
 
@@ -503,16 +511,16 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
         # Criação do PDF
         pdf = FPDF(orientation='L')
         pdf.add_page()
-        
+
         if logo_path and os.path.exists(logo_path):
             pdf.image(logo_path, x=10, y=8, w=30)
         elif logo_path:
             st.warning("Logotipo não encontrado. Verifique o caminho configurado.")
             logger.warning("Logotipo não encontrado para inserção no relatório.")
-        
+
         pdf.set_font('Arial', 'B', 16)
         pdf.cell(0, 10, f'Relatório Mensal de Chamados Técnicos - {selected_month}', ln=True, align='C')
-        
+
         pdf.set_font('Arial', '', 12)
         pdf.ln(10)
         pdf.cell(0, 10, f'Total de Chamados: {total_chamados}', ln=True)
@@ -523,15 +531,15 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
         pdf.cell(0, 10, f'Setor Mais Ativo: {setor_mais_ativo}', ln=True)
         pdf.cell(0, 10, f'UBS Mais Ativa: {ubs_mais_ativa}', ln=True)
         pdf.cell(0, 10, f'Total de Peças Usadas: {total_pecas_usadas}', ln=True)
-        
+
         pdf.ln(10)
         pdf.set_font('Arial', 'B', 12)
         pdf.cell(0, 10, 'Dashboard', ln=True, align='C')
-        
+
         # Adicionar gráficos ao PDF
         pdf.add_page()
         add_image_to_pdf(pdf, chamados_por_ubs_chart, 'Chamados por UBS')
-        
+
         pdf.add_page()
         add_image_to_pdf(pdf, chamados_por_defeito_chart, 'Chamados por Tipo de Defeito')
 
@@ -543,10 +551,10 @@ def generate_monthly_report(df, selected_month, pecas_usadas_df=None, logo_path=
             add_image_to_pdf(pdf, pecas_mais_usadas_chart, 'Peças Mais Usadas')
 
         pdf.add_page()
-        
+
         if logo_path and os.path.exists(logo_path):
             pdf.image(logo_path, x=10, y=8, w=30)
-        
+
         pdf.set_font('Arial', 'B', 10)
         pdf.cell(0, 10, 'Detalhamento dos Chamados', ln=True, align='C')
 
@@ -591,7 +599,7 @@ def exibir_relatorio_mensal():
     st.title("Gerar Relatório Mensal de Chamados Técnicos")
 
     df, months_list = get_monthly_technical_data()
-    
+
     with SessionLocal() as session:
         try:
             pecas_usadas_df = pd.read_sql(session.query(PecaUsada).statement, session.bind)
