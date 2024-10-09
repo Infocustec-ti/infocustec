@@ -455,7 +455,6 @@ def painel_relatorios():
             logging.error(f"Erro ao gerar relatório de inventário: {e}")
 
 def painel_chamados_tecnicos():
-    # Verificar se o usuário está logado e é administrador
     if not st.session_state.get('logged_in') or not st.session_state.get('is_admin'):
         st.warning('Você precisa estar logado como administrador para acessar esta área.')
         logging.warning("Usuário sem privilégios tentou acessar o painel de chamados técnicos.")
@@ -463,11 +462,9 @@ def painel_chamados_tecnicos():
 
     st.subheader('Painel de Chamados Técnicos')
 
-    # Carregar chamados abertos e todos os chamados
     chamados_abertos = list_chamados_em_aberto()
     chamados = list_chamados()
 
-    # Definir função para converter objeto Chamado em dicionário com atributos necessários
     def chamado_to_dict(chamado):
         return {
             'id': chamado.id,
@@ -492,35 +489,27 @@ def painel_chamados_tecnicos():
             logging.error(f"Erro ao criar DataFrame: {e}")
             return
 
-        # Renomear colunas para minúsculas
         df_chamados.columns = [col.lower() for col in df_chamados.columns]
 
-        # Lista de colunas esperadas
         colunas_esperadas = ['id', 'username', 'ubs', 'setor', 'tipo_defeito', 'problema',
                              'hora_abertura', 'solucao', 'hora_fechamento', 'protocolo',
                              'patrimonio', 'machine']
 
-        # Adicionar colunas ausentes com valores padrão
         for col in colunas_esperadas:
             if col not in df_chamados.columns:
                 df_chamados[col] = pd.NaT if 'hora' in col else ''
 
-        # Converter colunas datetime
         df_chamados['hora_abertura'] = pd.to_datetime(df_chamados['hora_abertura'], errors='coerce')
         df_chamados['hora_fechamento'] = pd.to_datetime(df_chamados['hora_fechamento'], errors='coerce')
 
-        # Calcular 'Tempo Decorrido (s)'
         df_chamados['tempo_decorrido_segundos'] = df_chamados.apply(
             lambda row: calcular_tempo_decorrido(row['hora_abertura'], row['hora_fechamento']), axis=1
         )
 
-        # Formatar 'Tempo Decorrido' para exibição
         df_chamados['tempo_decorrido'] = df_chamados['tempo_decorrido_segundos'].apply(formatar_tempo)
 
-        # Configurar as abas
         tab1, tab2, tab3 = st.tabs(['Chamados em Aberto', 'Painel de Chamados', 'Análise de Chamados'])
 
-        # Aba 1: Chamados em Aberto
         with tab1:
             st.subheader('Chamados em Aberto')
 
@@ -532,19 +521,15 @@ def painel_chamados_tecnicos():
                     logging.error(f"Erro ao criar DataFrame para chamados abertos: {e}")
                     return
 
-                # Renomear colunas
                 df_abertos.columns = [col.lower() for col in df_abertos.columns]
 
-                # Garantir que as colunas esperadas estejam presentes
                 for col in colunas_esperadas:
                     if col not in df_abertos.columns:
                         df_abertos[col] = pd.NaT if 'hora' in col else ''
 
-                # Converter colunas datetime
                 df_abertos['hora_abertura'] = pd.to_datetime(df_abertos['hora_abertura'], errors='coerce')
                 df_abertos['hora_fechamento'] = pd.to_datetime(df_abertos['hora_fechamento'], errors='coerce')
 
-                # Exibir o grid
                 gb = GridOptionsBuilder.from_dataframe(df_abertos)
                 gb.configure_pagination()
                 gb.configure_selection('single', use_checkbox=True)
@@ -553,15 +538,15 @@ def painel_chamados_tecnicos():
                 grid_response = AgGrid(
                     df_abertos,
                     gridOptions=gridOptions,
-                    update_mode='MODEL_CHANGED',
+                    update_mode=GridUpdateMode.SELECTION_CHANGED,
                     fit_columns_on_grid_load=True,
                     height=350,
                     reload_data=True
                 )
 
-                selected_rows = grid_response.get('selected_rows', None)
+                selected_rows = grid_response.get('selected_rows', [])
 
-                if isinstance(selected_rows, list) and len(selected_rows) > 0:
+                if selected_rows:
                     chamado_selecionado = selected_rows[0]
                 else:
                     chamado_selecionado = None
@@ -602,7 +587,6 @@ def painel_chamados_tecnicos():
                 st.info("Não há chamados em aberto no momento.")
                 logging.info("Nenhum chamado em aberto para exibir.")
 
-        # Aba 2: Painel de Chamados
         with tab2:
             st.subheader('Painel de Chamados')
 
@@ -614,18 +598,15 @@ def painel_chamados_tecnicos():
 
             df_filtrado = df_chamados.copy()
 
-            # Filtrar por status
             if status != 'Todos':
                 if status == 'Em Aberto':
                     df_filtrado = df_filtrado[df_filtrado['hora_fechamento'].isnull()]
                 else:
                     df_filtrado = df_filtrado[df_filtrado['hora_fechamento'].notnull()]
 
-            # Filtrar por UBS
             if ubs_selecionada != 'Todas':
                 df_filtrado = df_filtrado[df_filtrado['ubs'] == ubs_selecionada]
 
-            # Exibir o grid com os chamados filtrados
             gb = GridOptionsBuilder.from_dataframe(df_filtrado)
             gb.configure_pagination()
             gb.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc='sum', editable=False)
@@ -637,11 +618,9 @@ def painel_chamados_tecnicos():
                 enable_enterprise_modules=False
             )
 
-        # Aba 3: Análise de Chamados
         with tab3:
             st.subheader('Análise de Chamados')
 
-            # Exibir tempo médio de atendimento
             st.subheader('Tempo Médio de Atendimento')
             chamados_finalizados = [chamado for chamado in chamados if chamado.hora_fechamento is not None]
             try:
@@ -650,7 +629,6 @@ def painel_chamados_tecnicos():
                 st.error(f"Erro ao exibir tempo médio de atendimento: {e}")
                 logging.error(f"Erro ao exibir tempo médio de atendimento: {e}")
 
-            # Gráfico: Quantidade de Chamados por UBS
             fig = px.bar(
                 df_chamados,
                 x='ubs',
@@ -660,7 +638,6 @@ def painel_chamados_tecnicos():
             )
             st.plotly_chart(fig)
 
-            # Gráfico: Quantidade de Chamados por Tipo de Defeito
             fig_defeitos = px.bar(
                 df_chamados,
                 x='tipo_defeito',
@@ -670,7 +647,6 @@ def painel_chamados_tecnicos():
             )
             st.plotly_chart(fig_defeitos)
 
-            # Gráfico: Quantidade de Chamados por Setor
             fig_setor = px.bar(
                 df_chamados,
                 x='setor',
