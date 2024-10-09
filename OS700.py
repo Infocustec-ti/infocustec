@@ -469,7 +469,7 @@ def painel_chamados_tecnicos():
     # Verificar se o usuário está logado e é administrador
     if not st.session_state.get('logged_in') or not is_admin(st.session_state.get('username')):
         st.warning('Você precisa estar logado como administrador para acessar esta área.')
-        logging.warning("Usuário sem privilégios tentou acessar o painel de chamados técnicos.")
+        logger.warning("Usuário sem privilégios tentou acessar o painel de chamados técnicos.")
         return
 
     st.subheader('Painel de Chamados Técnicos')
@@ -481,29 +481,37 @@ def painel_chamados_tecnicos():
     if chamados:
         try:
             # Criar DataFrame sem especificar as colunas para permitir que o Pandas infira as colunas
-            df_chamados = pd.DataFrame(chamados)
+            df_chamados = pd.DataFrame([chamado.__dict__ for chamado in chamados])
         except Exception as e:
             st.error(f"Erro ao criar DataFrame: {e}")
-            logging.error(f"Erro ao criar DataFrame: {e}")
+            logger.error(f"Erro ao criar DataFrame: {e}")
             return
 
         # Lista de colunas esperadas
-        colunas_esperadas = ['ID', 'Usuário', 'UBS', 'Setor', 'Tipo de Defeito', 'Problema',
-                             'Hora Abertura', 'Solução', 'Hora Fechamento', 'Protocolo',
-                             'Patrimônio', 'Machine']
+        colunas_esperadas = ['id', 'username', 'ubs', 'setor', 'tipo_defeito', 'problema',
+                             'hora_abertura', 'solucao', 'hora_fechamento', 'protocolo',
+                             'patrimonio', 'machine']
+
+        # Renomear colunas do DataFrame para corresponder às colunas esperadas
+        df_chamados.columns = [col.lower() for col in df_chamados.columns]
 
         # Adicionar colunas ausentes com valores padrão
         for col in colunas_esperadas:
             if col not in df_chamados.columns:
                 # Para colunas datetime, usamos pd.NaT; para as demais, strings vazias
-                df_chamados[col] = pd.NaT if 'Hora' in col else ''
+                df_chamados[col] = pd.NaT if 'hora' in col else ''
 
         # Converter colunas datetime, lidando com valores nulos
-        df_chamados['Hora Abertura'] = pd.to_datetime(df_chamados['Hora Abertura'], errors='coerce')
-        df_chamados['Hora Fechamento'] = pd.to_datetime(df_chamados['Hora Fechamento'], errors='coerce')
+        df_chamados['hora_abertura'] = pd.to_datetime(df_chamados['hora_abertura'], errors='coerce')
+        df_chamados['hora_fechamento'] = pd.to_datetime(df_chamados['hora_fechamento'], errors='coerce')
 
-        # Calcular 'Tempo Decorrido'
-        df_chamados['Tempo Decorrido'] = df_chamados.apply(lambda row: calculate_tempo_decorrido(row), axis=1)
+        # Calcular 'Tempo Decorrido (s)' usando a função unificada
+        df_chamados['Tempo Decorrido (s)'] = df_chamados.apply(
+            lambda row: calcular_tempo_decorrido(row['hora_abertura'], row['hora_fechamento']), axis=1
+        )
+
+        # Formatar 'Tempo Decorrido' para exibição
+        df_chamados['Tempo Decorrido'] = df_chamados['Tempo Decorrido (s)'].apply(formatar_tempo)
 
         # Configurar as abas
         tab1, tab2, tab3 = st.tabs(['Chamados em Aberto', 'Painel de Chamados', 'Análise de Chamados'])
@@ -514,20 +522,23 @@ def painel_chamados_tecnicos():
 
             if chamados_abertos:
                 try:
-                    df_abertos = pd.DataFrame(chamados_abertos)
+                    df_abertos = pd.DataFrame([chamado.__dict__ for chamado in chamados_abertos])
                 except Exception as e:
                     st.error(f"Erro ao criar DataFrame para chamados abertos: {e}")
-                    logging.error(f"Erro ao criar DataFrame para chamados abertos: {e}")
+                    logger.error(f"Erro ao criar DataFrame para chamados abertos: {e}")
                     return
+
+                # Renomear colunas
+                df_abertos.columns = [col.lower() for col in df_abertos.columns]
 
                 # Garantir que as colunas esperadas estejam presentes
                 for col in colunas_esperadas:
                     if col not in df_abertos.columns:
-                        df_abertos[col] = pd.NaT if 'Hora' in col else ''
+                        df_abertos[col] = pd.NaT if 'hora' in col else ''
 
                 # Converter colunas datetime
-                df_abertos['Hora Abertura'] = pd.to_datetime(df_abertos['Hora Abertura'], errors='coerce')
-                df_abertos['Hora Fechamento'] = pd.to_datetime(df_abertos['Hora Fechamento'], errors='coerce')
+                df_abertos['hora_abertura'] = pd.to_datetime(df_abertos['hora_abertura'], errors='coerce')
+                df_abertos['hora_fechamento'] = pd.to_datetime(df_abertos['hora_fechamento'], errors='coerce')
 
                 # Exibir o grid
                 gb = GridOptionsBuilder.from_dataframe(df_abertos)
@@ -554,8 +565,8 @@ def painel_chamados_tecnicos():
 
                 if chamado_selecionado:
                     st.write('### Finalizar Chamado Selecionado')
-                    st.write(f"ID do Chamado: {chamado_selecionado.get('ID', 'N/A')}")
-                    st.write(f"Problema: {chamado_selecionado.get('Problema', 'N/A')}")
+                    st.write(f"ID do Chamado: {chamado_selecionado.get('id', 'N/A')}")
+                    st.write(f"Problema: {chamado_selecionado.get('problema', 'N/A')}")
 
                     solucao = st.text_area('Insira a solução para o chamado')
 
@@ -574,20 +585,20 @@ def painel_chamados_tecnicos():
                         if solucao:
                             try:
                                 # Finalizar o chamado e atualizar o banco de dados
-                                finalizar_chamado(chamado_selecionado.get('ID'), solucao, pecas_selecionadas)
-                                st.success(f'Chamado ID: {chamado_selecionado['ID']} finalizado com sucesso!')
-                                logging.info(f"Chamado ID: {chamado_selecionado['ID']} finalizado por {st.session_state.username}.")
+                                finalizar_chamado(chamado_selecionado.get('id'), solucao, pecas_selecionadas)
+                                st.success(f'Chamado ID: {chamado_selecionado["id"]} finalizado com sucesso!')
+                                logger.info(f"Chamado ID: {chamado_selecionado['id']} finalizado por {st.session_state.username}.")
                                 st.experimental_rerun()
                             except Exception as e:
                                 st.error(f"Erro ao finalizar o chamado: {e}")
-                                logging.error(f"Erro ao finalizar o chamado ID {chamado_selecionado.get('ID')}: {e}")
+                                logger.error(f"Erro ao finalizar o chamado ID {chamado_selecionado.get('id')}: {e}")
                         else:
                             st.error('Por favor, insira a solução antes de finalizar o chamado.')
                 else:
                     st.info('Nenhum chamado selecionado.')
             else:
                 st.info("Não há chamados em aberto no momento.")
-                logging.info("Nenhum chamado em aberto para exibir.")
+                logger.info("Nenhum chamado em aberto para exibir.")
 
         # Aba 2: Painel de Chamados
         with tab2:
@@ -596,7 +607,7 @@ def painel_chamados_tecnicos():
             status_options = ['Todos', 'Em Aberto', 'Finalizado']
             status = st.selectbox('Filtrar por Status', status_options)
 
-            ubs_list = ['Todas'] + df_chamados['UBS'].unique().tolist()
+            ubs_list = ['Todas'] + df_chamados['ubs'].dropna().unique().tolist()
             ubs_selecionada = st.selectbox('Filtrar por UBS', ubs_list)
 
             df_filtrado = df_chamados.copy()
@@ -604,13 +615,13 @@ def painel_chamados_tecnicos():
             # Filtrar por status
             if status != 'Todos':
                 if status == 'Em Aberto':
-                    df_filtrado = df_filtrado[df_filtrado['Hora Fechamento'].isnull()]
+                    df_filtrado = df_filtrado[df_filtrado['hora_fechamento'].isnull()]
                 else:
-                    df_filtrado = df_filtrado[df_filtrado['Hora Fechamento'].notnull()]
+                    df_filtrado = df_filtrado[df_filtrado['hora_fechamento'].notnull()]
 
             # Filtrar por UBS
             if ubs_selecionada != 'Todas':
-                df_filtrado = df_filtrado[df_filtrado['UBS'] == ubs_selecionada]
+                df_filtrado = df_filtrado[df_filtrado['ubs'] == ubs_selecionada]
 
             # Exibir o grid com os chamados filtrados
             gb = GridOptionsBuilder.from_dataframe(df_filtrado)
@@ -630,43 +641,46 @@ def painel_chamados_tecnicos():
 
             # Exibir tempo médio de atendimento
             st.subheader('Tempo Médio de Atendimento')
+            chamados_finalizados = [chamado for chamado in chamados if chamado.hora_fechamento is not None]
             try:
-                show_average_time(chamados)
+                show_average_time(chamados_finalizados)
             except Exception as e:
                 st.error(f"Erro ao exibir tempo médio de atendimento: {e}")
-                logging.error(f"Erro ao exibir tempo médio de atendimento: {e}")
+                logger.error(f"Erro ao exibir tempo médio de atendimento: {e}")
 
-            # Gráficos de análise
+            # Gráfico: Quantidade de Chamados por UBS
             fig = px.bar(
                 df_chamados,
-                x='UBS',
+                x='ubs',
                 title='Quantidade de Chamados por UBS',
-                labels={'UBS': 'UBS', 'ID': 'Quantidade'},
-                color='UBS'
+                labels={'ubs': 'UBS', 'id': 'Quantidade'},
+                color='ubs'
             )
             st.plotly_chart(fig)
 
+            # Gráfico: Quantidade de Chamados por Tipo de Defeito
             fig_defeitos = px.bar(
                 df_chamados,
-                x='Tipo de Defeito',
+                x='tipo_defeito',
                 title='Quantidade de Chamados por Tipo de Defeito',
-                labels={'Tipo de Defeito': 'Tipo de Defeito', 'ID': 'Quantidade'},
-                color='Tipo de Defeito'
+                labels={'tipo_defeito': 'Tipo de Defeito', 'id': 'Quantidade'},
+                color='tipo_defeito'
             )
             st.plotly_chart(fig_defeitos)
 
+            # Gráfico: Quantidade de Chamados por Setor
             fig_setor = px.bar(
                 df_chamados,
-                x='Setor',
+                x='setor',
                 title='Quantidade de Chamados por Setor',
-                labels={'Setor': 'Setor', 'ID': 'Quantidade'},
-                color='Setor'
+                labels={'setor': 'Setor', 'id': 'Quantidade'},
+                color='setor'
             )
             st.plotly_chart(fig_setor)
 
     else:
         st.warning("Nenhum chamado foi encontrado no banco de dados.")
-        logging.warning("Nenhum chamado encontrado no banco de dados.")
+        logger.warning("Nenhum chamado encontrado no banco de dados.")
 
 # Função para buscar protocolo
 def buscar_protocolo():
