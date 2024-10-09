@@ -480,19 +480,22 @@ def painel_chamados_tecnicos():
             'Setor': chamado.setor,
             'Tipo de Defeito': chamado.tipo_defeito,
             'Problema': chamado.problema,
-            'Hora Abertura': chamado.hora_abertura.astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S'),
+            'Hora Abertura': pd.to_datetime(chamado.hora_abertura),  # Converte para datetime
             'Solução': chamado.solucao,
-            'Hora Fechamento': chamado.hora_fechamento.astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S') if chamado.hora_fechamento else None,
+            'Hora Fechamento': pd.to_datetime(chamado.hora_fechamento) if chamado.hora_fechamento else None,  # Converte para datetime
             'Protocolo': chamado.protocolo,
             'Patrimônio': chamado.patrimonio,
             'Machine': chamado.machine
         } for chamado in chamados])
 
+        # Aplica a formatação correta do fuso horário e a conversão para o formato desejado
+        df_chamados['Hora Abertura'] = df_chamados['Hora Abertura'].apply(lambda x: x.astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S') if pd.notnull(x) else '')
+        df_chamados['Hora Fechamento'] = df_chamados['Hora Fechamento'].apply(lambda x: x.astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S') if pd.notnull(x) else '')
+
         df_chamados['Tempo Decorrido'] = df_chamados.apply(calculate_tempo_decorrido_em_segundos_row, axis=1)
 
         tab1, tab2, tab3 = st.tabs(['Chamados em Aberto', 'Painel de Chamados', 'Análise de Chamados'])
 
-        # Aba de Chamados em Aberto
         with tab1:
             st.subheader('Chamados em Aberto')
 
@@ -504,13 +507,16 @@ def painel_chamados_tecnicos():
                     'Setor': chamado.setor,
                     'Tipo de Defeito': chamado.tipo_defeito,
                     'Problema': chamado.problema,
-                    'Hora Abertura': chamado.hora_abertura.astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S'),
+                    'Hora Abertura': pd.to_datetime(chamado.hora_abertura),  # Converte para datetime
                     'Solução': chamado.solucao,
-                    'Hora Fechamento': chamado.hora_fechamento.astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S') if chamado.hora_fechamento else None,
+                    'Hora Fechamento': pd.to_datetime(chamado.hora_fechamento) if chamado.hora_fechamento else None,
                     'Protocolo': chamado.protocolo,
                     'Patrimônio': chamado.patrimonio,
                     'Machine': chamado.machine
                 } for chamado in chamados_abertos])
+
+                df_abertos['Hora Abertura'] = df_abertos['Hora Abertura'].apply(lambda x: x.astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S') if pd.notnull(x) else '')
+                df_abertos['Hora Fechamento'] = df_abertos['Hora Fechamento'].apply(lambda x: x.astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S') if pd.notnull(x) else '')
 
                 gb = GridOptionsBuilder.from_dataframe(df_abertos)
                 gb.configure_pagination()
@@ -646,10 +652,6 @@ def painel_chamados_tecnicos():
                 color='Setor'
             )
             st.plotly_chart(fig_setor)
-
-            # Estatísticas adicionais
-            st.write("**Chamado com mais defeitos:**", df_chamados['Tipo de Defeito'].value_counts().idxmax())
-            st.write("**Setor com mais chamados:**", df_chamados['Setor'].value_counts().idxmax())
 
 
 
