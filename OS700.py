@@ -457,7 +457,6 @@ def painel_relatorios():
 def painel_chamados_tecnicos():
     if not st.session_state.get('logged_in') or not is_admin(st.session_state.get('username')):
         st.warning('Você precisa estar logado como administrador para acessar esta área.')
-        logging.warning("Usuário sem privilégios tentou acessar o painel de chamados técnicos.")
         return
 
     st.subheader('Painel de Chamados Técnicos')
@@ -465,164 +464,164 @@ def painel_chamados_tecnicos():
     chamados_abertos = list_chamados_em_aberto()
     chamados = list_chamados()
 
-    if chamados:
-        df_chamados = pd.DataFrame(chamados, columns=[
-            'ID', 'Usuário', 'UBS', 'Setor', 'Tipo de Defeito', 'Problema',
-            'Hora Abertura', 'Solução', 'Hora Fechamento',
-            'Protocolo', 'Patrimônio', 'Machine'
-        ])
-        df_chamados['Tempo Decorrido'] = df_chamados.apply(lambda row: calculate_tempo_decorrido(row), axis=1)
-
-        tab1, tab2, tab3 = st.tabs(['Chamados em Aberto', 'Painel de Chamados', 'Análise de Chamados'])
-
-        with tab1:
-            st.subheader('Chamados em Aberto')
-
-            if chamados_abertos:
-                df_abertos = pd.DataFrame(chamados_abertos, columns=[
+    # Verificar o tipo de dados retornado por 'list_chamados' e 'list_chamados_em_aberto'
+    # Se for uma lista de tuplas, precisamos ajustar a criação do DataFrame
+    def criar_dataframe_chamados(chamados_lista):
+        if chamados_lista:
+            if isinstance(chamados_lista[0], tuple):
+                df = pd.DataFrame(chamados_lista, columns=[
                     'ID', 'Usuário', 'UBS', 'Setor', 'Tipo de Defeito', 'Problema',
                     'Hora Abertura', 'Solução', 'Hora Fechamento',
                     'Protocolo', 'Patrimônio', 'Machine'
                 ])
-
-                gb = GridOptionsBuilder.from_dataframe(df_abertos)
-                gb.configure_pagination()
-                gb.configure_selection('single', use_checkbox=True)
-                gridOptions = gb.build()
-
-                grid_response = AgGrid(
-                    df_abertos,
-                    gridOptions=gridOptions,
-                    update_mode=GridUpdateMode.SELECTION_CHANGED,
-                    fit_columns_on_grid_load=True,
-                    enable_enterprise_modules=True,
-                    height=350,
-                    reload_data=True
-                )
-
-                selected_rows = grid_response.get('selected_rows', [])
-
-                chamado_selecionado = None
-
-                if isinstance(selected_rows, list) and len(selected_rows) > 0:
-                    chamado_selecionado = selected_rows[0]
-                elif isinstance(selected_rows, pd.DataFrame) and not selected_rows.empty:
-                    chamado_selecionado = selected_rows.iloc[0].to_dict()
-
-                if chamado_selecionado:
-                    if 'ID' in chamado_selecionado and 'Problema' in chamado_selecionado:
-                        st.write('### Finalizar Chamado Selecionado')
-                        st.write(f"ID do Chamado: {chamado_selecionado.get('ID', 'N/A')}")
-                        st.write(f"Problema: {chamado_selecionado.get('Problema', 'N/A')}")
-
-                        solucao = st.text_area('Insira a solução para o chamado')
-
-                        pecas_disponiveis = [
-                            'Placa Mãe', 'Fonte', 'Memória RAM', 'HD', 'SSD',
-                            'Teclado', 'Mouse', 'Monitor', 'Cabo de Rede', 'Placa de Rede',
-                            'Processador', 'Cooler', 'Fonte da Impressora', 'Cartucho', 'Toner'
-                        ]
-
-                        pecas_selecionadas = st.multiselect(
-                            'Selecione as peças utilizadas',
-                            pecas_disponiveis
-                        )
-
-                        if st.button('Finalizar Chamado'):
-                            if solucao:
-                                try:
-                                    finalizar_chamado(chamado_selecionado.get('ID'), solucao, pecas_selecionadas)
-                                    st.success(f'Chamado ID: {chamado_selecionado['ID']} finalizado com sucesso!')
-                                    logging.info(f"Chamado ID: {chamado_selecionado['ID']} finalizado por {st.session_state.username}.")
-                                    st.experimental_rerun()
-                                except Exception as e:
-                                    st.error(f"Erro ao finalizar o chamado: {e}")
-                                    logging.error(f"Erro ao finalizar o chamado ID {chamado_selecionado.get('ID')}: {e}")
-                            else:
-                                st.error('Por favor, insira a solução antes de finalizar o chamado.')
-                    else:
-                        st.error("O chamado selecionado não contém informações completas.")
-                else:
-                    st.info('Nenhum chamado selecionado.')
             else:
-                st.info("Não há chamados em aberto no momento.")
-                logging.info("Nenhum chamado em aberto para exibir.")
+                df = pd.DataFrame([chamado_to_dict(chamado) for chamado in chamados_lista])
+            return df
+        else:
+            return pd.DataFrame(columns=[
+                'ID', 'Usuário', 'UBS', 'Setor', 'Tipo de Defeito', 'Problema',
+                'Hora Abertura', 'Solução', 'Hora Fechamento',
+                'Protocolo', 'Patrimônio', 'Machine'
+            ])
 
-        # O restante da função permanece inalterado
+    df_chamados = criar_dataframe_chamados(chamados)
+    df_abertos = criar_dataframe_chamados(chamados_abertos)
 
+    # Converter colunas de datas para o tipo datetime
+    df_chamados['Hora Abertura'] = pd.to_datetime(df_chamados['Hora Abertura'], errors='coerce')
+    df_chamados['Hora Fechamento'] = pd.to_datetime(df_chamados['Hora Fechamento'], errors='coerce')
 
-        with tab2:
-            st.subheader('Painel de Chamados')
+    # Calcular o tempo decorrido
+    df_chamados['Tempo Decorrido Segundos'] = df_chamados.apply(
+        lambda row: calcular_tempo_decorrido(row['Hora Abertura'], row['Hora Fechamento']), axis=1
+    )
+    df_chamados['Tempo Decorrido'] = df_chamados['Tempo Decorrido Segundos'].apply(formatar_tempo)
 
-            status_options = ['Todos', 'Em Aberto', 'Finalizado']
-            status = st.selectbox('Filtrar por Status', status_options)
+    tab1, tab2, tab3 = st.tabs(['Chamados em Aberto', 'Painel de Chamados', 'Análise de Chamados'])
 
-            ubs_list = ['Todas'] + df_chamados['UBS'].dropna().unique().tolist()
-            ubs_selecionada = st.selectbox('Filtrar por UBS', ubs_list)
+    with tab1:
+        st.subheader('Chamados em Aberto')
 
-            df_filtrado = df_chamados.copy()
-
-            if status != 'Todos':
-                if status == 'Em Aberto':
-                    df_filtrado = df_filtrado[df_filtrado['Hora Fechamento'].isnull()]
-                else:
-                    df_filtrado = df_filtrado[df_filtrado['Hora Fechamento'].notnull()]
-
-            if ubs_selecionada != 'Todas':
-                df_filtrado = df_filtrado[df_filtrado['UBS'] == ubs_selecionada]
-
-            gb = GridOptionsBuilder.from_dataframe(df_filtrado)
+        if not df_abertos.empty:
+            gb = GridOptionsBuilder.from_dataframe(df_abertos)
             gb.configure_pagination()
-            gb.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc='sum', editable=False)
+            gb.configure_selection('single', use_checkbox=True)
             gridOptions = gb.build()
 
-            AgGrid(
-                df_filtrado,
+            grid_response = AgGrid(
+                df_abertos,
                 gridOptions=gridOptions,
-                enable_enterprise_modules=False
+                update_mode=GridUpdateMode.SELECTION_CHANGED,
+                fit_columns_on_grid_load=True,
+                height=350,
+                reload_data=True
             )
 
-        with tab3:
-            st.subheader('Análise de Chamados')
+            selected = grid_response['selected_rows']
 
-            st.subheader('Tempo Médio de Atendimento')
-            chamados_finalizados = [chamado for chamado in chamados if chamado.hora_fechamento is not None]
-            try:
-                show_average_time(chamados_finalizados)
-            except Exception as e:
-                st.error(f"Erro ao exibir tempo médio de atendimento: {e}")
-                logging.error(f"Erro ao exibir tempo médio de atendimento: {e}")
+            if selected:
+                chamado_selecionado = selected[0]
 
-            fig = px.bar(
-                df_chamados,
-                x='UBS',
-                title='Quantidade de Chamados por UBS',
-                labels={'UBS': 'UBS', 'count': 'Quantidade'},
-                color='UBS'
-            )
-            st.plotly_chart(fig)
+                st.write('### Finalizar Chamado Selecionado')
+                st.write(f"ID do Chamado: {chamado_selecionado.get('ID', 'N/A')}")
+                st.write(f"Problema: {chamado_selecionado.get('Problema', 'N/A')}")
 
-            fig_defeitos = px.bar(
-                df_chamados,
-                x='Tipo de Defeito',
-                title='Quantidade de Chamados por Tipo de Defeito',
-                labels={'Tipo de Defeito': 'Tipo de Defeito', 'count': 'Quantidade'},
-                color='Tipo de Defeito'
-            )
-            st.plotly_chart(fig_defeitos)
+                solucao = st.text_area('Insira a solução para o chamado')
 
-            fig_setor = px.bar(
-                df_chamados,
-                x='Setor',
-                title='Quantidade de Chamados por Setor',
-                labels={'Setor': 'Setor', 'count': 'Quantidade'},
-                color='Setor'
-            )
-            st.plotly_chart(fig_setor)
+                pecas_disponiveis = [
+                    'Placa Mãe', 'Fonte', 'Memória RAM', 'HD', 'SSD',
+                    'Teclado', 'Mouse', 'Monitor', 'Cabo de Rede', 'Placa de Rede',
+                    'Processador', 'Cooler', 'Fonte da Impressora', 'Cartucho', 'Toner'
+                ]
 
-    else:
-        st.warning("Nenhum chamado foi encontrado no banco de dados.")
-        logging.warning("Nenhum chamado encontrado no banco de dados.")
+                pecas_selecionadas = st.multiselect(
+                    'Selecione as peças utilizadas',
+                    pecas_disponiveis
+                )
+
+                if st.button('Finalizar Chamado'):
+                    if solucao:
+                        try:
+                            finalizar_chamado(chamado_selecionado.get('ID'), solucao, pecas_selecionadas)
+                            st.success(f'Chamado ID: {chamado_selecionado["ID"]} finalizado com sucesso!')
+                            st.experimental_rerun()
+                        except Exception as e:
+                            st.error(f"Erro ao finalizar o chamado: {e}")
+                    else:
+                        st.error('Por favor, insira a solução antes de finalizar o chamado.')
+            else:
+                st.info('Nenhum chamado selecionado.')
+        else:
+            st.info("Não há chamados em aberto no momento.")
+
+    # As outras abas permanecem inalteradas
+    with tab2:
+        st.subheader('Painel de Chamados')
+
+        status_options = ['Todos', 'Em Aberto', 'Finalizado']
+        status = st.selectbox('Filtrar por Status', status_options)
+
+        ubs_list = ['Todas'] + df_chamados['UBS'].dropna().unique().tolist()
+        ubs_selecionada = st.selectbox('Filtrar por UBS', ubs_list)
+
+        df_filtrado = df_chamados.copy()
+
+        if status != 'Todos':
+            if status == 'Em Aberto':
+                df_filtrado = df_filtrado[df_filtrado['Hora Fechamento'].isnull()]
+            else:
+                df_filtrado = df_filtrado[df_filtrado['Hora Fechamento'].notnull()]
+
+        if ubs_selecionada != 'Todas':
+            df_filtrado = df_filtrado[df_filtrado['UBS'] == ubs_selecionada]
+
+        gb = GridOptionsBuilder.from_dataframe(df_filtrado)
+        gb.configure_pagination()
+        gb.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc='sum', editable=False)
+        gridOptions = gb.build()
+
+        AgGrid(
+            df_filtrado,
+            gridOptions=gridOptions,
+            enable_enterprise_modules=False
+        )
+
+    with tab3:
+        st.subheader('Análise de Chamados')
+
+        st.subheader('Tempo Médio de Atendimento')
+        chamados_finalizados = df_chamados[df_chamados['Hora Fechamento'].notnull()]
+        try:
+            show_average_time(chamados_finalizados)
+        except Exception as e:
+            st.error(f"Erro ao exibir tempo médio de atendimento: {e}")
+
+        fig = px.bar(
+            df_chamados,
+            x='UBS',
+            title='Quantidade de Chamados por UBS',
+            labels={'UBS': 'UBS', 'count': 'Quantidade'},
+            color='UBS'
+        )
+        st.plotly_chart(fig)
+
+        fig_defeitos = px.bar(
+            df_chamados,
+            x='Tipo de Defeito',
+            title='Quantidade de Chamados por Tipo de Defeito',
+            labels={'Tipo de Defeito': 'Tipo de Defeito', 'count': 'Quantidade'},
+            color='Tipo de Defeito'
+        )
+        st.plotly_chart(fig_defeitos)
+
+        fig_setor = px.bar(
+            df_chamados,
+            x='Setor',
+            title='Quantidade de Chamados por Setor',
+            labels={'Setor': 'Setor', 'count': 'Quantidade'},
+            color='Setor'
+        )
+        st.plotly_chart(fig_setor)
 
 # Função para buscar protocolo
 def buscar_protocolo():
