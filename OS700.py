@@ -539,9 +539,9 @@ def painel_chamados_tecnicos():
                 )
 
                 # Verifique se grid_response contém 'selected_rows' e se não é None
-                selected_rows = grid_response.get('selected_rows', None)
+                selected_rows = grid_response.get('selected_rows', [])
 
-                if selected_rows is not None and len(selected_rows) > 0:
+                if selected_rows and len(selected_rows) > 0:
                     chamado_selecionado = selected_rows[0]
                 else:
                     chamado_selecionado = None
@@ -559,10 +559,7 @@ def painel_chamados_tecnicos():
                         'Processador', 'Cooler', 'Fonte da Impressora', 'Cartucho', 'Toner'
                     ]
 
-                    pecas_selecionadas = st.multiselect(
-                        'Selecione as peças utilizadas',
-                        pecas_disponiveis
-                    )
+                    pecas_selecionadas = st.multiselect('Selecione as peças utilizadas', pecas_disponiveis)
 
                     if st.button('Finalizar Chamado'):
                         if solucao:
