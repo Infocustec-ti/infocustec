@@ -544,10 +544,6 @@ def painel_chamados_tecnicos():
                 # Se houver linhas selecionadas
                 if selected_rows is not None and len(selected_rows) > 0:
                     chamado_selecionado = selected_rows[0]  # Seleciona o primeiro item
-                else:
-                    chamado_selecionado = None
-
-                if chamado_selecionado:
                     st.write('### Finalizar Chamado Selecionado')
                     st.write(f"ID do Chamado: {chamado_selecionado.get('ID', 'N/A')}")
                     st.write(f"Problema: {chamado_selecionado.get('Problema', 'N/A')}")
@@ -642,24 +638,6 @@ def painel_chamados_tecnicos():
                 color='UBS'
             )
             st.plotly_chart(fig)
-
-            fig_defeitos = px.bar(
-                df_chamados,
-                x='Tipo de Defeito',
-                title='Quantidade de Chamados por Tipo de Defeito',
-                labels={'Tipo de Defeito': 'Tipo de Defeito', 'ID': 'Quantidade'},
-                color='Tipo de Defeito'
-            )
-            st.plotly_chart(fig_defeitos)
-
-            fig_setor = px.bar(
-                df_chamados,
-                x='Setor',
-                title='Quantidade de Chamados por Setor',
-                labels={'Setor': 'Setor', 'ID': 'Quantidade'},
-                color='Setor'
-            )
-            st.plotly_chart(fig_setor)
 
             fig_defeitos = px.bar(
                 df_chamados,
