@@ -466,6 +466,10 @@ def painel_relatorios():
             st.error(f"Erro ao gerar relatório de inventário: {e}")
             logging.error(f"Erro ao gerar relatório de inventário: {e}")
 
+import pandas as pd
+import plotly.express as px
+from st_aggrid import AgGrid, GridOptionsBuilder
+
 def painel_chamados_tecnicos():
     # Verificar se o usuário está logado e é administrador
     if not st.session_state.get('logged_in') or not is_admin(st.session_state.get('username')):
@@ -498,7 +502,6 @@ def painel_chamados_tecnicos():
 
     if chamados:
         try:
-            # Criar DataFrame a partir dos chamados
             df_chamados = pd.DataFrame([chamado_to_dict(chamado) for chamado in chamados])
         except Exception as e:
             st.error(f"Erro ao criar DataFrame: {e}")
@@ -568,17 +571,22 @@ def painel_chamados_tecnicos():
                     gridOptions=gridOptions,
                     update_mode='MODEL_CHANGED',
                     fit_columns_on_grid_load=True,
-                    enable_enterprise_modules=True,
                     height=350,
                     reload_data=True
                 )
 
-                selected_rows = grid_response.get('selected_rows', [])
+                selected_rows = grid_response.get('selected_rows', None)
 
-                chamado_selecionado = None
+                # Debugging
+                st.write('Tipo de selected_rows:', type(selected_rows))
+                st.write('Conteúdo de selected_rows:', selected_rows)
 
-                if selected_rows and len(selected_rows) > 0:
+                if isinstance(selected_rows, list) and len(selected_rows) > 0:
                     chamado_selecionado = selected_rows[0]
+                elif isinstance(selected_rows, pd.DataFrame) and not selected_rows.empty:
+                    chamado_selecionado = selected_rows.iloc[0].to_dict()
+                else:
+                    chamado_selecionado = None
 
                 if chamado_selecionado is not None:
                     st.write('### Finalizar Chamado Selecionado')
@@ -603,7 +611,7 @@ def painel_chamados_tecnicos():
                             try:
                                 # Finalizar o chamado e atualizar o banco de dados
                                 finalizar_chamado(chamado_selecionado.get('id'), solucao, pecas_selecionadas)
-                                st.success(f'Chamado ID: {chamado_selecionado['id']} finalizado com sucesso!')
+                                st.success(f'Chamado ID: {chamado_selecionado["id"]} finalizado com sucesso!')
                                 logger.info(f"Chamado ID: {chamado_selecionado['id']} finalizado por {st.session_state.username}.")
                                 st.experimental_rerun()
                             except Exception as e:
@@ -649,7 +657,7 @@ def painel_chamados_tecnicos():
             AgGrid(
                 df_filtrado,
                 gridOptions=gridOptions,
-                enable_enterprise_modules=True
+                enable_enterprise_modules=False  # Defina como False ou remova se causar problemas
             )
 
         # Aba 3: Análise de Chamados
