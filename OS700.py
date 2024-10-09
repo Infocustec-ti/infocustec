@@ -502,6 +502,7 @@ def painel_chamados_tecnicos():
 
         tab1, tab2, tab3 = st.tabs(['Chamados em Aberto', 'Painel de Chamados', 'Análise de Chamados'])
 
+        # Exibe os chamados em aberto
         with tab1:
             st.subheader('Chamados em Aberto')
 
@@ -509,6 +510,7 @@ def painel_chamados_tecnicos():
             df_abertos = df_chamados[df_chamados['Status'] == 'Em Aberto']
 
             if not df_abertos.empty:
+                # Configuração do grid para exibir os chamados em aberto
                 gb = GridOptionsBuilder.from_dataframe(df_abertos)
                 gb.configure_pagination()
                 gb.configure_selection('single', use_checkbox=True)
@@ -524,18 +526,22 @@ def painel_chamados_tecnicos():
                     reload_data=True
                 )
 
-                # Verifique se grid_response contém 'selected_rows' e se não é None
+                # Verifica se houve seleção de linha e se 'selected_rows' não está vazio
                 selected_rows = grid_response.get('selected_rows', [])
 
-                # Se houver linhas selecionadas, captura a primeira linha
-                if isinstance(selected_rows, list) and len(selected_rows) > 0:
-                    chamado_selecionado = selected_rows[0]  # Seleciona o primeiro item
+                # Captura a primeira linha selecionada
+                if selected_rows and len(selected_rows) > 0:
+                    chamado_selecionado = selected_rows[0]
+                    
+                    # Exibe as informações do chamado selecionado
                     st.write('### Finalizar Chamado Selecionado')
                     st.write(f"ID do Chamado: {chamado_selecionado.get('ID', 'N/A')}")
                     st.write(f"Problema: {chamado_selecionado.get('Problema', 'N/A')}")
 
+                    # Campo para preencher a solução do chamado
                     solucao = st.text_area('Insira a solução para o chamado')
 
+                    # Seleção das peças utilizadas na finalização do chamado
                     pecas_disponiveis = [
                         'Placa Mãe', 'Fonte', 'Memória RAM', 'HD', 'SSD',
                         'Teclado', 'Mouse', 'Monitor', 'Cabo de Rede', 'Placa de Rede',
@@ -544,9 +550,11 @@ def painel_chamados_tecnicos():
 
                     pecas_selecionadas = st.multiselect('Selecione as peças utilizadas', pecas_disponiveis)
 
+                    # Botão para finalizar o chamado
                     if st.button('Finalizar Chamado'):
-                        if solucao:
+                        if solucao:  # Verifique se uma solução foi fornecida
                             try:
+                                # Finalizar o chamado
                                 finalizar_chamado(chamado_selecionado.get('ID'), solucao, pecas_selecionadas)
                                 st.success(f'Chamado ID: {chamado_selecionado["ID"]} finalizado com sucesso!')
                                 logging.info(f"Chamado ID: {chamado_selecionado['ID']} finalizado.")
