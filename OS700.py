@@ -545,6 +545,7 @@ def painel_chamados_tecnicos():
             selected = grid_response.get('selected_rows', [])
             if not isinstance(selected, list):
                 selected = []
+            logging.info(f"Selected rows: {selected}")
 
             if len(selected) > 0 and isinstance(selected[0], dict):
                 chamado_selecionado = selected[0]
