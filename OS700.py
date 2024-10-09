@@ -541,8 +541,9 @@ def painel_chamados_tecnicos():
                 # Verifique se grid_response contém 'selected_rows' e se não é None
                 selected_rows = grid_response.get('selected_rows', [])
 
-                if selected_rows and len(selected_rows) > 0:
-                    chamado_selecionado = selected_rows[0]
+                # Se houver linhas selecionadas
+                if selected_rows is not None and len(selected_rows) > 0:
+                    chamado_selecionado = selected_rows[0]  # Seleciona o primeiro item
                 else:
                     chamado_selecionado = None
 
@@ -578,8 +579,7 @@ def painel_chamados_tecnicos():
             else:
                 st.info("Não há chamados em aberto no momento.")
                 logging.info("Nenhum chamado em aberto para exibir.")
-       
-        
+
         # Aba de Painel de Chamados
         with tab2:
             st.subheader('Painel de Chamados')
@@ -642,6 +642,24 @@ def painel_chamados_tecnicos():
                 color='UBS'
             )
             st.plotly_chart(fig)
+
+            fig_defeitos = px.bar(
+                df_chamados,
+                x='Tipo de Defeito',
+                title='Quantidade de Chamados por Tipo de Defeito',
+                labels={'Tipo de Defeito': 'Tipo de Defeito', 'ID': 'Quantidade'},
+                color='Tipo de Defeito'
+            )
+            st.plotly_chart(fig_defeitos)
+
+            fig_setor = px.bar(
+                df_chamados,
+                x='Setor',
+                title='Quantidade de Chamados por Setor',
+                labels={'Setor': 'Setor', 'ID': 'Quantidade'},
+                color='Setor'
+            )
+            st.plotly_chart(fig_setor)
 
             fig_defeitos = px.bar(
                 df_chamados,
