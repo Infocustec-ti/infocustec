@@ -446,6 +446,12 @@ def painel_relatorios():
             st.error(f"Erro ao gerar relatório de inventário: {e}")
             logging.error(f"Erro ao gerar relatório de inventário: {e}")
 
+import pandas as pd
+from zoneinfo import ZoneInfo
+from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
+import plotly.express as px
+import streamlit as st
+
 def painel_chamados_tecnicos():
     if not st.session_state.get('logged_in') or not st.session_state.get('is_admin'):
         st.warning('Você precisa estar logado como administrador para acessar esta área.')
@@ -491,45 +497,49 @@ def painel_chamados_tecnicos():
     df_chamados['Hora Fechamento'] = pd.to_datetime(df_chamados['Hora Fechamento'], errors='coerce', utc=True)
 
     # Definir o fuso horário local
-    from zoneinfo import ZoneInfo
     local_tz = ZoneInfo('America/Sao_Paulo')
 
     # Converter para o fuso horário local
     df_chamados['Hora Abertura'] = df_chamados['Hora Abertura'].dt.tz_convert(local_tz)
     df_chamados['Hora Fechamento'] = df_chamados['Hora Fechamento'].dt.tz_convert(local_tz)
 
-    # Formatar as datas diretamente nas colunas existentes
-    df_chamados['Hora Abertura'] = df_chamados['Hora Abertura'].dt.strftime('%d/%m/%Y - %H:%M:%S')
-    df_chamados['Hora Fechamento'] = df_chamados['Hora Fechamento'].dt.strftime('%d/%m/%Y - %H:%M:%S')
+    # Criar colunas formatadas para exibição
+    df_chamados['Hora Abertura Formatada'] = df_chamados['Hora Abertura'].dt.strftime('%d/%m/%Y - %H:%M:%S')
+    df_chamados['Hora Fechamento Formatada'] = df_chamados['Hora Fechamento'].dt.strftime('%d/%m/%Y - %H:%M:%S')
 
     # Repetir para df_abertos
     df_abertos['Hora Abertura'] = pd.to_datetime(df_abertos['Hora Abertura'], errors='coerce', utc=True)
     df_abertos['Hora Abertura'] = df_abertos['Hora Abertura'].dt.tz_convert(local_tz)
-    df_abertos['Hora Abertura'] = df_abertos['Hora Abertura'].dt.strftime('%d/%m/%Y - %H:%M:%S')
+    df_abertos['Hora Abertura Formatada'] = df_abertos['Hora Abertura'].dt.strftime('%d/%m/%Y - %H:%M:%S')
 
-    # Calcular o tempo decorrido usando as datas originais antes da formatação
-    # Para isso, precisamos reconverter as strings para datetime
-    df_chamados['Hora Abertura Datetime'] = pd.to_datetime(df_chamados['Hora Abertura'], format='%d/%m/%Y - %H:%M:%S', errors='coerce')
-    df_chamados['Hora Fechamento Datetime'] = pd.to_datetime(df_chamados['Hora Fechamento'], format='%d/%m/%Y - %H:%M:%S', errors='coerce')
-
+    # Calcular o tempo decorrido usando as colunas datetime originais
     df_chamados['Tempo Decorrido Segundos'] = df_chamados.apply(
-        lambda row: calcular_tempo_decorrido(row['Hora Abertura Datetime'], row['Hora Fechamento Datetime']), axis=1
+        lambda row: calcular_tempo_decorrido(row['Hora Abertura'], row['Hora Fechamento']), axis=1
     )
     df_chamados['Tempo Decorrido'] = df_chamados['Tempo Decorrido Segundos'].apply(formatar_tempo)
+
+    # Definir colunas para exibição
+    display_columns = ['ID', 'Usuário', 'UBS', 'Setor', 'Tipo de Defeito', 'Problema',
+                       'Hora Abertura Formatada', 'Solução', 'Hora Fechamento Formatada',
+                       'Tempo Decorrido', 'Protocolo', 'Patrimônio', 'Machine']
+
+    df_chamados_exibir = df_chamados[display_columns]
+    df_abertos_exibir = df_abertos[['ID', 'Usuário', 'UBS', 'Setor', 'Tipo de Defeito', 'Problema',
+                                    'Hora Abertura Formatada', 'Protocolo', 'Patrimônio', 'Machine']]
 
     tab1, tab2, tab3 = st.tabs(['Chamados em Aberto', 'Painel de Chamados', 'Análise de Chamados'])
 
     with tab1:
         st.subheader('Chamados em Aberto')
 
-        if not df_abertos.empty:
-            gb = GridOptionsBuilder.from_dataframe(df_abertos)
+        if not df_abertos_exibir.empty:
+            gb = GridOptionsBuilder.from_dataframe(df_abertos_exibir)
             gb.configure_pagination()
             gb.configure_selection(selection_mode='single', use_checkbox=True)
             gridOptions = gb.build()
 
             grid_response = AgGrid(
-                df_abertos,
+                df_abertos_exibir,
                 gridOptions=gridOptions,
                 update_mode=GridUpdateMode.SELECTION_CHANGED,
                 fit_columns_on_grid_load=True,
@@ -542,7 +552,10 @@ def painel_chamados_tecnicos():
             if selected is None:
                 selected = []
 
-            if len(selected) > 0:
+            # Depuração: Exibir o conteúdo de 'selected'
+            st.write("Seleção atual:", selected)
+
+            if isinstance(selected, list) and len(selected) > 0:
                 chamado_selecionado = selected[0]
             else:
                 chamado_selecionado = None
@@ -593,20 +606,20 @@ def painel_chamados_tecnicos():
 
         if status != 'Todos':
             if status == 'Em Aberto':
-                df_filtrado = df_filtrado[df_filtrado['Hora Fechamento'] == 'NaT']
+                df_filtrado = df_filtrado[df_filtrado['Hora Fechamento Formatada'] == '']
             else:
-                df_filtrado = df_filtrado[df_filtrado['Hora Fechamento'] != 'NaT']
+                df_filtrado = df_filtrado[df_filtrado['Hora Fechamento Formatada'] != '']
 
         if ubs_selecionada != 'Todas':
             df_filtrado = df_filtrado[df_filtrado['UBS'] == ubs_selecionada]
 
-        gb = GridOptionsBuilder.from_dataframe(df_filtrado)
+        gb = GridOptionsBuilder.from_dataframe(df_filtrado[display_columns])
         gb.configure_pagination()
         gb.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc='sum', editable=False)
         gridOptions = gb.build()
 
         AgGrid(
-            df_filtrado,
+            df_filtrado[display_columns],
             gridOptions=gridOptions,
             enable_enterprise_modules=False
         )
@@ -615,7 +628,7 @@ def painel_chamados_tecnicos():
         st.subheader('Análise de Chamados')
 
         st.subheader('Tempo Médio de Atendimento')
-        chamados_finalizados = df_chamados[df_chamados['Hora Fechamento'] != 'NaT']
+        chamados_finalizados = df_chamados[df_chamados['Hora Fechamento Formatada'] != '']
         try:
             show_average_time(chamados_finalizados)
         except Exception as e:
