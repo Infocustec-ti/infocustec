@@ -446,7 +446,6 @@ def painel_relatorios():
             st.error(f"Erro ao gerar relatório de inventário: {e}")
             logging.error(f"Erro ao gerar relatório de inventário: {e}")
 
-# Função para o painel de chamados técnicos
 def painel_chamados_tecnicos():
     if not st.session_state.get('logged_in') or not st.session_state.get('is_admin'):
         st.warning('Você precisa estar logado como administrador para acessar esta área.')
@@ -487,9 +486,24 @@ def painel_chamados_tecnicos():
     df_chamados = criar_dataframe_chamados(chamados)
     df_abertos = criar_dataframe_chamados(chamados_abertos)
 
+    # Converter colunas de datas para o tipo datetime
     df_chamados['Hora Abertura'] = pd.to_datetime(df_chamados['Hora Abertura'], errors='coerce')
     df_chamados['Hora Fechamento'] = pd.to_datetime(df_chamados['Hora Fechamento'], errors='coerce')
 
+    # Ajustar para o fuso horário local
+    # Verificar se as datas são timezone-aware, caso contrário, definir o fuso horário local
+    if df_chamados['Hora Abertura'].dt.tz is None or df_chamados['Hora Abertura'].dt.tz.iloc[0] is None:
+        df_chamados['Hora Abertura'] = df_chamados['Hora Abertura'].dt.tz_localize(local_tz)
+    else:
+        df_chamados['Hora Abertura'] = df_chamados['Hora Abertura'].dt.tz_convert(local_tz)
+
+    if df_chamados['Hora Fechamento'].notnull().any():
+        if df_chamados['Hora Fechamento'].dt.tz is None or df_chamados['Hora Fechamento'].dt.tz.iloc[0] is None:
+            df_chamados['Hora Fechamento'] = df_chamados['Hora Fechamento'].dt.tz_localize(local_tz)
+        else:
+            df_chamados['Hora Fechamento'] = df_chamados['Hora Fechamento'].dt.tz_convert(local_tz)
+
+    # Calcular o tempo decorrido
     df_chamados['Tempo Decorrido Segundos'] = df_chamados.apply(
         lambda row: calcular_tempo_decorrido(row['Hora Abertura'], row['Hora Fechamento']), axis=1
     )
@@ -503,7 +517,7 @@ def painel_chamados_tecnicos():
         if not df_abertos.empty:
             gb = GridOptionsBuilder.from_dataframe(df_abertos)
             gb.configure_pagination()
-            gb.configure_selection('single', use_checkbox=True)
+            gb.configure_selection(selection_mode='single', use_checkbox=True)
             gridOptions = gb.build()
 
             grid_response = AgGrid(
@@ -515,7 +529,8 @@ def painel_chamados_tecnicos():
                 reload_data=True
             )
 
-            selected = grid_response['selected_rows']
+            # Acessando 'selected_rows' com segurança
+            selected = grid_response.get('selected_rows', [])
 
             if len(selected) > 0:
                 chamado_selecionado = selected[0]
