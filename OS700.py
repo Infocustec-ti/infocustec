@@ -464,8 +464,24 @@ def painel_chamados_tecnicos():
     chamados_abertos = list_chamados_em_aberto()
     chamados = list_chamados()
 
-    # Verificar o tipo de dados retornado por 'list_chamados' e 'list_chamados_em_aberto'
-    # Se for uma lista de tuplas, precisamos ajustar a criação do DataFrame
+    # Definir a função chamado_to_dict
+    def chamado_to_dict(chamado):
+        return {
+            'ID': chamado.id,
+            'Usuário': chamado.username,
+            'UBS': chamado.ubs,
+            'Setor': chamado.setor,
+            'Tipo de Defeito': chamado.tipo_defeito,
+            'Problema': chamado.problema,
+            'Hora Abertura': chamado.hora_abertura,
+            'Solução': chamado.solucao,
+            'Hora Fechamento': chamado.hora_fechamento,
+            'Protocolo': chamado.protocolo,
+            'Patrimônio': chamado.patrimonio,
+            'Machine': chamado.machine
+        }
+
+    # Criar DataFrame dos chamados
     def criar_dataframe_chamados(chamados_lista):
         if chamados_lista:
             if isinstance(chamados_lista[0], tuple):
@@ -622,7 +638,6 @@ def painel_chamados_tecnicos():
             color='Setor'
         )
         st.plotly_chart(fig_setor)
-
 # Função para buscar protocolo
 def buscar_protocolo():
     st.subheader('Buscar Chamado por Protocolo')
