@@ -543,16 +543,15 @@ def painel_chamados_tecnicos():
 
             # Garantir que 'selected_rows' seja uma lista, mesmo que vazia
             selected = grid_response.get('selected_rows', [])
-            if selected is None:
+            if not isinstance(selected, list):
                 selected = []
 
-            # Verificar o tipo de 'selected' e acessá-lo adequadamente
-            if isinstance(selected, list) and len(selected) > 0:
+            if len(selected) > 0 and isinstance(selected[0], dict):
                 chamado_selecionado = selected[0]
             else:
                 chamado_selecionado = None
 
-            if chamado_selecionado is not None:
+            if chamado_selecionado:
                 st.write('### Finalizar Chamado Selecionado')
                 st.write(f"ID do Chamado: {chamado_selecionado.get('ID', 'N/A')}")
                 st.write(f"Problema: {chamado_selecionado.get('Problema', 'N/A')}")
@@ -652,6 +651,11 @@ def painel_chamados_tecnicos():
             color='Setor'
         )
         st.plotly_chart(fig_setor)
+
+
+
+
+
 
 
 # Função para buscar protocolo
