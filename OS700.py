@@ -490,15 +490,19 @@ def painel_chamados_tecnicos():
     df_chamados['Hora Abertura'] = pd.to_datetime(df_chamados['Hora Abertura'], errors='coerce')
     df_chamados['Hora Fechamento'] = pd.to_datetime(df_chamados['Hora Fechamento'], errors='coerce')
 
-    # Ajustar para o fuso horário local
-    # Verificar se as datas são timezone-aware, caso contrário, definir o fuso horário local
-    if df_chamados['Hora Abertura'].dt.tz is None or df_chamados['Hora Abertura'].dt.tz.iloc[0] is None:
+    # Definir o fuso horário local
+    from zoneinfo import ZoneInfo
+    local_tz = ZoneInfo('America/Sao_Paulo')
+
+    # Verificar e ajustar o fuso horário de 'Hora Abertura'
+    if df_chamados['Hora Abertura'].dt.tz is None:
         df_chamados['Hora Abertura'] = df_chamados['Hora Abertura'].dt.tz_localize(local_tz)
     else:
         df_chamados['Hora Abertura'] = df_chamados['Hora Abertura'].dt.tz_convert(local_tz)
 
+    # Verificar e ajustar o fuso horário de 'Hora Fechamento'
     if df_chamados['Hora Fechamento'].notnull().any():
-        if df_chamados['Hora Fechamento'].dt.tz is None or df_chamados['Hora Fechamento'].dt.tz.iloc[0] is None:
+        if df_chamados['Hora Fechamento'].dt.tz is None:
             df_chamados['Hora Fechamento'] = df_chamados['Hora Fechamento'].dt.tz_localize(local_tz)
         else:
             df_chamados['Hora Fechamento'] = df_chamados['Hora Fechamento'].dt.tz_convert(local_tz)
@@ -559,7 +563,7 @@ def painel_chamados_tecnicos():
                     if solucao:
                         try:
                             finalizar_chamado(chamado_selecionado.get('ID'), solucao, pecas_selecionadas)
-                            st.success(f'Chamado ID: {chamado_selecionado["ID"]} finalizado com sucesso!')
+                            st.success(f'Chamado ID: {chamado_selecionado['ID']} finalizado com sucesso!')
                             st.experimental_rerun()
                         except Exception as e:
                             st.error(f"Erro ao finalizar o chamado: {e}")
