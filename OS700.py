@@ -541,8 +541,8 @@ def painel_chamados_tecnicos():
                 # Verifique se grid_response contém 'selected_rows' e se não é None
                 selected_rows = grid_response.get('selected_rows', [])
 
-                # Se houver linhas selecionadas
-                if selected_rows is not None and len(selected_rows) > 0:
+                # Se houver linhas selecionadas, captura a primeira linha
+                if isinstance(selected_rows, list) and len(selected_rows) > 0:
                     chamado_selecionado = selected_rows[0]  # Seleciona o primeiro item
                     st.write('### Finalizar Chamado Selecionado')
                     st.write(f"ID do Chamado: {chamado_selecionado.get('ID', 'N/A')}")
