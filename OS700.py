@@ -446,18 +446,6 @@ def painel_relatorios():
             st.error(f"Erro ao gerar relatório de inventário: {e}")
             logging.error(f"Erro ao gerar relatório de inventário: {e}")
 
-import pandas as pd
-from zoneinfo import ZoneInfo
-from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
-import plotly.express as px
-import streamlit as st
-
-import pandas as pd
-from zoneinfo import ZoneInfo
-from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
-import plotly.express as px
-import streamlit as st
-
 def painel_chamados_tecnicos():
     if not st.session_state.get('logged_in') or not st.session_state.get('is_admin'):
         st.warning('Você precisa estar logado como administrador para acessar esta área.')
@@ -558,17 +546,9 @@ def painel_chamados_tecnicos():
             if selected is None:
                 selected = []
 
-            # Depuração: Exibir o conteúdo e tipo de 'selected'
-            st.write("Seleção atual:", selected)
-            st.write("Tipo de 'selected':", type(selected))
-
             # Verificar o tipo de 'selected' e acessá-lo adequadamente
             if isinstance(selected, list) and len(selected) > 0:
                 chamado_selecionado = selected[0]
-            elif isinstance(selected, pd.DataFrame) and not selected.empty:
-                chamado_selecionado = selected.iloc[0].to_dict()
-            elif isinstance(selected, dict) and selected:
-                chamado_selecionado = selected
             else:
                 chamado_selecionado = None
 
