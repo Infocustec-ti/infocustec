@@ -466,6 +466,7 @@ def painel_relatorios():
             logging.error(f"Erro ao gerar relatório de inventário: {e}")
 
 # Função para painel de chamados técnicos
+# Função para painel de chamados técnicos
 def painel_chamados_tecnicos():
     if not st.session_state.get('logged_in') or not st.session_state.get('is_admin'):
         st.warning('Você precisa estar logado como administrador para acessar esta área.')
@@ -540,7 +541,12 @@ def painel_chamados_tecnicos():
                 )
 
                 selected_rows = grid_response.get('selected_rows', [])
-                chamado_selecionado = selected_rows[0] if selected_rows else None
+
+                # Corrigido para verificar corretamente se há algo selecionado
+                if len(selected_rows) > 0:
+                    chamado_selecionado = selected_rows[0]  # Pega o primeiro selecionado
+                else:
+                    chamado_selecionado = None
 
                 if chamado_selecionado:
                     st.write('### Finalizar Chamado Selecionado')
