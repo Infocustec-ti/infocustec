@@ -497,32 +497,18 @@ def painel_chamados_tecnicos():
         df_chamados['Hora Abertura'] = df_chamados['Hora Abertura'].apply(lambda x: x.tz_convert(local_tz).strftime('%d/%m/%Y %H:%M:%S') if pd.notnull(x) else '')
         df_chamados['Hora Fechamento'] = df_chamados['Hora Fechamento'].apply(lambda x: x.tz_convert(local_tz).strftime('%d/%m/%Y %H:%M:%S') if pd.notnull(x) else '')
 
-        df_chamados['Tempo Decorrido'] = df_chamados.apply(calculate_tempo_decorrido_em_segundos_row, axis=1)
+        # Adiciona coluna de status: 'Em Aberto' ou 'Finalizado'
+        df_chamados['Status'] = df_chamados['Hora Fechamento'].apply(lambda x: 'Finalizado' if pd.notnull(x) else 'Em Aberto')
 
         tab1, tab2, tab3 = st.tabs(['Chamados em Aberto', 'Painel de Chamados', 'Análise de Chamados'])
 
         with tab1:
             st.subheader('Chamados em Aberto')
 
-            if chamados_abertos:
-                df_abertos = pd.DataFrame([{
-                    'ID': chamado.id,
-                    'Usuário': chamado.username,
-                    'UBS': chamado.ubs,
-                    'Setor': chamado.setor,
-                    'Tipo de Defeito': chamado.tipo_defeito,
-                    'Problema': chamado.problema,
-                    'Hora Abertura': pd.to_datetime(chamado.hora_abertura),  # Converte para datetime
-                    'Solução': chamado.solucao,
-                    'Hora Fechamento': pd.to_datetime(chamado.hora_fechamento) if chamado.hora_fechamento else None,
-                    'Protocolo': chamado.protocolo,
-                    'Patrimônio': chamado.patrimonio,
-                    'Machine': chamado.machine
-                } for chamado in chamados_abertos])
+            # Filtrar apenas chamados em aberto
+            df_abertos = df_chamados[df_chamados['Status'] == 'Em Aberto']
 
-                df_abertos['Hora Abertura'] = df_abertos['Hora Abertura'].apply(lambda x: x.tz_convert(local_tz).strftime('%d/%m/%Y %H:%M:%S') if pd.notnull(x) else '')
-                df_abertos['Hora Fechamento'] = df_abertos['Hora Fechamento'].apply(lambda x: x.tz_convert(local_tz).strftime('%d/%m/%Y %H:%M:%S') if pd.notnull(x) else '')
-
+            if not df_abertos.empty:
                 gb = GridOptionsBuilder.from_dataframe(df_abertos)
                 gb.configure_pagination()
                 gb.configure_selection('single', use_checkbox=True)
@@ -590,9 +576,9 @@ def painel_chamados_tecnicos():
 
             if status != 'Todos':
                 if status == 'Em Aberto':
-                    df_filtrado = df_filtrado[df_filtrado['Hora Fechamento'].isnull()]
+                    df_filtrado = df_filtrado[df_filtrado['Status'] == 'Em Aberto']
                 else:
-                    df_filtrado = df_filtrado[df_filtrado['Hora Fechamento'].notnull()]
+                    df_filtrado = df_filtrado[df_filtrado['Status'] == 'Finalizado']
 
             if ubs_selecionada != 'Todas':
                 df_filtrado = df_filtrado[df_filtrado['UBS'] == ubs_selecionada]
@@ -622,8 +608,8 @@ def painel_chamados_tecnicos():
 
             # Estatísticas
             total_chamados = len(df_chamados)
-            total_em_aberto = df_chamados['Hora Fechamento'].isnull().sum()
-            total_finalizados = df_chamados['Hora Fechamento'].notnull().sum()
+            total_em_aberto = df_chamados['Status'].value_counts().get('Em Aberto', 0)
+            total_finalizados = df_chamados['Status'].value_counts().get('Finalizado', 0)
 
             st.write(f"Total de Chamados: {total_chamados}")
             st.write(f"Chamados em Aberto: {total_em_aberto}")
@@ -656,8 +642,6 @@ def painel_chamados_tecnicos():
                 color='Setor'
             )
             st.plotly_chart(fig_setor)
-
-
 
 # Função para buscar protocolo
 def buscar_protocolo():
