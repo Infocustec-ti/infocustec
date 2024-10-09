@@ -537,9 +537,12 @@ def painel_chamados_tecnicos():
                 reload_data=True
             )
 
-            # Ensure 'selected_rows' is retrieved correctly
+            # Garantir que 'selected_rows' seja uma lista, mesmo que vazia
             selected = grid_response.get('selected_rows', [])
-            if isinstance(selected, list) and len(selected) > 0:
+            if selected is None:
+                selected = []
+
+            if len(selected) > 0:
                 chamado_selecionado = selected[0]
             else:
                 chamado_selecionado = None
