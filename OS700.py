@@ -466,7 +466,6 @@ def painel_relatorios():
             logging.error(f"Erro ao gerar relatório de inventário: {e}")
 
 # Função para painel de chamados técnicos
-# Função para painel de chamados técnicos
 def painel_chamados_tecnicos():
     if not st.session_state.get('logged_in') or not st.session_state.get('is_admin'):
         st.warning('Você precisa estar logado como administrador para acessar esta área.')
@@ -498,7 +497,6 @@ def painel_chamados_tecnicos():
         df_chamados['Hora Abertura'] = df_chamados['Hora Abertura'].apply(lambda x: x.tz_convert(local_tz).strftime('%d/%m/%Y %H:%M:%S') if pd.notnull(x) else '')
         df_chamados['Hora Fechamento'] = df_chamados['Hora Fechamento'].apply(lambda x: x.tz_convert(local_tz).strftime('%d/%m/%Y %H:%M:%S') if pd.notnull(x) else '')
 
-        # Cálculo do tempo decorrido
         df_chamados['Tempo Decorrido'] = df_chamados.apply(calculate_tempo_decorrido_em_segundos_row, axis=1)
 
         tab1, tab2, tab3 = st.tabs(['Chamados em Aberto', 'Painel de Chamados', 'Análise de Chamados'])
@@ -548,7 +546,7 @@ def painel_chamados_tecnicos():
                 else:
                     chamado_selecionado = None
 
-                if chamado_selecionado:
+                if chamado_selecionado is not None:
                     st.write('### Finalizar Chamado Selecionado')
                     st.write(f"ID do Chamado: {chamado_selecionado.get('ID', 'N/A')}")
                     st.write(f"Problema: {chamado_selecionado.get('Problema', 'N/A')}")
