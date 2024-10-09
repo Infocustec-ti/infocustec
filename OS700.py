@@ -54,6 +54,11 @@ from inventario import (
 )
 from ubs import initialize_ubs, manage_ubs, get_ubs_list
 from setores import initialize_setores, manage_setores, get_setores_list
+from zoneinfo import ZoneInfo
+
+# Definir o fuso horário local
+local_tz = ZoneInfo('America/Sao_Paulo')
+
 
 # Inicialização do estado da sessão
 if 'logged_in' not in st.session_state:
