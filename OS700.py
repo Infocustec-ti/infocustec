@@ -538,10 +538,10 @@ def painel_chamados_tecnicos():
                     reload_data=True
                 )
 
-                selected_rows = grid_response['selected_rows']
+                # Verifique se grid_response contém 'selected_rows' e se não é None
+                selected_rows = grid_response.get('selected_rows', None)
 
-                # Corrigir a captura da linha selecionada e garantir que seja tratada corretamente
-                if len(selected_rows) > 0:
+                if selected_rows is not None and len(selected_rows) > 0:
                     chamado_selecionado = selected_rows[0]
                 else:
                     chamado_selecionado = None
