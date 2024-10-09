@@ -480,9 +480,9 @@ def painel_chamados_tecnicos():
             'Setor': chamado.setor,
             'Tipo de Defeito': chamado.tipo_defeito,
             'Problema': chamado.problema,
-            'Hora Abertura': chamado.hora_abertura,
+            'Hora Abertura': chamado.hora_abertura.astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S'),
             'Solução': chamado.solucao,
-            'Hora Fechamento': chamado.hora_fechamento,
+            'Hora Fechamento': chamado.hora_fechamento.astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S') if chamado.hora_fechamento else None,
             'Protocolo': chamado.protocolo,
             'Patrimônio': chamado.patrimonio,
             'Machine': chamado.machine
@@ -490,9 +490,9 @@ def painel_chamados_tecnicos():
 
         df_chamados['Tempo Decorrido'] = df_chamados.apply(calculate_tempo_decorrido_em_segundos_row, axis=1)
 
-
         tab1, tab2, tab3 = st.tabs(['Chamados em Aberto', 'Painel de Chamados', 'Análise de Chamados'])
 
+        # Aba de Chamados em Aberto
         with tab1:
             st.subheader('Chamados em Aberto')
 
@@ -504,9 +504,9 @@ def painel_chamados_tecnicos():
                     'Setor': chamado.setor,
                     'Tipo de Defeito': chamado.tipo_defeito,
                     'Problema': chamado.problema,
-                    'Hora Abertura': chamado.hora_abertura,
+                    'Hora Abertura': chamado.hora_abertura.astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S'),
                     'Solução': chamado.solucao,
-                    'Hora Fechamento': chamado.hora_fechamento,
+                    'Hora Fechamento': chamado.hora_fechamento.astimezone(local_tz).strftime('%d/%m/%Y %H:%M:%S') if chamado.hora_fechamento else None,
                     'Protocolo': chamado.protocolo,
                     'Patrimônio': chamado.patrimonio,
                     'Machine': chamado.machine
@@ -514,7 +514,7 @@ def painel_chamados_tecnicos():
 
                 gb = GridOptionsBuilder.from_dataframe(df_abertos)
                 gb.configure_pagination()
-                gb.configure_selection('single', use_checkbox=True)  # Permite seleção de uma única linha com checkbox
+                gb.configure_selection('single', use_checkbox=True)
                 gridOptions = gb.build()
 
                 grid_response = AgGrid(
@@ -528,59 +528,45 @@ def painel_chamados_tecnicos():
                 )
 
                 selected_rows = grid_response.get('selected_rows', [])
-
-                # Inicializar variável para o chamado selecionado
-                chamado_selecionado = None
-
-                # Verificar se selected_rows é uma lista e contém elementos
-                if isinstance(selected_rows, list) and len(selected_rows) > 0:
-                    chamado_selecionado = selected_rows[0]
-                # Verificar se selected_rows é um DataFrame e não está vazio
-                elif isinstance(selected_rows, pd.DataFrame) and not selected_rows.empty:
-                    chamado_selecionado = selected_rows.iloc[0].to_dict()
+                chamado_selecionado = selected_rows[0] if selected_rows else None
 
                 if chamado_selecionado:
-                    # Verificar se as chaves necessárias estão presentes
-                    if 'ID' in chamado_selecionado and 'Problema' in chamado_selecionado:
-                        st.write('### Finalizar Chamado Selecionado')
-                        st.write(f"ID do Chamado: {chamado_selecionado.get('ID', 'N/A')}")
-                        st.write(f"Problema: {chamado_selecionado.get('Problema', 'N/A')}")
+                    st.write('### Finalizar Chamado Selecionado')
+                    st.write(f"ID do Chamado: {chamado_selecionado.get('ID', 'N/A')}")
+                    st.write(f"Problema: {chamado_selecionado.get('Problema', 'N/A')}")
 
-                        solucao = st.text_area('Insira a solução para o chamado')
+                    solucao = st.text_area('Insira a solução para o chamado')
 
-                        pecas_disponiveis = [
-                            'Placa Mãe', 'Fonte', 'Memória RAM', 'HD', 'SSD',
-                            'Teclado', 'Mouse', 'Monitor', 'Cabo de Rede', 'Placa de Rede',
-                            'Processador', 'Cooler', 'Fonte da Impressora', 'Cartucho', 'Toner'
-                        ]
+                    pecas_disponiveis = [
+                        'Placa Mãe', 'Fonte', 'Memória RAM', 'HD', 'SSD',
+                        'Teclado', 'Mouse', 'Monitor', 'Cabo de Rede', 'Placa de Rede',
+                        'Processador', 'Cooler', 'Fonte da Impressora', 'Cartucho', 'Toner'
+                    ]
 
-                        pecas_selecionadas = st.multiselect(
-                            'Selecione as peças utilizadas',
-                            pecas_disponiveis
-                        )
+                    pecas_selecionadas = st.multiselect(
+                        'Selecione as peças utilizadas',
+                        pecas_disponiveis
+                    )
 
-                        if st.button('Finalizar Chamado'):
-                            if solucao:
-                                try:
-                                    # Finalizar o chamado e atualizar o banco de dados
-                                    finalizar_chamado(chamado_selecionado.get('ID'), solucao, pecas_selecionadas)
-                                    st.success(f'Chamado ID: {chamado_selecionado["ID"]} finalizado com sucesso!')
-                                    logging.info(f"Chamado ID: {chamado_selecionado['ID']} finalizado por {st.session_state.username}.")
-                                    st.experimental_rerun()  # Atualiza a página
-                                except Exception as e:
-                                    st.error(f"Erro ao finalizar o chamado: {e}")
-                                    logging.error(f"Erro ao finalizar o chamado ID {chamado_selecionado.get('ID')}: {e}")
-                                    st.experimental_set_query_params(updated='true')
-                            else:
-                                st.error('Por favor, insira a solução antes de finalizar o chamado.')
-                    else:
-                        st.error("O chamado selecionado não contém informações completas.")
+                    if st.button('Finalizar Chamado'):
+                        if solucao:
+                            try:
+                                finalizar_chamado(chamado_selecionado.get('ID'), solucao, pecas_selecionadas)
+                                st.success(f'Chamado ID: {chamado_selecionado["ID"]} finalizado com sucesso!')
+                                logging.info(f"Chamado ID: {chamado_selecionado['ID']} finalizado.")
+                                st.experimental_rerun()
+                            except Exception as e:
+                                st.error(f"Erro ao finalizar o chamado: {e}")
+                                logging.error(f"Erro ao finalizar o chamado ID {chamado_selecionado.get('ID')}: {e}")
+                        else:
+                            st.error('Por favor, insira a solução antes de finalizar o chamado.')
                 else:
                     st.info('Nenhum chamado selecionado.')
             else:
                 st.info("Não há chamados em aberto no momento.")
                 logging.info("Nenhum chamado em aberto para exibir.")
 
+        # Aba de Painel de Chamados
         with tab2:
             st.subheader('Painel de Chamados')
 
@@ -612,24 +598,35 @@ def painel_chamados_tecnicos():
                 enable_enterprise_modules=True
             )
 
+        # Aba de Análise de Chamados com Estatísticas
         with tab3:
             st.subheader('Análise de Chamados')
+
             # Exibir tempo médio de atendimento
             st.subheader('Tempo Médio de Atendimento')
             try:
-                show_average_time(chamados)  # Chamada da função que exibe o tempo médio de atendimento
+                show_average_time(chamados)
             except Exception as e:
                 st.error(f"Erro ao exibir tempo médio de atendimento: {e}")
                 logging.error(f"Erro ao exibir tempo médio de atendimento: {e}")
 
+            # Estatísticas
+            total_chamados = len(df_chamados)
+            total_em_aberto = df_chamados['Hora Fechamento'].isnull().sum()
+            total_finalizados = df_chamados['Hora Fechamento'].notnull().sum()
+
+            st.write(f"Total de Chamados: {total_chamados}")
+            st.write(f"Chamados em Aberto: {total_em_aberto}")
+            st.write(f"Chamados Finalizados: {total_finalizados}")
+
+            # Gráficos
             fig = px.bar(
                 df_chamados,
                 x='UBS',
                 title='Quantidade de Chamados por UBS',
                 labels={'UBS': 'UBS', 'ID': 'Quantidade'},
-                color='UBS'  # Definir cor diferente para cada UBS
+                color='UBS'
             )
-            fig.update_layout(yaxis=dict(tickmode='linear', tick0=1))
             st.plotly_chart(fig)
 
             fig_defeitos = px.bar(
@@ -637,9 +634,8 @@ def painel_chamados_tecnicos():
                 x='Tipo de Defeito',
                 title='Quantidade de Chamados por Tipo de Defeito',
                 labels={'Tipo de Defeito': 'Tipo de Defeito', 'ID': 'Quantidade'},
-                color='Tipo de Defeito'  # Definir cor diferente para cada tipo de defeito
+                color='Tipo de Defeito'
             )
-            fig_defeitos.update_layout(yaxis=dict(tickmode='linear', tick0=1))
             st.plotly_chart(fig_defeitos)
 
             fig_setor = px.bar(
@@ -647,10 +643,15 @@ def painel_chamados_tecnicos():
                 x='Setor',
                 title='Quantidade de Chamados por Setor',
                 labels={'Setor': 'Setor', 'ID': 'Quantidade'},
-                color='Setor'  # Definir cor diferente para cada setor
+                color='Setor'
             )
-            fig_setor.update_layout(yaxis=dict(tickmode='linear', tick0=1))
             st.plotly_chart(fig_setor)
+
+            # Estatísticas adicionais
+            st.write("**Chamado com mais defeitos:**", df_chamados['Tipo de Defeito'].value_counts().idxmax())
+            st.write("**Setor com mais chamados:**", df_chamados['Setor'].value_counts().idxmax())
+
+
 
 # Função para buscar protocolo
 def buscar_protocolo():
