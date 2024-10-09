@@ -453,8 +453,12 @@ def painel_chamados_tecnicos():
 
     st.subheader('Painel de Chamados Técnicos')
 
-    chamados_abertos = list_chamados_em_aberto()
-    chamados = list_chamados()
+    try:
+        chamados_abertos = list_chamados_em_aberto()
+        chamados = list_chamados()
+    except Exception as e:
+        st.error(f"Erro ao carregar chamados: {e}")
+        return
 
     def chamado_to_dict(chamado):
         return {
@@ -474,8 +478,7 @@ def painel_chamados_tecnicos():
 
     def criar_dataframe_chamados(chamados_lista):
         if chamados_lista:
-            df = pd.DataFrame([chamado_to_dict(chamado) for chamado in chamados_lista])
-            return df
+            return pd.DataFrame([chamado_to_dict(chamado) for chamado in chamados_lista])
         else:
             return pd.DataFrame(columns=[
                 'ID', 'Usuário', 'UBS', 'Setor', 'Tipo de Defeito', 'Problema',
@@ -652,7 +655,6 @@ def painel_chamados_tecnicos():
             color='Setor'
         )
         st.plotly_chart(fig_setor)
-
 # Função para buscar protocolo
 def buscar_protocolo():
     st.subheader('Buscar Chamado por Protocolo')
