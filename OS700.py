@@ -460,6 +460,8 @@ def painel_chamados_tecnicos():
     try:
         chamados_abertos = list_chamados_em_aberto()
         chamados = list_chamados()
+        logging.info("Lista de chamados em aberto recuperada.")
+        logging.info("Lista de todos os chamados recuperada.")
     except Exception as e:
         st.error(f"Erro ao carregar chamados: {e}")
         logging.error(f"Erro ao carregar chamados: {e}")
@@ -504,12 +506,14 @@ def painel_chamados_tecnicos():
     df_chamados = criar_dataframe_chamados(chamados)
     df_abertos = criar_dataframe_chamados(chamados_abertos)
 
-    # Converter colunas de datas para o tipo datetime com UTC
+    # Converter colunas de datas para o tipo datetime com UTC e depois para fuso horário local
+    local_tz = ZoneInfo('America/Sao_Paulo')
+
     for df in [df_chamados, df_abertos]:
         df['Hora Abertura'] = pd.to_datetime(df['Hora Abertura'], errors='coerce', utc=True)
         df['Hora Fechamento'] = pd.to_datetime(df['Hora Fechamento'], errors='coerce', utc=True)
-        df['Hora Abertura'] = df['Hora Abertura'].dt.tz_convert('America/Sao_Paulo')
-        df['Hora Fechamento'] = df['Hora Fechamento'].dt.tz_convert('America/Sao_Paulo')
+        df['Hora Abertura'] = df['Hora Abertura'].dt.tz_convert(local_tz)
+        df['Hora Fechamento'] = df['Hora Fechamento'].dt.tz_convert(local_tz)
         df['Hora Abertura Formatada'] = df['Hora Abertura'].dt.strftime('%d/%m/%Y - %H:%M:%S')
         df['Hora Fechamento Formatada'] = df['Hora Fechamento'].dt.strftime('%d/%m/%Y - %H:%M:%S')
 
@@ -546,10 +550,15 @@ def painel_chamados_tecnicos():
                 fit_columns_on_grid_load=True,
                 height=350,
                 reload_data=True,
-                key='aggrid_abertos'
+                key='aggrid_abertos',
+                allow_unsafe_jscode=False
             )
 
             selected = grid_response.get('selected_rows', [])
+
+            # Verifica se 'selected' é um DataFrame e converte para lista de dicionários
+            if isinstance(selected, pd.DataFrame):
+                selected = selected.to_dict('records')
 
             logging.info(f"Tipo de selected: {type(selected)}")
             logging.info(f"Selected rows: {selected}")
@@ -672,6 +681,7 @@ def painel_chamados_tecnicos():
             color='Setor'
         )
         st.plotly_chart(fig_setor)
+
 # Função para buscar protocolo
 def buscar_protocolo():
     st.subheader('Buscar Chamado por Protocolo')
