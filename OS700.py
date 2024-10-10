@@ -450,6 +450,7 @@ def painel_chamados_tecnicos():
     from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
     from zoneinfo import ZoneInfo
 
+    # Verificação de autenticação e permissão
     if not st.session_state.get('logged_in') or not st.session_state.get('is_admin'):
         st.warning('Você precisa estar logado como administrador para acessar esta área.')
         logging.warning("Usuário sem privilégios tentou acessar o painel de chamados técnicos.")
@@ -540,7 +541,7 @@ def painel_chamados_tecnicos():
         if not df_abertos_exibir.empty:
             gb = GridOptionsBuilder.from_dataframe(df_abertos_exibir)
             gb.configure_pagination()
-            gb.configure_selection('single', use_checkbox=False)
+            gb.configure_selection('single', use_checkbox=False)  # Seleção única sem checkbox
             gridOptions = gb.build()
 
             grid_response = AgGrid(
@@ -551,14 +552,10 @@ def painel_chamados_tecnicos():
                 height=350,
                 reload_data=True,
                 key='aggrid_abertos',
-                allow_unsafe_jscode=False
+                return_mode='AS_DICT'  # Garante que selected_rows seja uma lista de dicts
             )
 
             selected = grid_response.get('selected_rows', [])
-
-            # Verifica se 'selected' é um DataFrame e converte para lista de dicionários
-            if isinstance(selected, pd.DataFrame):
-                selected = selected.to_dict('records')
 
             logging.info(f"Tipo de selected: {type(selected)}")
             logging.info(f"Selected rows: {selected}")
@@ -636,7 +633,8 @@ def painel_chamados_tecnicos():
                 df_filtrado[display_columns],
                 gridOptions=gridOptions,
                 enable_enterprise_modules=False,
-                key='aggrid_painel_chamados'
+                key='aggrid_painel_chamados',
+                return_mode='AS_DICT'  # Garante consistência na saída
             )
         else:
             st.info("Nenhum chamado corresponde aos filtros selecionados.")
@@ -681,11 +679,6 @@ def painel_chamados_tecnicos():
             color='Setor'
         )
         st.plotly_chart(fig_setor)
-
-# Função para buscar protocolo
-def buscar_protocolo():
-    st.subheader('Buscar Chamado por Protocolo')
-    protocolo = st.text_input('Digite o número do protocolo:')
 
     if st.button('Buscar'):
         if not protocolo:
