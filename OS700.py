@@ -447,8 +447,11 @@ def painel_relatorios():
             logging.error(f"Erro ao gerar relatório de inventário: {e}")
 
 def painel_chamados_tecnicos():
+    from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
+
     if not st.session_state.get('logged_in') or not st.session_state.get('is_admin'):
         st.warning('Você precisa estar logado como administrador para acessar esta área.')
+        logging.warning("Usuário sem privilégios tentou acessar o painel de chamados técnicos.")
         return
 
     st.subheader('Painel de Chamados Técnicos')
@@ -458,6 +461,7 @@ def painel_chamados_tecnicos():
         chamados = list_chamados()
     except Exception as e:
         st.error(f"Erro ao carregar chamados: {e}")
+        logging.error(f"Erro ao carregar chamados: {e}")
         return
 
     def chamado_to_dict(chamado):
@@ -478,7 +482,17 @@ def painel_chamados_tecnicos():
 
     def criar_dataframe_chamados(chamados_lista):
         if chamados_lista:
-            return pd.DataFrame([chamado_to_dict(chamado) for chamado in chamados_lista])
+            try:
+                df = pd.DataFrame([chamado_to_dict(chamado) for chamado in chamados_lista])
+                return df
+            except Exception as e:
+                st.error(f"Erro ao criar DataFrame: {e}")
+                logging.error(f"Erro ao criar DataFrame: {e}")
+                return pd.DataFrame(columns=[
+                    'ID', 'Usuário', 'UBS', 'Setor', 'Tipo de Defeito', 'Problema',
+                    'Hora Abertura', 'Solução', 'Hora Fechamento',
+                    'Protocolo', 'Patrimônio', 'Machine'
+                ])
         else:
             return pd.DataFrame(columns=[
                 'ID', 'Usuário', 'UBS', 'Setor', 'Tipo de Defeito', 'Problema',
@@ -490,24 +504,13 @@ def painel_chamados_tecnicos():
     df_abertos = criar_dataframe_chamados(chamados_abertos)
 
     # Converter colunas de datas para o tipo datetime com UTC
-    df_chamados['Hora Abertura'] = pd.to_datetime(df_chamados['Hora Abertura'], errors='coerce', utc=True)
-    df_chamados['Hora Fechamento'] = pd.to_datetime(df_chamados['Hora Fechamento'], errors='coerce', utc=True)
-
-    # Definir o fuso horário local
-    local_tz = ZoneInfo('America/Sao_Paulo')
-
-    # Converter para o fuso horário local
-    df_chamados['Hora Abertura'] = df_chamados['Hora Abertura'].dt.tz_convert(local_tz)
-    df_chamados['Hora Fechamento'] = df_chamados['Hora Fechamento'].dt.tz_convert(local_tz)
-
-    # Criar colunas formatadas para exibição
-    df_chamados['Hora Abertura Formatada'] = df_chamados['Hora Abertura'].dt.strftime('%d/%m/%Y - %H:%M:%S')
-    df_chamados['Hora Fechamento Formatada'] = df_chamados['Hora Fechamento'].dt.strftime('%d/%m/%Y - %H:%M:%S')
-
-    # Repetir para df_abertos
-    df_abertos['Hora Abertura'] = pd.to_datetime(df_abertos['Hora Abertura'], errors='coerce', utc=True)
-    df_abertos['Hora Abertura'] = df_abertos['Hora Abertura'].dt.tz_convert(local_tz)
-    df_abertos['Hora Abertura Formatada'] = df_abertos['Hora Abertura'].dt.strftime('%d/%m/%Y - %H:%M:%S')
+    for df in [df_chamados, df_abertos]:
+        df['Hora Abertura'] = pd.to_datetime(df['Hora Abertura'], errors='coerce', utc=True)
+        df['Hora Fechamento'] = pd.to_datetime(df['Hora Fechamento'], errors='coerce', utc=True)
+        df['Hora Abertura'] = df['Hora Abertura'].dt.tz_convert('America/Sao_Paulo')
+        df['Hora Fechamento'] = df['Hora Fechamento'].dt.tz_convert('America/Sao_Paulo')
+        df['Hora Abertura Formatada'] = df['Hora Abertura'].dt.strftime('%d/%m/%Y - %H:%M:%S')
+        df['Hora Fechamento Formatada'] = df['Hora Fechamento'].dt.strftime('%d/%m/%Y - %H:%M:%S')
 
     # Calcular o tempo decorrido usando as colunas datetime originais
     df_chamados['Tempo Decorrido Segundos'] = df_chamados.apply(
@@ -532,7 +535,7 @@ def painel_chamados_tecnicos():
         if not df_abertos_exibir.empty:
             gb = GridOptionsBuilder.from_dataframe(df_abertos_exibir)
             gb.configure_pagination()
-            gb.configure_selection(selection_mode='single', use_checkbox=True)
+            gb.configure_selection('single', use_checkbox=False)
             gridOptions = gb.build()
 
             grid_response = AgGrid(
@@ -541,20 +544,16 @@ def painel_chamados_tecnicos():
                 update_mode=GridUpdateMode.SELECTION_CHANGED,
                 fit_columns_on_grid_load=True,
                 height=350,
-                reload_data=True
+                reload_data=True,
+                key='aggrid_abertos'
             )
-            # Adicione logs detalhados para verificar o grid_response
-            logging.info(f"grid_response: {grid_response}")
 
-            if grid_response and 'selected_rows' in grid_response:
-                selected = grid_response['selected_rows']
-                logging.info(f"Tipo de selected: {type(selected)}")
-                logging.info(f"Selected rows: {selected}")
-            else:
-                selected = []
-                logging.warning("selected_rows não encontrado em grid_response.")
+            selected = grid_response.get('selected_rows', [])
 
-            if len(selected) > 0 and isinstance(selected[0], dict):
+            logging.info(f"Tipo de selected: {type(selected)}")
+            logging.info(f"Selected rows: {selected}")
+
+            if isinstance(selected, list) and len(selected) > 0 and isinstance(selected[0], dict):
                 chamado_selecionado = selected[0]
                 logging.info(f"Chamado selecionado: {chamado_selecionado}")
             else:
@@ -584,15 +583,18 @@ def painel_chamados_tecnicos():
                         try:
                             finalizar_chamado(chamado_selecionado.get('ID'), solucao, pecas_selecionadas)
                             st.success(f'Chamado ID: {chamado_selecionado["ID"]} finalizado com sucesso!')
+                            logging.info(f"Chamado ID: {chamado_selecionado['ID']} finalizado por {st.session_state.username}.")
                             st.experimental_rerun()
                         except Exception as e:
                             st.error(f"Erro ao finalizar o chamado: {e}")
+                            logging.error(f"Erro ao finalizar o chamado ID {chamado_selecionado.get('ID')}: {e}")
                     else:
                         st.error('Por favor, insira a solução antes de finalizar o chamado.')
             else:
                 st.info('Nenhum chamado selecionado.')
         else:
             st.info("Não há chamados em aberto no momento.")
+            logging.info("Nenhum chamado em aberto para exibir.")
 
     with tab2:
         st.subheader('Painel de Chamados')
@@ -607,34 +609,40 @@ def painel_chamados_tecnicos():
 
         if status != 'Todos':
             if status == 'Em Aberto':
-                df_filtrado = df_filtrado[df_filtrado['Hora Fechamento Formatada'] == '']
+                df_filtrado = df_filtrado[df_filtrado['Hora Fechamento'].isnull()]
             else:
-                df_filtrado = df_filtrado[df_filtrado['Hora Fechamento Formatada'] != '']
+                df_filtrado = df_filtrado[df_filtrado['Hora Fechamento'].notnull()]
 
         if ubs_selecionada != 'Todas':
             df_filtrado = df_filtrado[df_filtrado['UBS'] == ubs_selecionada]
 
-        gb = GridOptionsBuilder.from_dataframe(df_filtrado[display_columns])
-        gb.configure_pagination()
-        gb.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc='sum', editable=False)
-        gridOptions = gb.build()
+        if not df_filtrado.empty:
+            gb = GridOptionsBuilder.from_dataframe(df_filtrado[display_columns])
+            gb.configure_pagination()
+            gb.configure_default_column(groupable=True, value=True, enableRowGroup=True, aggFunc='sum', editable=False)
+            gridOptions = gb.build()
 
-        AgGrid(
-            df_filtrado[display_columns],
-            gridOptions=gridOptions,
-            enable_enterprise_modules=False
-        )
+            AgGrid(
+                df_filtrado[display_columns],
+                gridOptions=gridOptions,
+                enable_enterprise_modules=False,
+                key='aggrid_painel_chamados'
+            )
+        else:
+            st.info("Nenhum chamado corresponde aos filtros selecionados.")
 
     with tab3:
         st.subheader('Análise de Chamados')
 
         st.subheader('Tempo Médio de Atendimento')
-        chamados_finalizados = df_chamados[df_chamados['Hora Fechamento Formatada'] != '']
+        chamados_finalizados = df_chamados[df_chamados['Hora Fechamento'].notnull()]
         try:
             show_average_time(chamados_finalizados)
         except Exception as e:
             st.error(f"Erro ao exibir tempo médio de atendimento: {e}")
+            logging.error(f"Erro ao exibir tempo médio de atendimento: {e}")
 
+        # Gráfico de Quantidade de Chamados por UBS
         fig = px.bar(
             df_chamados,
             x='UBS',
@@ -644,6 +652,7 @@ def painel_chamados_tecnicos():
         )
         st.plotly_chart(fig)
 
+        # Gráfico de Quantidade de Chamados por Tipo de Defeito
         fig_defeitos = px.bar(
             df_chamados,
             x='Tipo de Defeito',
@@ -653,6 +662,7 @@ def painel_chamados_tecnicos():
         )
         st.plotly_chart(fig_defeitos)
 
+        # Gráfico de Quantidade de Chamados por Setor
         fig_setor = px.bar(
             df_chamados,
             x='Setor',
@@ -660,7 +670,7 @@ def painel_chamados_tecnicos():
             labels={'Setor': 'Setor', 'count': 'Quantidade'},
             color='Setor'
         )
-        st.plotly_chart(fig_setor)        
+        st.plotly_chart(fig_setor)
 # Função para buscar protocolo
 def buscar_protocolo():
     st.subheader('Buscar Chamado por Protocolo')
