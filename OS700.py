@@ -448,6 +448,7 @@ def painel_relatorios():
 
 def painel_chamados_tecnicos():
     from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode
+    from zoneinfo import ZoneInfo
 
     if not st.session_state.get('logged_in') or not st.session_state.get('is_admin'):
         st.warning('Você precisa estar logado como administrador para acessar esta área.')
